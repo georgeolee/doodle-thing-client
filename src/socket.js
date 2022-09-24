@@ -20,7 +20,7 @@ export function connectToServer(){
         return
     }
     
-    socket = io(serverUrl)            
+    socket = io(serverUrl, {transports: ['websocket', 'polling', 'flashsocket']})            
 
     socket.on('confirmation', () => {
         console.log(`connected to server at ${serverUrl}`)

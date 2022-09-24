@@ -4,6 +4,9 @@
 
     border: 3px solid #999;
     border-radius: 3px;
+
+    touch-action: none;
+    user-select: none;
 }
 
 .swatch.selected{

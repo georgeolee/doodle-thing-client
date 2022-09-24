@@ -5,6 +5,8 @@ import { usePointerState } from "./usePointerState"
 
 import { socket, pointerStateHandlers } from "../../socket"
 
+import './canvas.css'
+
 export function Canvas(props){
 
     const{
@@ -57,6 +59,7 @@ export function Canvas(props){
 
     return(
         <canvas
+            className="doodle-canvas"
             width={300 * devicePixelRatio}
             height={300 * devicePixelRatio}
             style={{

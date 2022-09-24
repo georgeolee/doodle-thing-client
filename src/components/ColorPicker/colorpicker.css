@@ -1,0 +1,10 @@
+.colorpicker{
+    --swatch-size: 30px;
+    --gap: 10px;
+    display: grid;
+    row-gap: var(--gap);
+    column-gap: var(--gap);
+    
+    /* min size same as --swatch-size (can't set from variable)*/
+    grid-template-columns: repeat(auto-fill, minmax(30px,1fr));
+}

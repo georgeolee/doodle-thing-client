@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 
 /**
@@ -18,6 +18,7 @@ export function usePointerState(
         events,
         listenerTarget = document.documentElement,
         onChange,
+        drawingSettings
     } = options
 
     const pointer = useRef({
@@ -28,7 +29,8 @@ export function usePointerState(
         last: null,
         type: null,
         buttons: null,
-        isPressed: null
+        isPressed: null,
+        drawingSettings: drawingSettings
     })
 
     function updatePointerState(evt){

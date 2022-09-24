@@ -4,14 +4,18 @@ import { Doodler } from "./Doodler"
 import { usePointerState } from "./usePointerState"
 
 import { socket, pointerStateHandlers } from "../../socket"
-import { Socket } from "socket.io-client"
 
 export function Canvas(props){
+
+    const{
+        drawingSettings
+    } = props
+
     const canvasRef = useRef()
 
     const doodlerRef = useRef()
 
-    const pointer = usePointerState(canvasRef, {
+    usePointerState(canvasRef, {
         events:['pointermove', 'pointerdown', 'pointerup'],
         onChange: pointerState => {
             if(pointerState.isPressed || pointerState.last?.isPressed){
@@ -21,21 +25,19 @@ export function Canvas(props){
                 //emit socket event
                 socket?.emit('pointerState', JSON.stringify(pointerState))
             }            
-        }
+        },
+        drawingSettings: drawingSettings
     })
 
     console.log('render')
 
     useEffect(()=>{
-        doodlerRef.current = new Doodler(canvasRef)
+        doodlerRef.current = new Doodler(canvasRef, drawingSettings)
         pointerStateHandlers.push(pointerState => {
             doodlerRef.current.consumePointerStates(JSON.parse(pointerState))
         })        
-    },[])
+    },[drawingSettings])
 
-    // useEffect(()=>{
-    //     socket.on()
-    // },[])
 
     //log pointer for debug
     // useEffect(()=>{

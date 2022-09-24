@@ -1,13 +1,9 @@
-import {io, Socket} from 'socket.io-client';
+import {io} from 'socket.io-client';
 
-let serverUrl
-
-if(process.env.NODE_ENV === 'production'){
-    serverUrl = 'https://doodle-thing.herokuapp.com/'
-}else{
-    serverUrl = 'http://localhost:8080'
-}
-
+const SERVER_URL = 
+    process.env.NODE_ENV === 'production'?
+        'https://doodle-thing.herokuapp.com/' :
+        'http://localhost:8080'
 
 export let socket
 
@@ -20,10 +16,10 @@ export function connectToServer(){
         return
     }
     
-    socket = io(serverUrl, {transports: ['websocket', 'polling', 'flashsocket']})            
+    socket = io(SERVER_URL, {transports: ['websocket', 'polling', 'flashsocket']})            
 
     socket.on('confirmation', () => {
-        console.log(`connected to server at ${serverUrl}`)
+        console.log(`connected to server at ${SERVER_URL}`)
     })
 
     socket.on('pointerState', pointerState => {

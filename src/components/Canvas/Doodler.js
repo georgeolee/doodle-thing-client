@@ -3,12 +3,12 @@ export class Doodler{
     cnvRef    
     strokeStyle
     lineWidth
-    
 
     constructor(cnvRef){
         this.cnvRef = cnvRef  
-        this.strokeStyle = '#000'     
-        this.lineWidth = 1
+        // this.strokeStyle = '#000'     
+        // this.lineWidth = 1
+        // this.drawingSettings = drawingSettings
     }
 
     getCanvas(){
@@ -31,9 +31,11 @@ export class Doodler{
         const [cnv, ctx] = this.getCanvas()
 
         ctx.beginPath()
-        ctx.strokeStyle = this.strokeStyle
-        ctx.lineWidth = this.lineWidth * devicePixelRatio
+        // ctx.strokeStyle = this.strokeStyle
+        // ctx.lineWidth = this.lineWidth * devicePixelRatio
         
+        // ctx.strokeStyle = this.drawingSettings.color
+        // ctx.lineWidth = this.drawingSettings.lineWidth * devicePixelRatio
 
         //HERE
         //change this - go back to front, starting w most recent, and use p.last to draw lines
@@ -42,6 +44,9 @@ export class Doodler{
         for(let i = pointerStates.length - 1; i >= 0; i--){
             const p = pointerStates[i]
             if(!p.isPressed) continue
+
+            ctx.strokeStyle = p.drawingSettings.color
+            ctx.lineWidth = p.drawingSettings.lineWidth * devicePixelRatio
 
             ctx.moveTo(...this.scaleXY(cnv, p.xNorm, p.yNorm))
 

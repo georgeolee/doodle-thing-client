@@ -1,8 +1,12 @@
 import {io, Socket} from 'socket.io-client';
 
-// if(process.env.NODE_ENV !== 'production'){}
+let serverUrl
 
-const serverUrl = 'http://localhost:8080'
+if(process.env.NODE_ENV !== 'production'){
+    serverUrl = 'https://doodle-thing.herokuapp.com/'
+}else{
+    serverUrl = 'http://localhost:8080'
+}
 
 
 export let socket

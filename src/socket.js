@@ -2,7 +2,7 @@ import {io, Socket} from 'socket.io-client';
 
 let serverUrl
 
-if(process.env.NODE_ENV !== 'production'){
+if(process.env.NODE_ENV === 'production'){
     serverUrl = 'https://doodle-thing.herokuapp.com/'
 }else{
     serverUrl = 'http://localhost:8080'

@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react"
-import { Doodler } from "./Doodler"
+import { Doodler } from "./Doodler.mjs"
 
 import { usePointerState } from "./usePointerState"
 
-import { socket, pointerStateHandlers } from "../../socket"
+import { socket, pointerStateHandlers, dataRequestHandlers } from "../../socket"
 
 import './canvas.css'
 
@@ -35,9 +35,33 @@ export function Canvas(props){
 
     useEffect(()=>{
         doodlerRef.current = new Doodler(canvasRef, drawingSettings)
+        
+        //on drawing data from server
         pointerStateHandlers.push(pointerState => {
             doodlerRef.current.consumePointerStates(JSON.parse(pointerState))
         })        
+
+        //on server request for canvas state
+        dataRequestHandlers.push(() => {
+            const dataURL = canvasRef.current.toDataURL()
+            const timestamp = Date.now()
+            const width = canvasRef.current.width
+            const height = canvasRef.current.height
+            const data = {
+                dataURL,
+                timestamp,
+                width,
+                height
+            }
+
+            fetch(process.env.REACT_APP_SERVER_URL + process.env.REACT_APP_SERVER_CANVAS_DATA_ROUTE, {
+                method: 'POST',                
+                body: JSON.stringify(data),                
+                keepalive:true
+            })
+        })
+
+
     },[drawingSettings])
 
 

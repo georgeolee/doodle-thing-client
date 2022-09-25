@@ -30,7 +30,9 @@ export function usePointerState(
         type: null,
         buttons: null,
         isPressed: null,
-        drawingSettings: drawingSettings
+        timestamp: null,
+        drawingSettings: drawingSettings,
+        // count: 0,
     })
 
     function updatePointerState(evt){
@@ -47,6 +49,10 @@ export function usePointerState(
         c.type = evt.type
         c.buttons = evt.buttons
         c.isPressed = c.buttons > 0
+        c.timestamp = Date.now()
+        // c.count++
+
+        // console.log(c.count)
 
         onChange?.(c);
     }

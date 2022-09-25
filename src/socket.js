@@ -1,13 +1,14 @@
 import {io} from 'socket.io-client';
 
-const SERVER_URL = 
-    process.env.NODE_ENV === 'production'?
-        'https://doodle-thing.herokuapp.com/' :
-        'http://localhost:8080'
+// const SERVER_URL = 
+//     process.env.NODE_ENV === 'production'?
+//         'https://doodle-thing.herokuapp.com/' :
+//         'http://localhost:8080'
 
 export let socket
 
 export const pointerStateHandlers = []
+export const dataRequestHandlers = []
 
 export function connectToServer(){
 
@@ -16,20 +17,25 @@ export function connectToServer(){
         return
     }
     
-    socket = io(SERVER_URL, {transports: ['websocket', 'polling', 'flashsocket']})            
+    socket = io(process.env.REACT_APP_SERVER_URL, {transports: ['websocket', 'polling', 'flashsocket']})            
 
     socket.on('confirmation', () => {
-        console.log(`connected to server at ${SERVER_URL}`)
+        console.log(`connected to server at ${process.env.REACT_APP_SERVER_URL}`)
     })
 
+    //incoming drawing data from server (other clients drawing)
     socket.on('pointerState', pointerState => {
-
         for(const fn of pointerStateHandlers){
             fn?.(pointerState)
         }
     })
 
-    
+    //server request canvas image state
+    socket.on('request canvas data', () => {
+        for(const fn of dataRequestHandlers){
+            fn?.()
+        }
+    })
 
     return socket
 }

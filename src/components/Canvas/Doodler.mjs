@@ -18,6 +18,11 @@ export class Doodler{
         })]
     }
 
+    getDataURL(){
+        const [cnv,] = this.getCanvas()
+        return cnv.toDataURL()
+    }
+
     line(x0,y0,x1,y1){
         const [, ctx] = this.getCanvas()
            
@@ -46,7 +51,8 @@ export class Doodler{
             if(!p.isPressed) continue
 
             ctx.strokeStyle = p.drawingSettings.color
-            ctx.lineWidth = p.drawingSettings.lineWidth * devicePixelRatio
+            // ctx.lineWidth = p.drawingSettings.lineWidth * devicePixelRatio
+            ctx.lineWidth = p.drawingSettings.lineWidth * 1
 
             ctx.moveTo(...this.scaleXY(cnv, p.xNorm, p.yNorm))
 

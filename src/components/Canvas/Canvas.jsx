@@ -68,7 +68,7 @@ export function Canvas(props){
 
     useEffect(() => {
         console.log('canvas useeffect')
-        if(!snapshot || snapshot.empty) return
+        if(!snapshot || !snapshot.dataURL) return
         console.log('has snapshot')
         const img = new Image(snapshot.width, snapshot.height)
         img.src = snapshot.dataURL

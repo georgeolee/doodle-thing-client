@@ -13,9 +13,7 @@ export class Doodler{
 
     getCanvas(){
         const cnv = this.cnvRef['getContext'] ? this.cnvRef : this.cnvRef.current        
-        return [cnv, cnv.getContext('2d', {
-            alpha: false
-        })]
+        return [cnv, cnv.getContext('2d')]
     }
 
     getDataURL(){
@@ -34,36 +32,31 @@ export class Doodler{
 
     consumePointerStates(...pointerStates){
         const [cnv, ctx] = this.getCanvas()
-
+        // ctx.imageSmoothingEnabled = false
         ctx.beginPath()
-        // ctx.strokeStyle = this.strokeStyle
-        // ctx.lineWidth = this.lineWidth * devicePixelRatio
-        
-        // ctx.strokeStyle = this.drawingSettings.color
-        // ctx.lineWidth = this.drawingSettings.lineWidth * devicePixelRatio
 
-        //HERE
-        //change this - go back to front, starting w most recent, and use p.last to draw lines
-        //decide what to do w/ only one
-
+        //???
+        //right now draws newest first
+        //not a prob if only one pstate, but otherwise will reverse overlap order?
+        //change
         for(let i = pointerStates.length - 1; i >= 0; i--){
             const p = pointerStates[i]
             if(!p.isPressed) continue
 
             ctx.strokeStyle = p.drawingSettings.color
             ctx.lineWidth = p.drawingSettings.lineWidth * devicePixelRatio
-            // ctx.lineWidth = p.drawingSettings.lineWidth * 1
 
-            ctx.moveTo(...this.scaleXY(cnv, p.xNorm, p.yNorm))
-
+            
             if(p.last?.isPressed){
+                ctx.moveTo(...this.scaleXY(cnv, p.xNorm, p.yNorm))
                 ctx.lineTo(...this.scaleXY(cnv, p.last.xNorm ?? p.xNorm, p.last.yNorm ?? p.yNorm))
+                ctx.stroke()
             }else{
-                ctx.lineTo(...this.scaleXY(cnv, p.xNorm, p.yNorm))
+                ctx.arc(...this.scaleXY(cnv, p.xNorm, p.yNorm), ctx.lineWidth * 0.5, 0, Math.PI * 2)
+                ctx.fillStyle = p.drawingSettings.color
+                ctx.fill()
             }
         }
-
-        ctx.stroke()
 
     }
 

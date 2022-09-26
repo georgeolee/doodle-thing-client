@@ -5,13 +5,12 @@ import { socket, connectToServer } from './socket';
 import { Canvas } from './components/Canvas/Canvas';
 import { ColorPicker } from './components/ColorPicker/ColorPicker';
 import { useEffect, useState, useRef } from 'react';
-import { getServerCanvasData } from './getServerCanvasData';
 
 
 
 function App(props) {
 
-  let colors = ['#000', '#f88', '#df2']
+  let colors = ['#222', '#f44', '#2df', '#fd4']
 
   const drawingSettings = useRef({
     color: colors[0],

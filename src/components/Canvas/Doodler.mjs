@@ -51,8 +51,8 @@ export class Doodler{
             if(!p.isPressed) continue
 
             ctx.strokeStyle = p.drawingSettings.color
-            // ctx.lineWidth = p.drawingSettings.lineWidth * devicePixelRatio
-            ctx.lineWidth = p.drawingSettings.lineWidth * 1
+            ctx.lineWidth = p.drawingSettings.lineWidth * devicePixelRatio
+            // ctx.lineWidth = p.drawingSettings.lineWidth * 1
 
             ctx.moveTo(...this.scaleXY(cnv, p.xNorm, p.yNorm))
 

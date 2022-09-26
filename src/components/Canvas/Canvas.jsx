@@ -10,6 +10,7 @@ import './canvas.css'
 export function Canvas(props){
 
     const{
+        snapshot,
         drawingSettings
     } = props
 
@@ -64,6 +65,19 @@ export function Canvas(props){
 
     },[drawingSettings])
 
+
+    useEffect(() => {
+        console.log('canvas useeffect')
+        if(!snapshot || snapshot.empty) return
+        console.log('has snapshot')
+        const img = new Image(snapshot.width, snapshot.height)
+        img.src = snapshot.dataURL
+        const cnv = canvasRef.current
+        const ctx = cnv.getContext('2d')
+        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, cnv.width, cnv.height)
+
+        // canvasRef.current.
+    })
 
     //log pointer for debug
     // useEffect(()=>{

@@ -4,8 +4,10 @@ import { socket } from './socket';
 
 import { Canvas } from './components/Canvas/Canvas';
 import { ColorPicker } from './components/ColorPicker/ColorPicker';
+import { useEffect, useState } from 'react';
+import { getServerCanvasData } from './getServerCanvasData';
 
-function App() {
+function App(props) {
 
   let colors = ['#000', '#f88', '#df2']
 
@@ -14,10 +16,19 @@ function App() {
     lineWidth: 1
   }
 
-  // useEffect(() => {
-  //   connectToServer()
-  // }, [])
+  const [canvasSnapshot, setCanvasSnapshot] = useState(null)
 
+  console.log(`app render : ${Date.now()}`)
+
+  useEffect(() => {
+    getServerCanvasData(
+      data=>{
+        setCanvasSnapshot(data)
+      },
+      error=>{
+        console.log(error)
+      }
+)}, [])
 
   return (
     <div className="App">
@@ -42,7 +53,9 @@ function App() {
         // }
 
         }}>click me</button>
-      <Canvas drawingSettings={drawingSettings}></Canvas>
+      <Canvas 
+        snapshot={canvasSnapshot}
+        drawingSettings={drawingSettings}></Canvas>
       <ColorPicker 
         colors={colors} 
         onColorPick={c => {

@@ -21,6 +21,7 @@ export function connectToServer(){
 
     socket.on('confirmation', () => {
         console.log(`connected to server at ${process.env.REACT_APP_SERVER_URL}`)
+        console.log(`socket id: ${socket.id}`)
     })
 
     //incoming drawing data from server (other clients drawing)
@@ -37,6 +38,14 @@ export function connectToServer(){
         }
     })
 
-    return socket
+    function disconnect(){
+        socket.off('confirmation')
+        socket.off('pointerState')
+        socket.off('request canvas data')
+
+        socket.disconnect()
+    }
+
+    return disconnect
 }
 

@@ -4,12 +4,6 @@ import './index.css';
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
 
-import { connectToServer } from './socket';
-import { getServerCanvasData } from './getServerCanvasData.js'
-
-connectToServer()
-
-getServerCanvasData(data => console.log(data))
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

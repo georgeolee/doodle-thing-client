@@ -15,7 +15,7 @@ function App(props) {
 
   const drawingSettings = useRef({
     color: colors[0],
-    lineWidth: 1
+    lineWidth: 1 * devicePixelRatio
   })
 
 

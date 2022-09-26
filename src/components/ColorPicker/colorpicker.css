@@ -5,6 +5,8 @@
     row-gap: var(--gap);
     column-gap: var(--gap);
     
+    width: 100%;
+    
     /* min size same as --swatch-size (can't set from variable)*/
     grid-template-columns: repeat(auto-fill, minmax(30px,1fr));
 }

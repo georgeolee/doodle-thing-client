@@ -3,3 +3,12 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+.App{    
+    width: fit-content;
+
+    display: grid;
+    grid-template-columns: 1fr;
+
+    row-gap: 10px;
+}

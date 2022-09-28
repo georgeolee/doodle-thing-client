@@ -6,9 +6,6 @@ export class Doodler{
 
     constructor(cnvRef){
         this.cnvRef = cnvRef  
-        // this.strokeStyle = '#000'     
-        // this.lineWidth = 1
-        // this.drawingSettings = drawingSettings
     }
 
     getCanvas(){

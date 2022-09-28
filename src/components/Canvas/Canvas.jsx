@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Doodler } from "./Doodler.mjs"
+import { Doodler } from "../../Doodler.mjs"
 
 import { usePointerState } from "./usePointerState"
 
@@ -26,11 +26,13 @@ export function Canvas(props){
     usePointerState(canvasRef, {
         events:['pointermove', 'pointerdown', 'pointerup'],
         onChange: pointerState => {
+            //don't bother emitting to other sockets if not actually drawing
             if(pointerState.isPressed || pointerState.last?.isPressed){
+                //draw here
                 doodlerRef.current?.consumePointerStates(pointerState)
 
 
-                //emit socket event
+                //emit socket event so other clients can draw the same thing
                 socket?.emit('pointerState', JSON.stringify(pointerState))
             }            
         },
@@ -107,29 +109,25 @@ export function Canvas(props){
 
 
     useEffect(() => {
-        getServerCanvasData(
-          data=>{
-            console.log(data)
-            setCanvasSnapshot(data)
-          },
-          error=>{
-            console.log(error)
-          }
-    )}, [canvasSnapshot?.dataURL])
+        getServerCanvasData({
+            onSuccess: data=>{
+                console.log(data)
+                setCanvasSnapshot(data)
+              },
+
+            onError: error=>{
+                console.log(error)
+            },
+
+            query: {
+                width: canvasRef.current.width,
+                height: canvasRef.current.height,
+            }
+
+        })}, [canvasSnapshot?.dataURL])
 
 
-    //log pointer for debug
-    // useEffect(()=>{
-    //     setInterval(()=>{
-    //         for(const p in pointer.current){
-    //             console.log(p,pointer.current[p])
-    //         }
-    //         console.log(JSON.stringify(pointer.current))
-    //         console.log('\n\n')
-    //     }, 2000)
-    // })
-
-    //need to call this here ; prevents black screen
+    //prevents black screen
     useEffect(()=>{        
         canvasRef.current.getContext('2d')
     })

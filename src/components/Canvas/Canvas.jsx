@@ -102,7 +102,7 @@ export function Canvas(props){
         img.src = canvasSnapshot.dataURL
         const cnv = canvasRef.current
         const ctx = cnv.getContext('2d')
-        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, cnv.width, cnv.height)
+        ctx.drawImage(img, 0, 0, cnv.width, cnv.height)
 
         // canvasRef.current.
     }, [canvasSnapshot])

@@ -19,10 +19,19 @@ export function Canvas(props){
 
     const doodlerRef = useRef()
 
-    const [canvasSnapshot, setCanvasSnapshot] = useState(null)
+    //image blob from server
+    const blob = useRef(null)
+
+    //canvas timestamp sent from server
+    const [timestamp, setTimestamp] = useState()
 
     console.log('canvas render')
 
+    //every render
+    //  - configure canvas listeners 
+    //  - set up callback to send outgoing drawing data to socket
+    //
+    //RENAME : PointerState —> PenState or something (includes drawing settings w/ pointer data)
     usePointerState(canvasRef, {
         events:['pointermove', 'pointerdown', 'pointerup'],
         onChange: pointerState => {
@@ -41,9 +50,14 @@ export function Canvas(props){
 
     
 
+    //initial render only (see note below)
+    //  - initialize doodler
+    //  - set up callback to process incoming drawing data from socket
     useEffect(()=>{
-        doodlerRef.current = new Doodler(canvasRef, drawingSettings)
+        doodlerRef.current = new Doodler(canvasRef)
         
+
+        //CLEANUP THIS SECTION - array prob not necessary
         pointerStateHandlers.pop()
 
         //on drawing data from server
@@ -54,65 +68,30 @@ export function Canvas(props){
         console.log(`pstatehandler ${pointerStateHandlers.length}`)
 
 
-        //BAD!! CLEAN UP!!
-        dataRequestHandlers.pop()
-
-        //on server request for canvas state
-        dataRequestHandlers.push(() => {
-            const dataURL = canvasRef.current.toDataURL()
-            const timestamp = Date.now()
-            const width = canvasRef.current.width
-            const height = canvasRef.current.height
-            const data = {
-                dataURL,
-                timestamp,
-                width,
-                height
-            }
-
-            try{
-                fetch(process.env.REACT_APP_SERVER_URL + process.env.REACT_APP_SERVER_CANVAS_DATA_ROUTE, {
-                    method: 'POST',                
-                    body: JSON.stringify(data),                
-                    // keepalive:true
-                })
-            }catch(e){
-                console.log('canvas POST error')
-                console.log(e)
-            }       
-        })
-
-
+        //note - object ref to drawingSettings shouldn't ever change, only properties
+        //including here to keep linter happy
     },[drawingSettings])
 
 
-    useEffect(() => {
-        console.log('useeffect - canvas snapshot change')
-        if(!canvasSnapshot || !canvasSnapshot.dataURL){
-            console.log('no snapshot or empty')
-            console.log(canvasSnapshot)
-            console.log('returning w/o setting canvas')
-            return
-        }
-
-
-        console.log('has snapshot')
-        console.log('snapshot')
-        const img = new Image(canvasSnapshot.width, canvasSnapshot.height)
-        img.src = canvasSnapshot.dataURL
-        const cnv = canvasRef.current
-        const ctx = cnv.getContext('2d')
-        ctx.drawImage(img, 0, 0, cnv.width, cnv.height)
-
-        // canvasRef.current.
-    }, [canvasSnapshot])
 
 
     useEffect(() => {
         getServerCanvasData({
-            onSuccess: data=>{
+            onSuccess: (data, ts) =>{
                 console.log(data)
-                setCanvasSnapshot(data)
+                console.log(ts)                
+
+                //check incoming timestamp for canvas data change
+                if(ts !== timestamp){
+                    
+                    blob.current = data;
+
+                    console.log('updating timestamp')
+                    setTimestamp(ts)
+                }else{
+                    console.log('no timestamp change')
+                }
+
               },
 
             onError: error=>{
@@ -124,15 +103,48 @@ export function Canvas(props){
                 height: canvasRef.current.height,
             }
 
-        })}, [canvasSnapshot?.dataURL])
+    })}, [timestamp])
 
 
-    //prevents black screen
+    //on timestamp change
+    // - draw server canvas blob to screen if it exists
     useEffect(()=>{        
-        canvasRef.current.getContext('2d')
-    })
 
+        const cnv = canvasRef.current
+        const ctx = cnv.getContext('2d')
+
+
+        if(!blob.current) return
+      
+        (async () => {                                
+            
+            if(typeof createImageBitmap === 'function'){
+                const bmp = await createImageBitmap(blob.current)
+                ctx.drawImage(bmp, 0, 0, cnv.width, cnv.height)
+                bmp.close()
+            }else{
+                //for older versions of safari etc that don't support ImageBitmap
+                const img = new Image()
+                const url = URL.createObjectURL(blob.current)
+                img.src = url
+
+                //wait until it's safe to draw image
+                await img.decode()
+
+                ctx.drawImage(img, 0, 0, cnv.width, cnv.height)
+                URL.revokeObjectURL(url)  
+                img.remove()
+            }            
+
+        })()
+
+        
+    }, [timestamp])
+
+    //every render
+    // - set up drawing context
     useEffect(() => {
+        canvasRef.current.getContext('2d')
         console.log(`canvas render ${Date.now()}`)   
         console.log(`socket id: ${socket?.id}`)
     })

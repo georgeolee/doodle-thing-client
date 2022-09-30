@@ -22,9 +22,10 @@ export function Log(props){
                 </label>
                 
             </div>
-            <div 
-                className={isCollapsed ? 'body collapsed' : 'body'}
-                ref={logRef}/>
+            <div className={isCollapsed ? 'body collapsed' : 'body'}>
+
+                <div ref={logRef}></div>
+            </div>
         </div>
     )
 }

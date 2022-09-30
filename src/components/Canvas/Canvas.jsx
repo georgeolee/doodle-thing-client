@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react"
-import { Doodler } from "../../Doodler.mjs"
+import { Doodler } from '../../Doodler.js'
 
 import { usePointerState } from "../../hooks/usePointerState"
 
-import { socket, pointerStateHandlers, dataRequestHandlers } from "../../socket"
+import { socket, pointerStateHandlers } from "../../socket"
 
 import { getServerCanvasData } from "../../getServerCanvasData.js"
 
@@ -95,7 +95,7 @@ export function Canvas(props){
               },
 
             onError: error=>{
-                console.log(error)
+                console.log('Canvas.jsx: failed to fetch canvas data. Error:',error)
             },
 
             query: {

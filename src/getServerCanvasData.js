@@ -11,9 +11,8 @@ export async function getServerCanvasData(options){
 
     const {
         onSuccess,  //callback to handle server response
-        onError = null,    //error handler (optional)
+        onError = err => console.log(err),    //error handler
         query = {},      //GET query params (optional)
-        log,
     } = options
 
     console.log('fetching canvas data from server...')
@@ -27,15 +26,11 @@ export async function getServerCanvasData(options){
 
         url.search = queryParams
 
-        console.log(`GET ${url.toString()}`)
+        console.log(`fetch GET ${url.toString()}`)
+
         const res = await fetch(url)
-        // const cdata = await res.json()
 
-        //begin testing
-
-        if(log){
-            log(`response status: ${res.status}`)
-        }
+        console.log(`getServerCanvasData.js: received response with status ${res.status}: ${res.statusText}`)
 
         const h = res.headers.entries()
 
@@ -43,34 +38,13 @@ export async function getServerCanvasData(options){
 
         for(const e of h){
             console.log(e)
-            console.log('jhbjkbhji;b')
         }
-
-        // console.log(await getServerCanvasTimestamp())
-        // console.log(res.headers.get('etag'))
-
         const blob = await res.blob()
 
-        // const blobURL = URL.createObjectURL(blob)
-        // console.log(blobURL)
-
-                
-        //end testing
-
-        // const a = document.createElement('a')
-        // a.href = URL.createObjectURL(blob)
-        // a.download = 'blobtest'
-        // a.click()
-
         onSuccess(blob, timestamp)
-        // onSuccess(blobURL, timestamp)
-        // onSuccess(cdata)
+
     }catch(e){
-        // console.log(e)        
-        if(log){
-            log(e)
-        }
-        onError?.(e)
+        onError(e)
     }
 }
 

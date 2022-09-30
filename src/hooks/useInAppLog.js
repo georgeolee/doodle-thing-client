@@ -77,7 +77,7 @@ export function useInAppLog(options = {}){
             window.removeEventListener('error', printError)
         }
     })
-    
+        
 
     //override default console behavior
     useEffect(() => {

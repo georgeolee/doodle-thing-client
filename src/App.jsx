@@ -4,13 +4,13 @@ import { socket, connectToServer } from './socket';
 
 import { Canvas } from './components/Canvas/Canvas';
 import { ColorPicker } from './components/ColorPicker/ColorPicker';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Log } from './components/Log/Log';
 
 
-function App(props) {
+function App() {
 
-  let colors = ['#222', '#f44', '#2df', '#fd4']
+  let colors = ['erase','#222', '#f44', '#2df', '#fd4']
 
   const drawingSettings = useRef({
     color: colors[0],
@@ -37,12 +37,6 @@ function App(props) {
 
   })
   
-  
-  // useEffect(()=>{
-  //   setInterval(()=>{
-  //     document.getElementById('log').innerText = Math.random()
-  //   }, 1000)
-  // }, [])
 
   return (
     <div className="App">
@@ -58,7 +52,7 @@ function App(props) {
       <ColorPicker 
         colors={colors} 
         onColorPick={c => {
-          drawingSettings.current.color=[c]
+          drawingSettings.current.color = c
         }}/>
     </div>
   );

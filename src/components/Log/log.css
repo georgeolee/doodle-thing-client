@@ -37,11 +37,13 @@
     background-repeat: repeat;
     /* background-position: 0 -25%; */
     background-attachment: local;
-    overflow: scroll;
+    overflow: scroll;    
     white-space: pre;
     overscroll-behavior: none;
+
+    transition: max-height 0.12s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 .log .body.collapsed{
-    display: none;
+    max-height: 1px;
 }

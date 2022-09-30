@@ -11,13 +11,13 @@ export function ColorPicker(props){
         colors,
         onColorPick,
     } = props
-    
+
     const swatches = colors.map((color, i) => {
         return <Swatch 
                     key={`swatch${i}`} 
                     color={color} 
                     selected={i === selected}
-                    onClick={col => {
+                    onPointerDown={col => {
                         onColorPick(col)
                         setSelected(i)
                     }}/>

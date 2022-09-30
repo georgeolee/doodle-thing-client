@@ -1,3 +1,4 @@
+/*ES module version*/
 export class Doodler{
 
     cnvRef    
@@ -32,15 +33,24 @@ export class Doodler{
         // ctx.imageSmoothingEnabled = false
         ctx.beginPath()
 
-        //???
         //right now draws newest first
         //not a prob if only one pstate, but otherwise will reverse overlap order?
         //change
         for(let i = pointerStates.length - 1; i >= 0; i--){
             const p = pointerStates[i]
             if(!p.isPressed) continue
-
-            ctx.strokeStyle = p.drawingSettings.color
+            
+                        
+            if(p.drawingSettings.color !== 'erase'){
+                //color over
+                ctx.globalCompositeOperation = 'source-over'
+                ctx.strokeStyle = p.drawingSettings.color
+                ctx.fillStyle = p.drawingSettings.color
+            }else{
+                //remove source color
+                ctx.globalCompositeOperation = 'destination-out'
+            }
+            
             ctx.lineWidth = p.drawingSettings.lineWidth * devicePixelRatio
 
             
@@ -49,8 +59,7 @@ export class Doodler{
                 ctx.lineTo(...this.scaleXY(cnv, p.last.xNorm ?? p.xNorm, p.last.yNorm ?? p.yNorm))
                 ctx.stroke()
             }else{
-                ctx.arc(...this.scaleXY(cnv, p.xNorm, p.yNorm), ctx.lineWidth * 0.5, 0, Math.PI * 2)
-                ctx.fillStyle = p.drawingSettings.color
+                ctx.arc(...this.scaleXY(cnv, p.xNorm, p.yNorm), ctx.lineWidth * 0.5, 0, Math.PI * 2)                
                 ctx.fill()
             }
         }

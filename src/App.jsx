@@ -5,7 +5,7 @@ import { socket, connectToServer } from './socket';
 import { Canvas } from './components/Canvas/Canvas';
 import { ColorPicker } from './components/ColorPicker/ColorPicker';
 import { useEffect, useState, useRef } from 'react';
-
+import { Log } from './components/Log/Log';
 
 
 function App(props) {
@@ -17,6 +17,7 @@ function App(props) {
     lineWidth: 1
   })
 
+  
 
   useEffect(() => {
     console.log('opening socket connection')
@@ -32,10 +33,16 @@ function App(props) {
   useEffect(()=>{
     console.log(`app render : ${Date.now()}`)
     console.log(`socket id: ${socket?.id}`)
+
+
   })
   
   
-  
+  // useEffect(()=>{
+  //   setInterval(()=>{
+  //     document.getElementById('log').innerText = Math.random()
+  //   }, 1000)
+  // }, [])
 
   return (
     <div className="App">
@@ -43,6 +50,8 @@ function App(props) {
       <button onClick={()=> {
         socket?.emit('click', Date.now())
         }}>click me</button>
+
+      <Log/>
 
       <Canvas 
         drawingSettings={drawingSettings}></Canvas>

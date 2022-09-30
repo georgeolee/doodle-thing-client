@@ -13,6 +13,7 @@ export async function getServerCanvasData(options){
         onSuccess,  //callback to handle server response
         onError = null,    //error handler (optional)
         query = {},      //GET query params (optional)
+        log,
     } = options
 
     console.log('fetching canvas data from server...')
@@ -32,6 +33,10 @@ export async function getServerCanvasData(options){
 
         //begin testing
 
+        if(log){
+            log(`response status: ${res.status}`)
+        }
+
         const h = res.headers.entries()
 
         const timestamp = (res.headers.get('x-timestamp'))
@@ -41,7 +46,7 @@ export async function getServerCanvasData(options){
             console.log('jhbjkbhji;b')
         }
 
-        console.log(await getServerCanvasTimestamp())
+        // console.log(await getServerCanvasTimestamp())
         // console.log(res.headers.get('etag'))
 
         const blob = await res.blob()
@@ -49,8 +54,7 @@ export async function getServerCanvasData(options){
         // const blobURL = URL.createObjectURL(blob)
         // console.log(blobURL)
 
-        
-
+                
         //end testing
 
         // const a = document.createElement('a')
@@ -62,7 +66,10 @@ export async function getServerCanvasData(options){
         // onSuccess(blobURL, timestamp)
         // onSuccess(cdata)
     }catch(e){
-        // console.log(e)
+        // console.log(e)        
+        if(log){
+            log(e)
+        }
         onError?.(e)
     }
 }

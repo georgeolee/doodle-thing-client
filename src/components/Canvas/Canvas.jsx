@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Doodler } from "../../Doodler.mjs"
 
-import { usePointerState } from "./usePointerState"
+import { usePointerState } from "../../hooks/usePointerState"
 
 import { socket, pointerStateHandlers, dataRequestHandlers } from "../../socket"
 

@@ -1,0 +1,46 @@
+.log{
+    --line-height: 1.5em;
+    --font-size: 12px;
+    --max-height: calc(10 * var(--line-height));
+
+    --bg-a: #fff;
+    --bg-b: #eee;
+
+    font-size: var(--font-size);
+    
+    /* width: 100%;    
+    max-width: 100%; */
+
+    width: 300px;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5em;
+}
+
+.log .header{
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.log .body{
+
+    box-shadow: 0 0 1px #000;
+
+    max-height: var(--max-height);
+    
+    line-height: var(--line-height);
+
+    background-image: linear-gradient(0deg, var(--bg-a) 0 50%, var(--bg-b) 50% 100%);
+    background-size: 100% calc(2 * var(--line-height));
+    background-repeat: repeat;
+    /* background-position: 0 -25%; */
+    background-attachment: local;
+    overflow: scroll;
+    white-space: pre;
+}
+
+.log .body.collapsed{
+    display: none;
+}

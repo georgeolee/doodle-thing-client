@@ -39,6 +39,7 @@
     background-attachment: local;
     overflow: scroll;
     white-space: pre;
+    overscroll-behavior-x: none;
 }
 
 .log .body.collapsed{

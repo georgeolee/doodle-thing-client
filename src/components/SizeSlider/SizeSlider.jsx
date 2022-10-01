@@ -156,7 +156,7 @@ export function SizeSlider(props){
 
                     //don't use this ; use actual rect width
                     // const runnableWidth = rect.width * (w / (d + strokeWidth))
-
+                    console.log('svg g pointermove')
                     //screen width to svg units
                     const runnableWidth = rect.width *  (d + strokeWidth*2 - 2*r2)/(d + strokeWidth*2)
 

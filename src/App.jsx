@@ -11,7 +11,7 @@ import { SizeSlider } from './components/SizeSlider/SizeSlider';
 
 function App() {
 
-  let colors = ['erase','#222', '#f44', '#2df', '#fd4']
+  let colors = ['erase','#222', '#f44', '#2df', '#fd4', '#555', '#8a8']
 
   const drawingSettings = useRef({
     color: colors[0],

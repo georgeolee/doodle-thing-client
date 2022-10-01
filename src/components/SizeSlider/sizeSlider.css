@@ -1,0 +1,5 @@
+#size-slider{
+    user-select: none;
+    touch-action: none;
+    pointer-events: all;
+}

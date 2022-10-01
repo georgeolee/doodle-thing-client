@@ -15,7 +15,7 @@ export function usePointerState(
     }){
 
     const{
-        events,
+        events = ['pointerdown', 'pointerup', 'pointermove'],
         listenerTarget = document.documentElement,
         onChange,
         drawingSettings

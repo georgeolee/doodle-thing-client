@@ -6,6 +6,7 @@ import { Canvas } from './components/Canvas/Canvas';
 import { ColorPicker } from './components/ColorPicker/ColorPicker';
 import { useEffect, useRef } from 'react';
 import { Log } from './components/Log/Log';
+import { SizeSlider } from './components/SizeSlider/SizeSlider';
 
 
 function App() {
@@ -16,8 +17,6 @@ function App() {
     color: colors[0],
     lineWidth: 1
   })
-
-  
 
   useEffect(() => {
     console.log('opening socket connection')
@@ -54,6 +53,14 @@ function App() {
         onColorPick={c => {
           drawingSettings.current.color = c
         }}/>
+
+      <SizeSlider
+        id='size-slider'
+        onProgress={progress => {
+          drawingSettings.current.lineWidth = 
+            document.getElementById('size-slider').getBoundingClientRect().height * progress
+        }}
+        />
     </div>
   );
 }

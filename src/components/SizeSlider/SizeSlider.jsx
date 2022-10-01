@@ -17,7 +17,7 @@ export function SizeSlider(props){
     const svgRef = useRef()
     const thumbRef = useRef()
 
-    const pointer = usePointerState(svgRef, {listenerTarget: svgRef})
+    const pointer = usePointerState(svgRef)
 
 
     useEffect(()=> {
@@ -92,7 +92,8 @@ export function SizeSlider(props){
     return(
         
 
-        <svg
+        <div>
+            <svg
             id={id}
             ref={svgRef}
 
@@ -215,6 +216,10 @@ export function SizeSlider(props){
             </g>
 
         </svg>
+
+        </div>
+
+        
 
 
     )

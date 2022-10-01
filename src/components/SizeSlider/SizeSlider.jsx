@@ -6,6 +6,7 @@ import { usePointerState } from "../../hooks/usePointerState";
 
 export function SizeSlider(props){
 
+    //mobile fix && clean up
 
     const {
         id,
@@ -70,9 +71,27 @@ export function SizeSlider(props){
     t2.x = d + r1 - t2.x
     t2.x += strokeWidth * 0.5
 
+
+
+
+    //maybe move this stuff to usePointer hook
+    useEffect(()=>{
+
+        const noDef = e => e.preventDefault()
+
+        thumbRef.current.addEventListener('touchstart', noDef)
+        thumbRef.current.addEventListener('touchmove', noDef)
+
+
+        return () => {
+            thumbRef.current.removeEventListener('touchstart', noDef)
+            thumbRef.current.removeEventListener('touchmove', noDef)
+        }
+    })
+
     return(
         
-        
+
         <svg
             id={id}
             ref={svgRef}
@@ -123,9 +142,14 @@ export function SizeSlider(props){
             
             <g //THUMB
                 ref={thumbRef}
+                // onPointerDown={e=>{
+                //     e.preventDefault()
+                //     thumbRef.current.setPointerCapture(e.pointerId)
+                // }}
+                
                 onPointerMove={e=> {
                     // console.log(e.button)
-                    
+                    // e.preventDefault()
                     if(!pointer.current.isPressed) return
                     thumbRef.current.setPointerCapture(e.pointerId)
                     const rect = svgRef.current.getBoundingClientRect()

@@ -8,6 +8,7 @@ import { socket, pointerStateHandlers } from "../../socket"
 import { getServerCanvasData } from "../../getServerCanvasData.js"
 
 import './canvas.css'
+import { useNoTouch } from "../../hooks/useNoTouch.js"
 
 export function Canvas(props){
 
@@ -16,6 +17,8 @@ export function Canvas(props){
     } = props
 
     const canvasRef = useRef()
+
+    useNoTouch(canvasRef)
 
     const doodlerRef = useRef()
 

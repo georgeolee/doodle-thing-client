@@ -54,13 +54,15 @@ function App() {
           drawingSettings.current.color = c
         }}/>
 
-      <SizeSlider
+      {/* <SizeSlider
         id='size-slider'
         onProgress={progress => {
           drawingSettings.current.lineWidth = 
             document.getElementById('size-slider').getBoundingClientRect().height * progress
+
+          console.log(`App.jsx ->  SizeSlider progress: ${progress}`)
         }}
-        />
+        /> */}
     </div>
   );
 }

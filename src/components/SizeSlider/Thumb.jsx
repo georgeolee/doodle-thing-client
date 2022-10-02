@@ -27,10 +27,6 @@ export function Thumb(props){
 
     const thumbRef = useRef()
 
-    useEffect(()=>{
-        console.log(`thumb progress: ${progress}`)
-        console.log(`thumb col: ${drawingSettings.current.color}`)
-    })
     
     const update = useCallback(e => {
         lastMoveRef.current = {
@@ -53,7 +49,7 @@ export function Thumb(props){
                 height: '100%',
                 aspectRatio: 1,
                 // left: `${100 * progress}%`
-                left: `${(100 - 100*height/width) * progress}%`
+                left: `${(100 - 100*height/width) * progress}%` //offset by thumb width
             }}
             ref={thumbRef}
             className="size-slider-thumb"
@@ -70,15 +66,12 @@ export function Thumb(props){
 
             onPointerMove={e=>{
                 const pressed = (!!e.buttons || e.button >= 0)
-                // console.log(`pressed: ${pressed}`)
-
 
                 const dx = e.clientX - lastMoveRef.current.clientX;
 
                 
-                //interacting w/ slider
-                if(pressed && lastMoveRef.current.pressed && dx){
-                    // onDeltaX(dx)
+                //interacting w/ slider?
+                if(pressed && lastMoveRef.current.pressed && dx){                    
                 
 
                     const containerWidth = containerRef.current.getBoundingClientRect().width
@@ -91,15 +84,12 @@ export function Thumb(props){
 
                     const dxn = dx / trackWidth
 
-                    // console.log(`dxn: ${dxn}`)
-
                     
                     setProgress(
                         Math.max(0, 
                             Math.min(progress + dxn, 1)
                             )
                         )
-
 
                 }
 

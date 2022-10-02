@@ -28,7 +28,7 @@ export function SizeSlider(props){
 
     useEffect(()=> {
         onProgress?.(progress)
-        console.log('slider render')
+        // console.log('slider render')
     })
 
     const 

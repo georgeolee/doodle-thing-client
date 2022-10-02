@@ -7,6 +7,7 @@ import { ColorPicker } from './components/ColorPicker/ColorPicker';
 import { useEffect, useRef } from 'react';
 import { Log } from './components/Log/Log';
 import { SizeSlider } from './components/SizeSlider/SizeSlider';
+import { useState } from 'react';
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
 
   })
   
+  const redraw = {}
 
   return (
     <div className="App">
@@ -52,11 +54,13 @@ function App() {
         colors={colors} 
         onColorPick={c => {
           drawingSettings.current.color = c
+          redraw.slider?.()
         }}/>
 
       <SizeSlider
         id='size-slider'
         drawingSettings={drawingSettings}
+        redraw={redraw}
         onProgress={progress => {
           drawingSettings.current.lineWidth = 
             // document.getElementById('size-slider').getBoundingClientRect().height * progress

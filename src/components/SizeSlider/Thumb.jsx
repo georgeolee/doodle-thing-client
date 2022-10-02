@@ -9,6 +9,8 @@ export function Thumb(props){
     const {
         width,
         height,
+        stroke,
+        // fill,
         strokeWidth,
         progress,
         setProgress,
@@ -36,6 +38,10 @@ export function Thumb(props){
             pressed: !!e.buttons || e.button >= 0
         }
     }, [])
+
+
+    const color = drawingSettings.current.color
+    const isErase = color === 'erase'
 
     return(
 
@@ -133,9 +139,14 @@ export function Thumb(props){
                 <circle
                     id='brush-size-indicator'
                     cx='50%' cy='50%'
-                    r={`${50*progress}%`}
-                    stroke='none'
-                    fill={drawingSettings.current.color === 'erase'? '#f0f' : drawingSettings.current.color}                    
+                    // r={`${50*progress}%`}
+
+                    r={isErase ? `${(50 - strokeWidth * 0.5)*progress}%` : `${50*progress}%`}
+
+                    stroke={isErase ? stroke : 'none'}
+                    // strokeWidth = {`${isErase ? }`}
+                    strokeWidth={strokeWidth}
+                    fill={isErase? 'none' : color}
                     ></circle>
             {/* </g> */}
 

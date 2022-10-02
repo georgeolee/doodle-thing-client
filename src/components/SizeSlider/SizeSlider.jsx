@@ -18,13 +18,17 @@ export function SizeSlider(props){
         id,
         onProgress,
         drawingSettings,
+        redraw,
     } = props;
 
     const [progress, setProgress] = useState(0.5)
+    const [state, setState] = useState()
 
+    redraw.slider = () => setState(!state)
 
     useEffect(()=> {
         onProgress?.(progress)
+        console.log('slider render')
     })
 
     const 

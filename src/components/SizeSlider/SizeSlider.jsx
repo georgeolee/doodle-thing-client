@@ -86,7 +86,7 @@ export function SizeSlider(props){
             style={{
                 position: 'relative',
                 display: 'flex',
-
+                flex: 1,
                 width: 'auto',
                 height: 'auto'
             }}>

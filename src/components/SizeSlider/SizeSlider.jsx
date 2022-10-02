@@ -90,7 +90,8 @@ export function SizeSlider(props){
                 // width: 'auto',
                 // height: 'auto'
                 width: '300px',
-                height: 'auto'
+                // height: 'au'
+                aspectRatio: width / height,
             }}>
 
             <Track {...settings} />

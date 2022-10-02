@@ -67,6 +67,7 @@ function App() {
             document.getElementById('brush-size-indicator').getBoundingClientRect().height 
         }}
         />
+      <label htmlFor="size-slider">drag to change brush size</label>
     </div>
   );
 }

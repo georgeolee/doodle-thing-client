@@ -7,6 +7,8 @@ export function Thumb(props){
 
 
     const {
+        r1,
+        r2, 
         width,
         height,
         stroke,
@@ -49,7 +51,7 @@ export function Thumb(props){
                 height: '100%',
                 aspectRatio: 1,
                 // left: `${100 * progress}%`
-                left: `${(100 - 100*height/width) * progress}%` //offset by thumb width
+                left: `calc(${(100 - 100*(height - strokeWidth)/width) * progress}%` //offset by thumb width
             }}
             ref={thumbRef}
             className="size-slider-thumb"
@@ -116,7 +118,8 @@ export function Thumb(props){
                 <circle
                     cx='50%' cy='50%'
                     // r={`${height/2 - 1}`}
-                    r={`${(height - dashWidth) * 0.5}`}
+                    // r={`${(height - dashWidth) * 0.5}`}
+                    r={`${height/2 - strokeWidth}`}
                     strokeWidth={dashWidth}
                     // stroke='none'
                     stroke='#444'
@@ -129,9 +132,7 @@ export function Thumb(props){
                 <circle
                     id='brush-size-indicator'
                     cx='50%' cy='50%'
-                    // r={`${50*progress}%`}
-
-                    r={isErase ? `${(50 - strokeWidth * 0.5)*progress}%` : `${50*progress}%`}
+                    r={`${(50 - height/strokeWidth * 0.5)*progress}%`}
 
                     stroke={isErase ? stroke : 'none'}
                     // strokeWidth = {`${isErase ? }`}

@@ -56,9 +56,11 @@ function App() {
 
       <SizeSlider
         id='size-slider'
+        drawingSettings={drawingSettings}
         onProgress={progress => {
           drawingSettings.current.lineWidth = 
-            document.getElementById('size-slider').getBoundingClientRect().height * progress
+            // document.getElementById('size-slider').getBoundingClientRect().height * progress
+            document.getElementById('brush-size-indicator').getBoundingClientRect().height 
         }}
         />
     </div>

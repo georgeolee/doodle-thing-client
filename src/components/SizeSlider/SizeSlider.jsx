@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useCallback } from "react";
 import { useNoTouch } from "../../hooks/useNoTouch";
-import { usePointerState } from "../../hooks/usePointerState";
 import { Thumb } from "./Thumb";
 import { Track } from "./Track";
 
@@ -12,24 +11,16 @@ export function SizeSlider(props){
 
     const sliderRef = useRef()
 
+    //disable default touch events
     useNoTouch(sliderRef)
-
-    //mobile fix && clean up
 
     const {
         id,
-        onProgress
+        onProgress,
+        drawingSettings,
     } = props;
 
     const [progress, setProgress] = useState(0.5)
-    
-    const thumbRef = useRef()
-
-<<<<<<< HEAD
-    const pointer = usePointerState(svgRef)
-=======
-    // const pointer = usePointerState(svgRef, {listenerTarget: svgRef})
->>>>>>> sliderfix
 
 
     useEffect(()=> {
@@ -83,18 +74,13 @@ export function SizeSlider(props){
         fill,
         progress,
         containerRef: sliderRef,
+        drawingSettings,
     }
 
 
     return(
-        
-<<<<<<< HEAD
-
-        <div>
-            <svg
-=======
+        <>
         <div
->>>>>>> sliderfix
             id={id}
             ref={sliderRef}
             style={{
@@ -106,16 +92,9 @@ export function SizeSlider(props){
             }}>
 
             <Track {...settings} />
-            <Thumb {...settings}
-                setProgress={setProgress}/>
-
+            <Thumb {...settings} setProgress={setProgress}/>
         </div>
-<<<<<<< HEAD
-
-        
-
-=======
->>>>>>> sliderfix
-
+        <label htmlFor={id} style={{fontSize:'12px', textAlign:"center"}}>drag to adjust brush size</label>
+        </>
     )
 }

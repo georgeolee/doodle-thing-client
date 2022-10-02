@@ -7,21 +7,16 @@ export function Thumb(props){
 
 
     const {
-        r1,
-        r2,
         width,
         height,
-
-        runnableWidth,
-        leftOffset=0,
-
+        strokeWidth,
         progress,
         setProgress,
-        onDeltaX = dx => console.log(`slider dx: ${dx}`),   
-
+        drawingSettings,
         containerRef
     } = props
 
+    const dashWidth = strokeWidth;
 
     const lastMoveRef = useRef({
         clientX: null,
@@ -32,6 +27,7 @@ export function Thumb(props){
 
     useEffect(()=>{
         console.log(`thumb progress: ${progress}`)
+        console.log(`thumb col: ${drawingSettings.current.color}`)
     })
     
     const update = useCallback(e => {
@@ -39,7 +35,7 @@ export function Thumb(props){
             clientX: e.clientX,
             pressed: !!e.buttons || e.button >= 0
         }
-    })
+    }, [])
 
     return(
 
@@ -113,7 +109,6 @@ export function Thumb(props){
                 display: 'flex',
                 flex:1,
                 width: '100%',
-                // height: '100%'
             }}
             viewBox={`0 0 ${height} ${height}`}
             xmlns="http://www.w3.org/2000/svg"  
@@ -124,21 +119,23 @@ export function Thumb(props){
                 
                 <circle
                     cx='50%' cy='50%'
-                    r={`${height/2 - 1}`}
-                    strokeWidth='5%'
+                    // r={`${height/2 - 1}`}
+                    r={`${(height - dashWidth) * 0.5}`}
+                    strokeWidth={dashWidth}
                     // stroke='none'
-                    stroke='#888'
+                    stroke='#444'
                     strokeDasharray='2 2'
+                    strokeLinecap='round'
                     // fill='#ff88'  
                     fill='none'                  
                     ></circle>
 
                 <circle
-                    id='brush-size-circle'
+                    id='brush-size-indicator'
                     cx='50%' cy='50%'
                     r={`${50*progress}%`}
                     stroke='none'
-                    fill='#000'                    
+                    fill={drawingSettings.current.color === 'erase'? '#f0f' : drawingSettings.current.color}                    
                     ></circle>
             {/* </g> */}
 

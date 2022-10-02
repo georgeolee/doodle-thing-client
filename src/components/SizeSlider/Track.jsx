@@ -16,6 +16,11 @@ export function Track(props){
 
     return(
         <svg
+            style={{
+                width: '100%',
+                aspectRatio: width/height,
+                boxShadow: '0 0 10px 0 #f80'
+            }}
             viewBox={`0 0 ${width} ${height}`}
             xmlns="http://www.w3.org/2000/svg"  
             >

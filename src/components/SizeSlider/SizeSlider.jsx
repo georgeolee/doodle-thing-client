@@ -87,14 +87,16 @@ export function SizeSlider(props){
                 position: 'relative',
                 display: 'flex',
                 flex: 1,
-                width: 'auto',
+                // width: 'auto',
+                // height: 'auto'
+                width: '300px',
                 height: 'auto'
             }}>
 
             <Track {...settings} />
             <Thumb {...settings} setProgress={setProgress}/>
         </div>
-        <label htmlFor={id} style={{fontSize:'12px', textAlign:"center"}}>drag to adjust brush size</label>
+        {/* <label htmlFor={id} style={{fontSize:'12px', textAlign:"center"}}>drag to adjust brush size</label> */}
         </>
     )
 }

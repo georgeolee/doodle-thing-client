@@ -32,7 +32,7 @@ export function SizeSlider(props){
     })
 
     const 
-        r1 = 1,     //radii
+        r1 = 0.5,     //radii
         r2 = 6,
 
         w = 100,    //total width including radii (excluding stroke)

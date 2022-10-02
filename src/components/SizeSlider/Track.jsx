@@ -18,6 +18,7 @@ export function Track(props){
         <svg
             style={{
                 width: '100%',
+                paddingLeft: `${(height/width)*0.5*100}%`,
                 aspectRatio: width/height,
             }}
             viewBox={`0 0 ${width} ${height}`}

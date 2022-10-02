@@ -36,8 +36,8 @@ export function SizeSlider(props){
 
 
     const strokeWidth = 0.5
-    const stroke = '#999'
-    const fill = '#ddd'
+    const stroke = '#aaa'
+    const fill = '#eee'
 
     const [width, height] = [w + strokeWidth, Math.max(r1, r2) * 2 + strokeWidth]
 
@@ -79,7 +79,6 @@ export function SizeSlider(props){
 
 
     return(
-        <>
         <div
             id={id}
             ref={sliderRef}
@@ -89,15 +88,12 @@ export function SizeSlider(props){
                 flex: 1,
                 // width: 'auto',
                 // height: 'auto'
-                width: '300px',
-                // height: 'au'
+                // width: '300px',
                 aspectRatio: width / height,
             }}>
 
             <Track {...settings} />
             <Thumb {...settings} setProgress={setProgress}/>
         </div>
-        {/* <label htmlFor={id} style={{fontSize:'12px', textAlign:"center"}}>drag to adjust brush size</label> */}
-        </>
     )
 }

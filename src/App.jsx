@@ -15,7 +15,8 @@ import { setLineWidth } from './app/state/drawingSettings/drawingSettingsSlice';
 function App() {
 
   const dispatch = useDispatch()
-  let colors = ['erase','#222', '#f44', '#2df', '#fd4', '#555', '#8a8']
+  const colors = ['erase','#222', '#f44', '#2df', '#fd4', '#555', '#ac4', '#113', '#cfd']
+
 
   useEffect(() => {
     console.log('opening socket connection')

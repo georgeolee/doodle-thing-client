@@ -15,10 +15,10 @@ export function usePointerState(
     }){
 
     const{
-        events = ['pointerdown', 'pointerup', 'pointermove'],
         listenerTarget = document.documentElement,
         onChange,
     } = options
+
 
     const pointer = useRef({
         x: null,
@@ -36,6 +36,8 @@ export function usePointerState(
     //add listeners to track pointer movement & buttons
     useEffect(()=>{
 
+        console.log('usp')
+        const events = ['pointerdown', 'pointerup', 'pointermove']
         const updatePointerState = (evt) => {
         
             const rect = elementRef.current.getBoundingClientRect()
@@ -77,7 +79,7 @@ export function usePointerState(
                 })
             }
         }
-    }, [events, listenerTarget, onChange])
+    }, [listenerTarget, ])
 
     return pointer;
 }

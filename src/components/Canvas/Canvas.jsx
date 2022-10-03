@@ -19,7 +19,6 @@ export function Canvas(){
 
     
 
-
     const canvasRef = useRef()
     useNoTouch(canvasRef)
     
@@ -41,8 +40,6 @@ export function Canvas(){
         eraser: useSelector(selectEraser),
     }
 
-    
-
 
     //every render
     //  - configure canvas listeners 
@@ -51,7 +48,6 @@ export function Canvas(){
 
     //clean this hook up
     usePointerState(canvasRef, {
-        events:['pointermove', 'pointerdown', 'pointerup'],
         onChange: pointerState => {
             
             //don't bother emitting to other sockets if not actually drawing
@@ -82,8 +78,6 @@ export function Canvas(){
         pointerStateHandlers.push(pointerState => {
             doodlerRef.current.consumeDrawingData(JSON.parse(pointerState))
         })        
-
-        console.log(`pstatehandler ${pointerStateHandlers.length}`)
 
     },[])
 

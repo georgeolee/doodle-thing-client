@@ -22,7 +22,7 @@ export function ColorPicker(props){
     const [selected, setSelected] = useState(initialColor)
 
     //match 3/4/6/8 digit hex color string
-    const pattern = /^#(?:(?:[0-9|a-f]{3}){1,2}|(?:[0-9|a-f]{4}){1,2})$/i 
+    const pattern = /^#(?:(?:[0-9|a-f]{3}){1,2}|(?:[0-9|a-f]{4}){1,2})$/i
 
 
     const swatches = colors.map((color, i) => {
@@ -31,8 +31,6 @@ export function ColorPicker(props){
                     color={color} 
                     selected={i === selected}
                     onColorPick={col => {
-
-                        console.log(col)
 
                         if(col.match(pattern)){
                             dispatch(setColor(col))

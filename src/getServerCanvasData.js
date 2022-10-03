@@ -21,7 +21,6 @@ export async function getServerCanvasData(options){
         // const res = await fetch(process.env.REACT_APP_SERVER_URL + process.env.REACT_APP_SERVER_CANVAS_DATA_ROUTE)
 
         const url = new URL(process.env.REACT_APP_SERVER_URL + 'canvas')
-        // const url = new URL(process.env.REACT_APP_SERVER_URL + 'canvas')
         const queryParams = new URLSearchParams(query)
 
         url.search = queryParams
@@ -32,13 +31,8 @@ export async function getServerCanvasData(options){
 
         console.log(`getServerCanvasData.js: received response with status ${res.status}: ${res.statusText}`)
 
-        const h = res.headers.entries()
-
         const timestamp = (res.headers.get('x-timestamp'))
 
-        for(const e of h){
-            console.log(e)
-        }
         const blob = await res.blob()
 
         onSuccess(blob, timestamp)

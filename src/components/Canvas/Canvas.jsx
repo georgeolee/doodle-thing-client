@@ -13,10 +13,23 @@ import { useNoTouch } from "../../hooks/useNoTouch.js"
 
 //redux
 import { useSelector } from "react-redux";
-import { selectColor, selectEraser, selectLineWidth } from "../../state/drawingSettings/drawingSettingsSlice.js";
+import { selectColor, selectEraser, selectLineWidth } from "../../app/state/drawingSettings/drawingSettingsSlice.js";
 
 export function Canvas(){
 
+    
+
+
+    const canvasRef = useRef()
+    useNoTouch(canvasRef)
+    
+    const doodlerRef = useRef()
+
+    //image blob from server
+    const blob = useRef(null)
+
+    //canvas timestamp sent from server
+    const [timestamp, setTimestamp] = useState()
 
 
     const drawingSettings = useRef()
@@ -28,19 +41,8 @@ export function Canvas(){
         eraser: useSelector(selectEraser),
     }
 
-    const canvasRef = useRef()
+    
 
-    useNoTouch(canvasRef)
-
-    const doodlerRef = useRef()
-
-    //image blob from server
-    const blob = useRef(null)
-
-    //canvas timestamp sent from server
-    const [timestamp, setTimestamp] = useState()
-
-    // console.log('canvas render')
 
     //every render
     //  - configure canvas listeners 
@@ -48,7 +50,6 @@ export function Canvas(){
     //
 
     //clean this hook up
-    //RENAME : PointerState —> PenState or something (includes drawing settings w/ pointer data)
     usePointerState(canvasRef, {
         events:['pointermove', 'pointerdown', 'pointerup'],
         onChange: pointerState => {
@@ -56,8 +57,7 @@ export function Canvas(){
             //don't bother emitting to other sockets if not actually drawing
             if(pointerState.isPressed || pointerState.last?.isPressed){
                 //draw here
-                doodlerRef.current?.consumePointerStates({...pointerState, drawingSettings: drawingSettings.current})
-
+                doodlerRef.current?.consumeDrawingData({...pointerState, drawingSettings: drawingSettings.current})
 
                 //emit socket event so other clients can draw the same thing
                 socket?.emit('pointerState', JSON.stringify({...pointerState, drawingSettings: drawingSettings.current}))
@@ -80,7 +80,7 @@ export function Canvas(){
 
         //on drawing data from server
         pointerStateHandlers.push(pointerState => {
-            doodlerRef.current.consumePointerStates(JSON.parse(pointerState))
+            doodlerRef.current.consumeDrawingData(JSON.parse(pointerState))
         })        
 
         console.log(`pstatehandler ${pointerStateHandlers.length}`)
@@ -155,13 +155,6 @@ export function Canvas(){
 
         
     }, [timestamp])
-
-    //every render
-    // - set up drawing context
-    useEffect(() => {
-        // canvasRef.current.getContext('2d')
-
-    })
 
     return(
         <canvas

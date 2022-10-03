@@ -10,7 +10,7 @@ import { SizeSlider } from './components/SizeSlider/SizeSlider';
 
 
 import { useDispatch } from 'react-redux';
-import { setLineWidth } from './state/drawingSettings/drawingSettingsSlice';
+import { setLineWidth } from './app/state/drawingSettings/drawingSettingsSlice';
 
 function App() {
 

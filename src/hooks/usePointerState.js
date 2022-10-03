@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 /**
  * 
  * @param {React.MutableRefObject} elementRef 
- * @param {{events?:string[], listenerTarget?:React.MutableRefObject | HTMLElement, , onChange?:function, drawingSettings?:{}}} options 
+ * @param {{events?:string[], listenerTarget?:React.MutableRefObject | HTMLElement, , onChange?:function}} options 
  * @returns
  */
 export function usePointerState(

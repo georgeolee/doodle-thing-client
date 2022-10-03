@@ -3,7 +3,7 @@ import { useState } from "react";
 
 
 import { useDispatch } from 'react-redux'
-import { setColor, setEraser } from "../../state/drawingSettings/drawingSettingsSlice";
+import { setColor, setEraser } from "../../app/state/drawingSettings/drawingSettingsSlice";
 
 
 import './colorpicker.css'

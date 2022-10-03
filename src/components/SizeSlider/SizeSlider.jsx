@@ -17,37 +17,33 @@ export function SizeSlider(props){
     const {
         id,
         onProgress,
-        drawingSettings,
-        redraw,
     } = props;
 
-    const [progress, setProgress] = useState(0.5)
-    const [state, setState] = useState()
+    const [progress, setProgress] = useState(0.5) //0 – 1
+    
 
-    redraw.slider = () => setState(!state)
-
+    //handle slider progress change
     useEffect(()=> {
         onProgress?.(progress)
-        // console.log('slider render')
-    })
+    }, [progress, onProgress])
 
-    const 
-        r1 = 0.5,     //radii
-        r2 = 6,
-
-        w = 100,    //total width including radii (excluding stroke)
-        d = w - r1 - r2; //dist between centers
-
-
-    const strokeWidth = 0.5
+    //track colors
     const stroke = '#aaa'
     const fill = '#eee'
+
+    //SVG units
+    const 
+        r1 = 0.5,   //start radius
+        r2 = 6,     //end radius
+        w = 100,    //total width including radii (excluding stroke)
+        d = w - r1 - r2, //dist between centers
+        strokeWidth = 0.5
 
     const [width, height] = [w + strokeWidth, Math.max(r1, r2) * 2 + strokeWidth]
 
     const theta = -1 * Math.atan2(r2 - r1, Math.sqrt(d**2 - (r2 - r1)**2)) // angle between 1) line connecting center points and 2) common external tangent
 
-    //rotate (x,y) around (0,0) by radians
+    //rotate point (x,y) around (0,0) by radians
     const rotatePoint = useCallback((x, y, rad) => {
         return{
             x: x * Math.cos(rad) - y * Math.sin(rad),
@@ -66,7 +62,7 @@ export function SizeSlider(props){
     t2.x += strokeWidth * 0.5
 
 
-    const settings = {
+    const childProps = {
         r1,
         r2,
         t1,
@@ -78,7 +74,6 @@ export function SizeSlider(props){
         fill,
         progress,
         containerRef: sliderRef,
-        drawingSettings,
     }
 
 
@@ -96,8 +91,8 @@ export function SizeSlider(props){
                 aspectRatio: width / height,
             }}>
 
-            <Track {...settings} />
-            <Thumb {...settings} setProgress={setProgress}/>
+            <Track {...childProps} />
+            <Thumb {...childProps} setProgress={setProgress}/>
         </div>
     )
 }

@@ -39,8 +39,7 @@ export class Doodler{
         for(let i = pointerStates.length - 1; i >= 0; i--){
             const p = pointerStates[i]
             if(!p.isPressed) continue
-            
-                        
+                               
             if(p.drawingSettings.color !== 'erase'){
                 //color over
                 ctx.globalCompositeOperation = 'source-over'

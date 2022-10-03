@@ -18,7 +18,6 @@ export function usePointerState(
         events = ['pointerdown', 'pointerup', 'pointermove'],
         listenerTarget = document.documentElement,
         onChange,
-        drawingSettings
     } = options
 
     const pointer = useRef({
@@ -31,36 +30,34 @@ export function usePointerState(
         buttons: null,
         isPressed: null,
         timestamp: null,
-        drawingSettings: drawingSettings,
-        // count: 0,
     })
+    
 
-    function updatePointerState(evt){
-        
-        const rect = elementRef.current.getBoundingClientRect()
-
-        const c = pointer.current
-        delete c.last
-        c.last = {...c}
-        c.x = evt.clientX - rect.left
-        c.y = evt.clientY - rect.top
-        c.xNorm = (evt.clientX - rect.left) / rect.width
-        c.yNorm = (evt.clientY - rect.top) / rect.height
-        c.type = evt.type
-        c.buttons = evt.buttons
-        c.isPressed = c.buttons > 0
-        c.timestamp = Date.now()
-        // c.count++
-
-        // console.log(c.count)
-
-        onChange?.(c);
-    }
-
+    //add listeners to track pointer movement & buttons
     useEffect(()=>{
 
-        // element to attach listeners to 
+        const updatePointerState = (evt) => {
+        
+            const rect = elementRef.current.getBoundingClientRect()
+    
+            const c = pointer.current
+            delete c.last
+            c.last = {...c}
+            c.x = evt.clientX - rect.left
+            c.y = evt.clientY - rect.top
+            c.xNorm = (evt.clientX - rect.left) / rect.width
+            c.yNorm = (evt.clientY - rect.top) / rect.height
+            c.type = evt.type
+            c.buttons = evt.buttons
+            c.isPressed = c.buttons > 0
+            c.timestamp = Date.now()
+    
+    
+            onChange?.(c);
+        }
 
+        
+        // element to attach listeners to 
         const target = listenerTarget['addEventListener'] ? listenerTarget : listenerTarget.current
 
         // attach listeners
@@ -80,7 +77,7 @@ export function usePointerState(
                 })
             }
         }
-    })
+    }, [events, listenerTarget, onChange])
 
     return pointer;
 }

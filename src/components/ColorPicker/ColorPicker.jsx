@@ -1,24 +1,47 @@
 import { Swatch } from "./Swatch/Swatch";
 import { useState } from "react";
 
+
+import { useDispatch } from 'react-redux'
+import { setColor, setEraser } from "../../state/drawingSettings/drawingSettingsSlice";
+
+
 import './colorpicker.css'
 
 export function ColorPicker(props){
 
-    const [selected, setSelected] = useState(0)
+    const dispatch = useDispatch()
+
 
     const {
         colors,
-        onColorPick,
+        initialColor
     } = props
+
+    //currently selected swatch
+    const [selected, setSelected] = useState(initialColor)
+
+    //match 3/4/6/8 digit hex color string
+    const pattern = /^#(?:(?:[0-9|a-f]{3}){1,2}|(?:[0-9|a-f]{4}){1,2})$/i 
+
 
     const swatches = colors.map((color, i) => {
         return <Swatch 
                     key={`swatch${i}`} 
                     color={color} 
                     selected={i === selected}
-                    onPointerDown={col => {
-                        onColorPick(col)
+                    onColorPick={col => {
+
+                        console.log(col)
+
+                        if(col.match(pattern)){
+                            dispatch(setColor(col))
+                            dispatch(setEraser(false))
+                        }else{
+                            dispatch(setColor(col))
+                            dispatch(setEraser(true))
+                        }
+
                         setSelected(i)
                     }}/>
     })

@@ -10,11 +10,23 @@ import { getServerCanvasData } from "../../getServerCanvasData.js"
 import './canvas.css'
 import { useNoTouch } from "../../hooks/useNoTouch.js"
 
-export function Canvas(props){
 
-    const{
-        drawingSettings
-    } = props
+//redux
+import { useSelector } from "react-redux";
+import { selectColor, selectEraser, selectLineWidth } from "../../state/drawingSettings/drawingSettingsSlice.js";
+
+export function Canvas(){
+
+
+
+    const drawingSettings = useRef()
+
+    //get global state from redux store
+    drawingSettings.current = {
+        color: useSelector(selectColor),
+        lineWidth: useSelector(selectLineWidth),
+        eraser: useSelector(selectEraser),
+    }
 
     const canvasRef = useRef()
 
@@ -28,30 +40,33 @@ export function Canvas(props){
     //canvas timestamp sent from server
     const [timestamp, setTimestamp] = useState()
 
-    console.log('canvas render')
+    // console.log('canvas render')
 
     //every render
     //  - configure canvas listeners 
     //  - set up callback to send outgoing drawing data to socket
     //
+
+    //clean this hook up
     //RENAME : PointerState —> PenState or something (includes drawing settings w/ pointer data)
     usePointerState(canvasRef, {
         events:['pointermove', 'pointerdown', 'pointerup'],
         onChange: pointerState => {
+            
             //don't bother emitting to other sockets if not actually drawing
             if(pointerState.isPressed || pointerState.last?.isPressed){
                 //draw here
-                doodlerRef.current?.consumePointerStates(pointerState)
+                doodlerRef.current?.consumePointerStates({...pointerState, drawingSettings: drawingSettings.current})
 
 
                 //emit socket event so other clients can draw the same thing
-                socket?.emit('pointerState', JSON.stringify(pointerState))
-            }            
+                socket?.emit('pointerState', JSON.stringify({...pointerState, drawingSettings: drawingSettings.current}))
+            }                       
         },
-        drawingSettings: drawingSettings.current
+
     })
 
-    
+    //clarify distinction -> pointer data (hook) | drawing data (pointer + color, line width, etc)
 
     //initial render only (see note below)
     //  - initialize doodler
@@ -70,10 +85,7 @@ export function Canvas(props){
 
         console.log(`pstatehandler ${pointerStateHandlers.length}`)
 
-
-        //note - object ref to drawingSettings shouldn't ever change, only properties
-        //including here to keep linter happy
-    },[drawingSettings])
+    },[])
 
 
 
@@ -147,9 +159,8 @@ export function Canvas(props){
     //every render
     // - set up drawing context
     useEffect(() => {
-        canvasRef.current.getContext('2d')
-        console.log(`canvas render ${Date.now()}`)   
-        console.log(`socket id: ${socket?.id}`)
+        // canvasRef.current.getContext('2d')
+
     })
 
     return(

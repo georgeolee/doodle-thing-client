@@ -1,28 +1,29 @@
 import { useCallback } from 'react'
-import { useEffect } from 'react'
 import {useRef} from 'react'
+
+import { useSelector } from 'react-redux'
+import { selectColor, selectEraser } from '../../state/drawingSettings/drawingSettingsSlice'
 
 export function Thumb(props){
 
-
+    //access redux store
+    const color = useSelector(selectColor);
+    const isErase = useSelector(selectEraser);
 
     const {
-        r1,
-        r2, 
+
         width,
         height,
-        stroke,
-        // fill,
         strokeWidth,
         progress,
         setProgress,
-        drawingSettings,
         containerRef
     } = props
 
-    const dashWidth = strokeWidth;
+    const stroke = '#666';
 
-    const lastMoveRef = useRef({
+    
+    const lastInteractionRef = useRef({
         clientX: null,
         pressed: null,
     })
@@ -31,15 +32,12 @@ export function Thumb(props){
 
     
     const update = useCallback(e => {
-        lastMoveRef.current = {
+        lastInteractionRef.current = {
             clientX: e.clientX,
             pressed: !!e.buttons || e.button >= 0
         }
     }, [])
-
-
-    const color = drawingSettings.current.color
-    const isErase = color === 'erase'
+    
 
     return(
 
@@ -69,24 +67,25 @@ export function Thumb(props){
             onPointerMove={e=>{
                 const pressed = (!!e.buttons || e.button >= 0)
 
-                const dx = e.clientX - lastMoveRef.current.clientX;
-
+                const dx = e.clientX - lastInteractionRef.current.clientX;
                 
                 //interacting w/ slider?
-                if(pressed && lastMoveRef.current.pressed && dx){                    
+                if(pressed && lastInteractionRef.current.pressed && dx){                    
                 
 
+                    //total wrapper width
                     const containerWidth = containerRef.current.getBoundingClientRect().width
-                
-                    //account for dead space ?
 
+                    //thumb size
                     const thumbWidth = thumbRef.current.getBoundingClientRect().width
 
+                    //slideable portion of wrapper width
                     const trackWidth = containerWidth - thumbWidth
 
+                    //dx normalized to 0-1 range
                     const dxn = dx / trackWidth
 
-                    
+                    //clamp progress
                     setProgress(
                         Math.max(0, 
                             Math.min(progress + dxn, 1)
@@ -102,45 +101,36 @@ export function Thumb(props){
 
             >
             <svg
+                style={{
+                    display: 'flex',
+                    flex:1,
+                    width: '100%',
+                }}
+                viewBox={`0 0 ${height} ${height}`}
+                xmlns="http://www.w3.org/2000/svg"  
+                >
 
-            style={{
-                display: 'flex',
-                flex:1,
-                width: '100%',
-            }}
-            viewBox={`0 0 ${height} ${height}`}
-            xmlns="http://www.w3.org/2000/svg"  
-            >
+                <g
+                    strokeWidth={strokeWidth}>
+                    
+                    <circle //dotted line around brush indicator 
+                        cx='50%' cy='50%'
+                        r={`${height/2 - strokeWidth}`}
+                        stroke={stroke}
+                        strokeDasharray='2.5 2.5'
+                        strokeLinecap='round'
+                        fill='none'                  
+                        ></circle>
 
+                    <circle //match brush size & color
+                        id='brush-size-indicator'
+                        cx='50%' cy='50%'
+                        r={`${(50 - height/strokeWidth * 0.5)*progress}%`}
 
-            {/* <g> */}
-                
-                <circle
-                    cx='50%' cy='50%'
-                    // r={`${height/2 - 1}`}
-                    // r={`${(height - dashWidth) * 0.5}`}
-                    r={`${height/2 - strokeWidth}`}
-                    strokeWidth={dashWidth}
-                    // stroke='none'
-                    stroke='#444'
-                    strokeDasharray='2 2'
-                    strokeLinecap='round'
-                    // fill='#ff88'  
-                    fill='none'                  
-                    ></circle>
-
-                <circle
-                    id='brush-size-indicator'
-                    cx='50%' cy='50%'
-                    r={`${(50 - height/strokeWidth * 0.5)*progress}%`}
-
-                    stroke={isErase ? stroke : 'none'}
-                    // strokeWidth = {`${isErase ? }`}
-                    strokeWidth={strokeWidth}
-                    fill={isErase? 'none' : color}
-                    ></circle>
-            {/* </g> */}
-
+                        stroke={isErase ? stroke : 'none'}
+                        fill={isErase? 'none' : color}
+                        ></circle>
+                </g>
             </svg>
         </div>
         

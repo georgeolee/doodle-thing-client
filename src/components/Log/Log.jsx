@@ -3,7 +3,7 @@ import { useInAppLog } from "../../hooks/useInAppLog";
 import './log.css'
 
 
-export function Log(props){
+export function Log(){
 
     const {logRef} = useInAppLog({})
     const [isCollapsed, setCollapsed] = useState(true)
@@ -17,7 +17,7 @@ export function Log(props){
                 <label>show log 
                     <input 
                         type="checkbox" 
-                        checked={!isCollapsed} 
+                        defaultChecked={!isCollapsed} 
                         onClick={()=> setCollapsed(!isCollapsed)}/>
                 </label>
                 

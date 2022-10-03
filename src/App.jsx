@@ -4,20 +4,18 @@ import { socket, connectToServer } from './socket';
 
 import { Canvas } from './components/Canvas/Canvas';
 import { ColorPicker } from './components/ColorPicker/ColorPicker';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Log } from './components/Log/Log';
 import { SizeSlider } from './components/SizeSlider/SizeSlider';
-import { useState } from 'react';
 
+
+import { useDispatch } from 'react-redux';
+import { setLineWidth } from './state/drawingSettings/drawingSettingsSlice';
 
 function App() {
 
+  const dispatch = useDispatch()
   let colors = ['erase','#222', '#f44', '#2df', '#fd4', '#555', '#8a8']
-
-  const drawingSettings = useRef({
-    color: colors[0],
-    lineWidth: 1
-  })
 
   useEffect(() => {
     console.log('opening socket connection')
@@ -36,8 +34,7 @@ function App() {
 
 
   })
-  
-  const redraw = {}
+
 
   return (
     <div className="App">
@@ -48,23 +45,16 @@ function App() {
 
       <Log/>
 
-      <Canvas 
-        drawingSettings={drawingSettings}></Canvas>
+      <Canvas/>
       <ColorPicker 
         colors={colors} 
-        onColorPick={c => {
-          drawingSettings.current.color = c
-          redraw.slider?.()
-        }}/>
+        initialColor={2}/>
 
       <SizeSlider
         id='size-slider'
-        drawingSettings={drawingSettings}
-        redraw={redraw}
         onProgress={progress => {
-          drawingSettings.current.lineWidth = 
-            // document.getElementById('size-slider').getBoundingClientRect().height * progress
-            document.getElementById('brush-size-indicator').getBoundingClientRect().height 
+          const brushSize = document.getElementById('brush-size-indicator').getBoundingClientRect().height 
+          dispatch(setLineWidth(brushSize))
         }}
         />
       <label htmlFor="size-slider">drag to change brush size</label>

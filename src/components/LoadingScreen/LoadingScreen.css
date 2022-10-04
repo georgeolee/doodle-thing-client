@@ -20,8 +20,8 @@
     color: #222;
     z-index: 1000;
     
-    /* transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) var(--transition-del); */
-    transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) 0.5s;
+    transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) var(--transition-del);
+    /* transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) 0.5s; */
 
     opacity: 0;
     

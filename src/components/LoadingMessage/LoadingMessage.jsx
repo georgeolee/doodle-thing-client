@@ -13,7 +13,7 @@ export function LoadingMessage(){
     return(
         <div className={loading ? 'loading-message loading' : 'loading-message'}>
 
-            <h2>{canvasStatus}</h2>
+            <span>{canvasStatus}</span>
 
         </div>)
 }

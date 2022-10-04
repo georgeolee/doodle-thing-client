@@ -2,5 +2,6 @@
     touch-action: none;
     user-select: none;
     position: relative;
-    /* background-color: #000; */
+    border: 1px solid #8888;
+    border-radius: 3px;
 }

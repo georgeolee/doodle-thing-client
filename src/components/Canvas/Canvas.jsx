@@ -41,11 +41,6 @@ export function Canvas(props){
         eraser: useSelector(selectEraser),
     }
 
-    // useEffect(()=>{
-    //     dispatch(setStatus('loading'))
-    // })
-
-
     //every render
     //  - configure canvas listeners 
     //  - set up callback to send outgoing drawing data to socket
@@ -124,7 +119,7 @@ export function Canvas(props){
                     }
                 }
 
-                dispatch(setStatus('fetching data'));
+                dispatch(setStatus('fetching canvas data...'));
 
                 getServerCanvasData({
                     onSuccess: (data, ts) =>{
@@ -210,7 +205,6 @@ export function Canvas(props){
             style={{
                 width: 300,
                 height: 300,
-                border:'1px solid black'
             }}
             ref={canvasRef}            
             ></canvas>

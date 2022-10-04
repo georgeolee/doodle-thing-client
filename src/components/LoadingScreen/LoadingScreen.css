@@ -1,4 +1,7 @@
 .loading-message{
+    --transition-dur: 0.5s;
+    --transition-del: 0.5s;
+
     position: absolute;
     top: 0;
     bottom: 0;
@@ -17,7 +20,7 @@
     color: #222;
     z-index: 1000;
     
-    transition: opacity 1s cubic-bezier(0.075, 0.82, 0.165, 1) 0s;
+    transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) var(--transition-del);
 
     opacity: 0;
     
@@ -33,6 +36,15 @@
     
 }
 
+.loading-message svg{
+    --transition-del: 0.0s;
+    --transition-dur: 0.25s;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) var(--transition-del), visibility var(--transition-dur) linear var(--transition-del);
+}
+
 .loading-message:not(.loading) svg{
-    visibility: hidden;
+    opacity: 0;
+    visibility: hidden;    
 }

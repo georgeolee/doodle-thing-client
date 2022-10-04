@@ -8,12 +8,12 @@ export function LoadingMessage(){
 
     const canvasStatus = useSelector(selectStatus);
 
-    const loading = canvasStatus !== 'ready'
+    const loading = canvasStatus !== 'ready';
 
     return(
         <div className={loading ? 'loading-message loading' : 'loading-message'}>
 
-            {() => {if(loading) return canvasStatus}}
+            <h2>{canvasStatus}</h2>
 
         </div>)
 }

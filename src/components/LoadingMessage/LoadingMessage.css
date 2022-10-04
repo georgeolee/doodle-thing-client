@@ -16,7 +16,7 @@
     z-index: 1000;
 
     
-    transition: opacity 1.5s cubic-bezier(0.075, 0.82, 0.165, 1) 0s;
+    transition: opacity 1s cubic-bezier(0.075, 0.82, 0.165, 1) 0s;
 
     opacity: 0;
     

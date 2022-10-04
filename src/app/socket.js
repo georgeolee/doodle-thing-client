@@ -1,5 +1,5 @@
 /**
- *  global socket stuff
+ *  global socket.io stuff
  * 
  * 
  */

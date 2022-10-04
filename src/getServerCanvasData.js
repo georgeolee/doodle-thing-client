@@ -11,8 +11,9 @@ export async function getServerCanvasData(options){
 
     const {
         onSuccess,  //callback to handle server response
-        onError = err => console.log(err),    //error handler
+        onError = err => console.log('getServerCanvasData: error fetching canvas data', err),    //error handler
         query = {},      //GET query params (optional)
+        signal,
     } = options
 
     console.log('fetching canvas data from server...')
@@ -27,7 +28,7 @@ export async function getServerCanvasData(options){
 
         console.log(`fetch GET ${url.toString()}`)
 
-        const res = await fetch(url)
+        const res = await fetch(url, {signal})
 
         console.log(`getServerCanvasData.js: received response with status ${res.status}: ${res.statusText}`)
 
@@ -38,16 +39,20 @@ export async function getServerCanvasData(options){
         onSuccess(blob, timestamp)
 
     }catch(e){
-        onError(e)
+        if(e.name === 'AbortError'){
+            console.log(`getServerCanvasData: fetch request aborted; reason: ${signal?.reason}`)
+        }else onError(e)
     }
 }
 
-export async function getServerCanvasTimestamp(){
+export async function getServerCanvasTimestamp({signal}){
     try{
         const url = new URL(process.env.REACT_APP_SERVER_URL + 'canvas/timestamp')
-        const res = await fetch(url)
+        const res = await fetch(url, {signal})
         return res.text()
     }catch(e){
-        console.log(e)
+        if(e.name === 'AbortError'){
+            console.log(`getServerCanvasTimestamp: fetch request aborted; reason: ${signal?.reason}`)
+        }else console.log(e)
     }
 }

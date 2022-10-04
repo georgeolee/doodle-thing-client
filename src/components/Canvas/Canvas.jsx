@@ -5,7 +5,7 @@ import { usePointerState } from "../../hooks/usePointerState"
 
 import { setDrawingDataListener, sendDrawingData } from "../../app/socket"
 
-import { getServerCanvasData } from "../../getServerCanvasData.js"
+import { getServerCanvasData, getServerCanvasTimestamp } from "../../getServerCanvasData.js"
 
 import './canvas.css'
 import { useNoTouch } from "../../hooks/useNoTouch.js"
@@ -73,11 +73,15 @@ export function Canvas(){
     //  - initialize doodler
     //  - set up callback to process incoming drawing data from socket
     useEffect(()=>{
+
+        console.log('canvas render')
+
         doodlerRef.current = new Doodler(canvasRef)
         
         setDrawingDataListener(drawingData => doodlerRef.current.consumeDrawingData(JSON.parse(drawingData)))
 
         return () => {
+            console.log('canvas unrender')
             doodlerRef.current = null;
             setDrawingDataListener(null);
         }
@@ -87,34 +91,69 @@ export function Canvas(){
 
 
     useEffect(() => {
-        getServerCanvasData({
-            onSuccess: (data, ts) =>{
-                console.log(data)
-                console.log(ts)                
 
-                //check incoming timestamp for canvas data change
-                if(ts !== timestamp){
-                    
-                    blob.current = data;
+            const controller = new AbortController();
+            const signal = controller.signal;
 
-                    console.log('updating timestamp')
-                    setTimestamp(ts)
-                }else{
-                    console.log('no timestamp change')
-                }
+            //
+            const boundUnload = window.onbeforeunload?.bind(window);
+            let cancelFetchRequest = () => controller.abort('page unload');
 
-              },
-
-            onError: error=>{
-                console.log('Canvas.jsx: failed to fetch canvas data. Error:',error)
-            },
-
-            query: {
-                width: canvasRef.current.width,
-                height: canvasRef.current.height,
+            //cancel the fetch request if the user leaves/refreshes the page
+            window.onbeforeunload = (e) => {
+                boundUnload?.(e);
+                cancelFetchRequest?.();
             }
 
-    })}, [timestamp])
+
+            (async () => {
+                
+                if(timestamp){
+                    const serverTimestamp = await getServerCanvasTimestamp({signal});
+                    
+                    //no timestamp change
+                    if(serverTimestamp === timestamp){ 
+                        cancelFetchRequest = null;                        
+                        return;
+                    }
+                }
+
+                getServerCanvasData({
+                    onSuccess: (data, ts) =>{
+                        console.log(data)
+                        console.log(ts)                
+        
+                        //check incoming timestamp for canvas data change
+                        if(ts !== timestamp){
+                            
+                            blob.current = data;
+        
+                            console.log('updating timestamp')
+                            setTimestamp(ts)
+                        }else{
+                            console.log('no timestamp change')
+                        }
+                        
+                      },
+        
+                    query: {
+                        width: canvasRef.current.width,
+                        height: canvasRef.current.height,
+                    },
+
+                    signal
+
+                }).finally(() => cancelFetchRequest = null)
+
+            })()
+
+
+            return () => {
+                controller.abort('component rerender')
+                cancelFetchRequest = null;
+            }
+
+        }, [timestamp])
 
 
     //on timestamp change

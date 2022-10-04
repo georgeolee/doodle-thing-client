@@ -34,7 +34,6 @@ function App() {
     console.log(`app render : ${Date.now()}`)
     console.log(`socket id: ${socket?.id}`)
 
-
   })
 
 

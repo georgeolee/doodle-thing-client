@@ -1,0 +1,30 @@
+.loading-message{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+
+    background-color: #f44;
+    color: #fff;
+    z-index: 1000;
+
+    
+    transition: opacity 1.5s cubic-bezier(0.075, 0.82, 0.165, 1) 0s;
+
+    opacity: 0;
+    
+}
+
+.loading-message.loading{
+
+    transition-duration: 0s;
+    opacity: 1;
+    pointer-events: none;
+}

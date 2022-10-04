@@ -12,12 +12,13 @@ import { useNoTouch } from "../../hooks/useNoTouch.js"
 
 
 //redux
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectColor, selectEraser, selectLineWidth } from "../../app/state/drawingSettings/drawingSettingsSlice.js";
+import { setStatus } from "../../app/state/canvas/canvasSlice.js"
 
-export function Canvas(){
+export function Canvas(props){
 
-    
+    const dispatch = useDispatch();
 
     const canvasRef = useRef()
     useNoTouch(canvasRef)
@@ -39,6 +40,10 @@ export function Canvas(){
         lineWidth: useSelector(selectLineWidth),
         eraser: useSelector(selectEraser),
     }
+
+    // useEffect(()=>{
+    //     dispatch(setStatus('loading'))
+    // })
 
 
     //every render
@@ -113,10 +118,13 @@ export function Canvas(){
                     
                     //no timestamp change
                     if(serverTimestamp === timestamp){ 
-                        cancelFetchRequest = null;                        
+                        cancelFetchRequest = null;  
+                        dispatch(setStatus('ready'));                      
                         return;
                     }
                 }
+
+                dispatch(setStatus('fetching data'));
 
                 getServerCanvasData({
                     onSuccess: (data, ts) =>{
@@ -143,7 +151,10 @@ export function Canvas(){
 
                     signal
 
-                }).finally(() => cancelFetchRequest = null)
+                }).finally(() => {
+                    cancelFetchRequest = null;
+                    dispatch(setStatus('ready'));
+                })
 
             })()
 

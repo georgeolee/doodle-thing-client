@@ -11,11 +11,18 @@ import { SizeSlider } from './components/SizeSlider/SizeSlider';
 
 import { useDispatch } from 'react-redux';
 import { setLineWidth } from './app/state/drawingSettings/drawingSettingsSlice';
+import { LoadingMessage } from './components/LoadingMessage/LoadingMessage';
+
+import { useSelector } from 'react-redux';
+import { selectColor } from './app/state/drawingSettings/drawingSettingsSlice';
 
 function App() {
 
   const dispatch = useDispatch()
-  const colors = ['erase','#222', '#f44', '#2df', '#fd4', '#555', '#ac4', '#113', '#cfd']
+  const colors = ['erase','#222', '#f44', '#2df', '#fd4', '#555', '#ac4', '#113', '#cfd'];
+
+  const color = useSelector(selectColor);
+
 
 
   useEffect(() => {
@@ -46,7 +53,13 @@ function App() {
 
       <Log/>
 
-      <Canvas/>
+      {/* <h1>{color }</h1> */}
+
+      <div style={{position: 'relative'}}>
+        <LoadingMessage/>
+        <Canvas/>                    
+      </div>      
+
       <ColorPicker 
         colors={colors} 
         initialColor={2}/>

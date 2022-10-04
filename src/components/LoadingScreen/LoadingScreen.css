@@ -38,10 +38,7 @@
 }
 
 .loading-message.loading{
-
-    /* transition-duration: 0s; */
     opacity: 1;    
-    
 }
 
 .loading-message svg{

@@ -5,17 +5,18 @@ export function LoadingAnimation(props){
 
     const anim = useMemo(() => {
         
-        const periods = 2;
+        const strokeWidth= '8%';
+        const periods = 1.37;
         const entries = 65;
         const viewBoxWidth = 2.5;
         const padding = 0.25;
         const width = viewBoxWidth - 2*padding;
 
-        const amplitude = 0.25;
+        const amplitude = 0.2;
 
         const viewBoxHeight = 2 * (amplitude + padding)
 
-        const step = (Math.PI*2) * periods / (entries);
+        const step = (Math.PI*2) / (entries);
 
         const c0 = '#000', c1= '#666';
 
@@ -33,10 +34,22 @@ export function LoadingAnimation(props){
 
 
         //generate a path d attribute from sine table, offset by n entries
-        const dWithOffset = (offset) => {                                            
-            const dx = width / (entries - 1);
+        const dWithOffset = (offset) => {                                                        
 
             const t = offsetTable(offset);
+
+            for(let n = 1; n < Math.ceil(periods); n++){
+                t.push(...t)
+            }
+
+            let frac = Math.ceil(periods) - periods;
+            if(frac){
+                
+                const n = Math.round(table.length * frac) // # entries to slice off
+                t.splice(-n)
+            }
+
+            const dx = width / (t.length - 1);
 
             //start
             // let x = (vi - width) * 0.5;
@@ -83,7 +96,7 @@ export function LoadingAnimation(props){
                 <path
                     fill="none"
                     stroke="url('#wave-gradient')"
-                    strokeWidth='8%'
+                    strokeWidth={strokeWidth}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     >

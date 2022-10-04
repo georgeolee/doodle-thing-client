@@ -16,12 +16,19 @@
     font-size: 1rem;
     text-align: center;
 
-    background-color: #8882;
+
+    /* copy canvas border */
+    border: 1px solid #8888;
+    border-radius: 3px;
+
+    /* background-color: #8882; */
+
+    background-color: #fafafa;
+
     color: #222;
     z-index: 1000;
     
     transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) var(--transition-del);
-    /* transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) 0.5s; */
 
     opacity: 0;
     
@@ -38,7 +45,7 @@
 }
 
 .loading-message svg{
-    --transition-del: 0.0s;
+    --transition-del: 0.25s;
     --transition-dur: 0.25s;
     visibility: visible;
     opacity: 1;

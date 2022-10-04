@@ -3,7 +3,7 @@ import { Doodler } from '../../Doodler.js'
 
 import { usePointerState } from "../../hooks/usePointerState"
 
-import { socket, pointerStateHandlers } from "../../socket"
+import { setDrawingDataListener, sendDrawingData } from "../../app/socket"
 
 import { getServerCanvasData } from "../../getServerCanvasData.js"
 
@@ -53,16 +53,21 @@ export function Canvas(){
             //don't bother emitting to other sockets if not actually drawing
             if(pointerState.isPressed || pointerState.last?.isPressed){
                 //draw here
+
+
+                const drawingData = {...pointerState, drawingSettings: drawingSettings.current}
+
                 doodlerRef.current?.consumeDrawingData({...pointerState, drawingSettings: drawingSettings.current})
 
                 //emit socket event so other clients can draw the same thing
-                socket?.emit('pointerState', JSON.stringify({...pointerState, drawingSettings: drawingSettings.current}))
+                // socket?.emit('pointerState', JSON.stringify({...pointerState, drawingSettings: drawingSettings.current}))
+
+                sendDrawingData(drawingData);
+
             }                       
         },
 
     })
-
-    //clarify distinction -> pointer data (hook) | drawing data (pointer + color, line width, etc)
 
     //initial render only (see note below)
     //  - initialize doodler
@@ -70,15 +75,12 @@ export function Canvas(){
     useEffect(()=>{
         doodlerRef.current = new Doodler(canvasRef)
         
+        setDrawingDataListener(drawingData => doodlerRef.current.consumeDrawingData(JSON.parse(drawingData)))
 
-        //CLEANUP THIS SECTION - array prob not necessary
-        pointerStateHandlers.pop()
-
-        //on drawing data from server
-        pointerStateHandlers.push(pointerState => {
-            doodlerRef.current.consumeDrawingData(JSON.parse(pointerState))
-        })        
-
+        return () => {
+            doodlerRef.current = null;
+            setDrawingDataListener(null);
+        }
     },[])
 
 

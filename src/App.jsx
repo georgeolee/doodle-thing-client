@@ -1,6 +1,6 @@
 // import { useEffect } from 'react';
 import './App.css';
-import { socket, connectToServer } from './socket';
+import { socket, connectToServer } from './app/socket';
 
 import { Canvas } from './components/Canvas/Canvas';
 import { ColorPicker } from './components/ColorPicker/ColorPicker';
@@ -19,6 +19,7 @@ function App() {
 
 
   useEffect(() => {
+
     console.log('opening socket connection')
     const cleanup = connectToServer()
 
@@ -41,7 +42,7 @@ function App() {
     <div className="App">
       
       <button onClick={()=> {
-        socket?.emit('click', Date.now())
+        // socket?.emit('click', Date.now())
         }}>click me</button>
 
       <Log/>

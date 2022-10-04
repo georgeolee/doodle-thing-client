@@ -6,6 +6,9 @@ const initialState = {
     eraser: false,
 }
 
+//match 3/4/6/8 digit hex color string
+const colorPattern = /^#(?:(?:[0-9|a-f]{3}){1,2}|(?:[0-9|a-f]{4}){1,2})$/i
+
 export const drawingSettingsSlice = createSlice({
     
     name: 'drawingSettings',
@@ -13,7 +16,15 @@ export const drawingSettingsSlice = createSlice({
 
     reducers: {
         setColor: (state, action) => {
-            state.color = action.payload;
+
+            const col = action.payload;
+            
+            if(col.match(colorPattern)){
+                state.color = col;
+                state.eraser = false;
+            }else{
+                state.eraser = true;
+            }            
         },
 
         setLineWidth: (state, action) => {

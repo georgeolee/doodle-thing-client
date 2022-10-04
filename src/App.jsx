@@ -11,7 +11,7 @@ import { SizeSlider } from './components/SizeSlider/SizeSlider';
 
 import { useDispatch } from 'react-redux';
 import { setLineWidth } from './app/state/drawingSettings/drawingSettingsSlice';
-import { LoadingMessage } from './components/LoadingMessage/LoadingMessage';
+import { LoadingScreen } from './components/LoadingScreen/LoadingScreen';
 
 import { useSelector } from 'react-redux';
 import { selectColor } from './app/state/drawingSettings/drawingSettingsSlice';
@@ -55,8 +55,8 @@ function App() {
 
       {/* <h1>{color }</h1> */}
 
-      <div style={{position: 'relative'}}>
-        <LoadingMessage/>
+      <div style={{position: 'relative', display:'flex'}}>
+        <LoadingScreen/>
         <Canvas/>                    
       </div>      
 

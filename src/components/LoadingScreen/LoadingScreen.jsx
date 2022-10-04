@@ -1,10 +1,11 @@
-import './LoadingMessage.css'
+import './LoadingScreen.css'
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { selectStatus } from '../../app/state/canvas/canvasSlice'
-import { useEffect } from 'react';
 
-export function LoadingMessage(){
+import { LoadingAnimation } from './LoadingAnimation';
+
+export function LoadingScreen(){
 
     const canvasStatus = useSelector(selectStatus);
 
@@ -13,7 +14,8 @@ export function LoadingMessage(){
     return(
         <div className={loading ? 'loading-message loading' : 'loading-message'}>
 
-            <span>{canvasStatus}</span>
+            <span className='status'>{canvasStatus}</span>
+            <LoadingAnimation/>
 
         </div>)
 }

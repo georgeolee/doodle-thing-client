@@ -25,7 +25,7 @@ export const {setStatus} = canvasSlice.actions;
 
 //SO
 
-//selectors use *global* state -> state.[name].[property]
+//selectors use *global* state -> state.[slice name].[property]
 
 //reducers do not -> state.[property] = action.payload
 

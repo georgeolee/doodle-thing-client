@@ -1,7 +1,7 @@
 .loading-message{
     --transition-dur: 0.5s;
     --transition-del: 0.5s;
-    --transition-del: 1s;
+    /* --transition-del: 1s; */
 
     position: absolute;
     top: 0;
@@ -26,13 +26,9 @@
     border: 1px solid #8888;
     border-radius: 3px;
 
-    /* background-color: #8882; */
+    
 
-    /* background-color: #fafafa; */
-
-    --cola: #eaeaea44;
-    --colb: #fafafa44;
-    background-image: radial-gradient(var(--cola) 0, var(--cola) 20%, var(--colb) 100%);
+    background-color: #fafafa;
 
 
     color: #888;

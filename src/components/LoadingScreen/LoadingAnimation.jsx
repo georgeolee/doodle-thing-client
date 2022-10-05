@@ -9,16 +9,17 @@ export function LoadingAnimation(props){
         const periods = 1.37;
         const entries = 65;
         const viewBoxWidth = 2.5;
-        const padding = 0.25;
-        const width = viewBoxWidth - 2*padding;
+        const paddingX = 0.25;
+        const paddingY = 0.3
+        const width = viewBoxWidth - 2*paddingX;
 
         const amplitude = 0.2;
 
-        const viewBoxHeight = 2 * (amplitude + padding)
+        const viewBoxHeight = 2 * (amplitude + paddingY)
 
         const step = (Math.PI*2) / (entries);
 
-        const c0 = '#000', c1= '#666';
+        const c0 = '#888', c1= '#666';
 
 
         //table of sine values
@@ -53,7 +54,7 @@ export function LoadingAnimation(props){
 
             //start
             // let x = (vi - width) * 0.5;
-            let x = padding;
+            let x = paddingX;
             let y = t[0];
 
             let d = `M ${x},${y * amplitude}`
@@ -71,7 +72,9 @@ export function LoadingAnimation(props){
         const ds = new Array(entries).fill(null).map((val, i) => dWithOffset(i))
         ds.push(ds[0])
 
-        
+        const sy = 0.2;
+
+
         return(
             <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 ${viewBoxHeight * -0.5} ${viewBoxWidth} ${viewBoxHeight}`}>
                 <defs>
@@ -90,15 +93,20 @@ export function LoadingAnimation(props){
                                     dur='1s'
                                     repeatCount='indefinite'/>
                         </stop>
-
                     </linearGradient>
+                    {/* <filter id='drop-shadow' y='-5' height='10' width='200%' filterUnits='boundingBox'>
+                        
+                        <feDropShadow dx={0} dy={0.05} floodColor='#888' floodOpacity={0.5}  stdDeviation={0.05}/>
+                    </filter> */}
                 </defs>
-                <path
+                <path                    
                     fill="none"
                     stroke="url('#wave-gradient')"
+                    // stroke='#000'
                     strokeWidth={strokeWidth}
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    // filter="url('#drop-shadow')"
                     >
                     <animate
                         attributeName="d"

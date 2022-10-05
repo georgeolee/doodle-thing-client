@@ -4,6 +4,7 @@ const initialState = {
     color: '#000',
     lineWidth: 1,
     eraser: false,
+
 }
 
 //match 3/4/6/8 digit hex color string
@@ -32,12 +33,19 @@ export const drawingSettingsSlice = createSlice({
         },
 
         setEraser: (state, action) => {
-            state.eraser = !!action.payload
-        }
+            state.eraser = !!action.payload;
+        },
+
     }
 })
 
-export const {setColor, setLineWidth, setEraser} = drawingSettingsSlice.actions;
+export const {
+    setColor, 
+    setLineWidth, 
+    setEraser,
+
+    setSessionSizeSliderProgress,
+} = drawingSettingsSlice.actions;
 
 export const selectColor = (state) => state.drawingSettings.color;
 export const selectLineWidth = (state) => state.drawingSettings.lineWidth;

@@ -1,15 +1,22 @@
-import { useRef } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { useCallback } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { useNoTouch } from "../../hooks/useNoTouch";
 import { Thumb } from "./Thumb";
 import { Track } from "./Track";
+
+
+import { useDispatch } from "react-redux";
+
+import { 
+    SESSION_INITIAL_SIZE_SLIDER_PROGRESS, 
+    updateSizeSliderProgress 
+} from "../../app/state/sessionStorage/sessionStorageSlice";
 
 export function SizeSlider(props){
 
 
     const sliderRef = useRef()
+
+    const dispatch = useDispatch();
 
     //disable default touch events
     useNoTouch(sliderRef)
@@ -19,8 +26,15 @@ export function SizeSlider(props){
         onProgress,
     } = props;
 
-    const [progress, setProgress] = useState(0.5) //0 – 1
     
+
+    const [progress, setProgress] = useState(typeof SESSION_INITIAL_SIZE_SLIDER_PROGRESS === 'number' ? SESSION_INITIAL_SIZE_SLIDER_PROGRESS : 0.5) //0 – 1
+
+    //dispatch progress to session slice
+    useEffect(() => {
+        dispatch(updateSizeSliderProgress(progress))
+    }, [progress, dispatch])
+
 
     //handle slider progress change
     useEffect(()=> {

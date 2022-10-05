@@ -1,6 +1,7 @@
 :root{
     font-size: 12px;
     --main-text-color: #444;
+    --secondary-text-color: #666;
 }
 
 *{
@@ -26,6 +27,7 @@
 
 label{
     font-size: 1rem;
+    color: var(--secondary-text-color);
 }
 
 #size-slider+label{

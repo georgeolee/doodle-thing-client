@@ -22,6 +22,7 @@ export function Thumb(props){
 
     const stroke = '#666';
 
+    const thumbPadding= 0.97;
     
     const lastInteractionRef = useRef({
         clientX: null,
@@ -110,8 +111,8 @@ export function Thumb(props){
                 xmlns="http://www.w3.org/2000/svg"  
                 >
 
-                <g
-                    strokeWidth={strokeWidth}>
+
+                <g>
                     
                     <circle //dotted line around brush indicator 
                         cx='50%' cy='50%'
@@ -119,15 +120,16 @@ export function Thumb(props){
                         stroke={stroke}
                         strokeDasharray='2.5 2.5'
                         strokeLinecap='round'
+                        strokeWidth={strokeWidth}
                         fill='none'                  
                         ></circle>
 
                     <circle //match brush size & color
                         id='brush-size-indicator'
                         cx='50%' cy='50%'
-                        r={`${(50 - height/strokeWidth * 0.5)*progress}%`}
-
-                        stroke={isErase ? stroke : 'none'}
+                        r={`${( (height - (2*(strokeWidth + thumbPadding))) * 0.5)*progress}`}
+                        stroke={stroke}
+                        strokeWidth={isErase ? strokeWidth : strokeWidth * 0.25}
                         fill={isErase? 'none' : color}
                         ></circle>
                 </g>

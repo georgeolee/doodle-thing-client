@@ -51,7 +51,7 @@ export function SizeSlider(props){
         r2 = 6,     //end radius
         w = 100,    //total width including radii (excluding stroke)
         d = w - r1 - r2, //dist between centers
-        strokeWidth = 0.5
+        strokeWidth = 0.3
 
     const [width, height] = [w + strokeWidth, Math.max(r1, r2) * 2 + strokeWidth]
 

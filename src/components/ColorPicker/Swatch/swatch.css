@@ -2,17 +2,21 @@
     width: var(--swatch-size);
     height: var(--swatch-size);
 
-    --border-col: #ddd;
+    /* --border-col: #ddd; */
+    --border-col: #999;
+    --border-width: 1px;
+    --transition-dur: 50ms;
 
-    border: 3px solid var(--border-col);
+    border: var(--border-width) solid var(--border-col);
     border-radius: 3px;
     
     touch-action: none;
     user-select: none;
 
-    transition:transform 200ms cubic-bezier(0.075, 0.82, 0.165, 1);
+    transition:transform var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1);
     
     transform: scale(1);
+    position: relative;
 }
 
 .swatch.eraser{
@@ -27,11 +31,35 @@
             #ddd var(--stripe-width) calc(2* var(--stripe-width)));
 }
 
-.swatch.selected{
+/* .swatch.selected{
     --border-col: #999;  
+
+    --underline-color: #999;
+} */
+
+.swatch.selected::after{
+
+    --underline-gap: 2px;
+    --underline-thickness: 3px;
+    --underline-overhang: -4px;
+
+    position: absolute;
+    width: calc(var(--swatch-size) + 2 * var(--underline-overhang));
+    height: var(--underline-thickness);
+    background-color: #999;
+    content: "";
+    box-sizing: border-box;
+    left: calc(-1 * var(--border-width) - var(--underline-overhang));
+    top: calc(var(--swatch-size) - var(--border-width) + var(--underline-gap));
+    border-radius: calc(var(--underline-thickness) * 0.5);
+    transition: visibility 0s step-end var(--transition-dur);
+    visibility: visible;   
 }
 
 .swatch:active{
-    transform: scale(1.25);
-    transition-duration: 50ms;
+    transform: scale(1.05);    
+}
+
+.swatch:active::after{
+    visibility: hidden;
 }

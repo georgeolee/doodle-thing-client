@@ -117,10 +117,12 @@ export function Thumb(props){
                     <circle //dotted line around brush indicator 
                         cx='50%' cy='50%'
                         r={`${height/2 - strokeWidth}`}
-                        stroke={stroke}
-                        strokeDasharray='2.5 2.5'
-                        strokeLinecap='round'
-                        strokeWidth={strokeWidth}
+                        // stroke={stroke}
+                        stroke='#888'
+                        strokeDasharray='2.1 2.5'
+
+                        // strokeLinecap='round'
+                        strokeWidth={strokeWidth * 2}
                         fill='none'                  
                         ></circle>
 

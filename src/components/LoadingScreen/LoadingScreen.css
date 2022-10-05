@@ -30,9 +30,9 @@
 
     /* background-color: #fafafa; */
 
-    --cola: #ddd8;
-    --colb: #ddd2
-    background-image: radial-gradient(var(--cola) 0, var(--cola) 50%, var(--colb) 100%);
+    --cola: #eaeaea44;
+    --colb: #fafafa44;
+    background-image: radial-gradient(var(--cola) 0, var(--cola) 20%, var(--colb) 100%);
 
 
     color: #888;

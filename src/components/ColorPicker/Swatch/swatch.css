@@ -31,12 +31,6 @@
             #ddd var(--stripe-width) calc(2* var(--stripe-width)));
 }
 
-/* .swatch.selected{
-    --border-col: #999;  
-
-    --underline-color: #999;
-} */
-
 .swatch.selected::after{
 
     --underline-gap: 2px;
@@ -52,14 +46,8 @@
     left: calc(-1 * var(--border-width) - var(--underline-overhang));
     top: calc(var(--swatch-size) - var(--border-width) + var(--underline-gap));
     border-radius: calc(var(--underline-thickness) * 0.5);
-    transition: visibility 0s step-end var(--transition-dur);
-    visibility: visible;   
 }
 
 .swatch:active{
     transform: scale(1.05);    
-}
-
-.swatch:active::after{
-    visibility: hidden;
 }

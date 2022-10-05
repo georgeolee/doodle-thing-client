@@ -1,6 +1,6 @@
 .loading-message{
     --transition-dur: 0.5s;
-    --transition-del: 0.5s;
+    --transition-del: 0.75s;
     /* --transition-del: 1s; */
 
     position: absolute;
@@ -51,15 +51,15 @@
     --transition-dur: 0.25s;
     visibility: visible;
     opacity: 1;
-    transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) var(--transition-del), visibility 0s linear calc(var(--transition-dur) + var(--transition-del)), width var(--transition-dur) linear var(--transition-del);     
+    transition: opacity var(--transition-dur) cubic-bezier(0.075, 0.82, 0.165, 1) var(--transition-del), visibility 0s linear calc(var(--transition-dur) + var(--transition-del)), width var(--transition-dur) linear 0s;     
 
     width: 36%;
 }
 
 
 .loading-message:not(.loading) svg{
-    /* opacity: 0;
-    visibility: hidden;     */
+    opacity: 0;
+    visibility: hidden;    
     width: 0%;
 
 }

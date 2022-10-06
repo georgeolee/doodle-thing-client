@@ -42,47 +42,47 @@ export async function getServerCanvasData(options){
         const reader = res.body.getReader()
         
 
-        let data = null;
-        let reachedEnd = false;
+        // let data = null;
+        // let reachedEnd = false;
 
-        function readNextChunk(){
-            try{
-                return reader.read()
-            }catch(e){
-                console.log(e)                
-            }
-        }
+        // function readNextChunk(){
+        //     try{
+        //         return reader.read()
+        //     }catch(e){
+        //         console.log(e)                
+        //     }
+        // }
 
-        while(!reachedEnd){
+        // while(!reachedEnd){ BADBADBAD
 
-            try{
-                const result = await readNextChunk();
-                console.log(result)
-                const {value, done} = result
-                console.log('read chunk')
+        //     try{
+        //         const result = await readNextChunk();
+        //         console.log(result)
+        //         const {value, done} = result
+        //         console.log('read chunk')
 
-                if(done){
-                    reachedEnd = true
-                    console.log('done')
-                }else{
-                    if(!data){
-                        data = value;
-                    }else{
-                        let merged = new Uint8Array(data.length + value.length)
-                        merged.set(data)
-                        merged.set(value, data.length);
-                        data = null;
-                        data = merged;
+        //         if(done){
+        //             reachedEnd = true
+        //             console.log('done')
+        //         }else{
+        //             if(!data){
+        //                 data = value;
+        //             }else{
+        //                 let merged = new Uint8Array(data.length + value.length)
+        //                 merged.set(data)
+        //                 merged.set(value, data.length);
+        //                 data = null;
+        //                 data = merged;
                         
-                        console.log(data);
-                    }
-                }
+        //                 console.log(data);
+        //             }
+        //         }
 
-            }catch(e){
-                console.log(e)
-                throw e;
-            }            
-        }
+        //     }catch(e){
+        //         console.log(e)
+        //         throw e;
+        //     }            
+        // }
 
         ////////////////////////TEST END
 
@@ -95,8 +95,8 @@ export async function getServerCanvasData(options){
         //      |
         //      V
 
-        // const blob = await res.blob()
-        // onSuccess(blob, timestamp)
+        const blob = await res.blob()
+        onSuccess(blob, timestamp)
 
     }catch(e){
         if(e.name === 'AbortError'){

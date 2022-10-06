@@ -39,7 +39,7 @@ export async function getServerCanvasData(options){
         ///////////////TEST START
 
 
-        const reader = res.body.getReader()
+        // const reader = res.body.getReader()
         
 
         // let data = null;

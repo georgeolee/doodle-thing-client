@@ -72,7 +72,6 @@ export async function getServerCanvasData(options){
                         merged.set(data)
                         merged.set(value, data.length);
                         data = null;
-                        value = null;
                         data = merged;
                         
                         console.log(data);

@@ -34,9 +34,70 @@ export async function getServerCanvasData(options){
 
         const timestamp = (res.headers.get('x-timestamp'))
 
-        const blob = await res.blob()
 
-        onSuccess(blob, timestamp)
+
+        ///////////////TEST START
+
+
+        const reader = res.body.getReader()
+        
+
+        let data = null;
+        let reachedEnd = false;
+
+        function readNextChunk(){
+            try{
+                return reader.read()
+            }catch(e){
+                console.log(e)                
+            }
+        }
+
+        while(!reachedEnd){
+
+            try{
+                const result = await readNextChunk();
+                console.log(result)
+                const {value, done} = result
+                console.log('read chunk')
+
+                if(done){
+                    reachedEnd = true
+                    console.log('done')
+                }else{
+                    if(!data){
+                        data = value;
+                    }else{
+                        let merged = new Uint8Array(data.length + value.length)
+                        merged.set(data)
+                        merged.set(value, data.length);
+                        data = null;
+                        value = null;
+                        data = merged;
+                        
+                        console.log(data);
+                    }
+                }
+
+            }catch(e){
+                console.log(e)
+                throw e;
+            }            
+        }
+
+        ////////////////////////TEST END
+
+
+
+
+
+        ////////UNCOMMENT THESE
+
+        //      |
+        //      V
+
+        // const blob = await res.blob()
+        // onSuccess(blob, timestamp)
 
     }catch(e){
         if(e.name === 'AbortError'){

@@ -7,7 +7,7 @@ export function LoadingAnimation(props){
         
         const strokeWidth= '8%';
         const periods = 1.37;
-        const entries = 65;
+        const entries = 32;
         const viewBoxWidth = 2.5;
         const paddingX = 0.25;
         const paddingY = 0.3
@@ -23,7 +23,7 @@ export function LoadingAnimation(props){
 
 
         //table of sine values
-        const table = [];
+        let table = [];
         for(let n = 0; n < entries; n++){
             const angle = (n*step)%(Math.PI*2);
             const sin = Math.sin(angle);
@@ -53,7 +53,6 @@ export function LoadingAnimation(props){
             const dx = width / (t.length - 1);
 
             //start
-            // let x = (vi - width) * 0.5;
             let x = paddingX;
             let y = t[0];
 
@@ -69,11 +68,20 @@ export function LoadingAnimation(props){
 
 
         //copy first entry for looping back around
-        const ds = new Array(entries).fill(null).map((val, i) => dWithOffset(i))
+        let ds = new Array(entries).fill(null).map((val, i) => dWithOffset(i))
         ds.push(ds[0])
+        
+        const animatedPathVals = ds.reduce((p, n) => p + ';' + n)
+
+        ds = null;
+        table = null;
+
+        
 
         const sy = 0.2;
 
+
+        
 
         return(
             <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 ${viewBoxHeight * -0.5} ${viewBoxWidth} ${viewBoxHeight}`}>
@@ -94,23 +102,18 @@ export function LoadingAnimation(props){
                                     repeatCount='indefinite'/>
                         </stop>
                     </linearGradient>
-                    {/* <filter id='drop-shadow' y='-5' height='10' width='200%' filterUnits='boundingBox'>
-                        
-                        <feDropShadow dx={0} dy={0.05} floodColor='#888' floodOpacity={0.5}  stdDeviation={0.05}/>
-                    </filter> */}
+
                 </defs>
                 <path                    
                     fill="none"
                     stroke="url('#wave-gradient')"
-                    // stroke='#000'
                     strokeWidth={strokeWidth}
                     strokeLinecap="round"
-                    strokeLinejoin="round"
-                    // filter="url('#drop-shadow')"
+                    strokeLinejoin="round"                    
                     >
                     <animate
                         attributeName="d"
-                        values={ds.reduce((p, n) => p + ';' + n)}
+                        values={animatedPathVals}
                         dur='2s'
                         repeatCount='indefinite'/>
                 </path>

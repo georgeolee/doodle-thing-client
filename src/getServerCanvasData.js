@@ -92,7 +92,7 @@ export async function getServerCanvasData(options, retryCount = 2){
             processStream();
         })
         .then(result => {
-            return new Blob([result], {type:'image/png'})
+            return new Blob([result], {type: res.headers.get('content-type')})
         })
         .then(blob => {
             onSuccess(blob, timestamp)

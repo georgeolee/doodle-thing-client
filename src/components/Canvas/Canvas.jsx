@@ -16,7 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectColor, selectEraser, selectLineWidth } from "../../app/state/drawingSettings/drawingSettingsSlice.js";
 import { setStatus } from "../../app/state/canvas/canvasSlice.js"
 
-export function Canvas(props){
+export function Canvas(){
 
     const dispatch = useDispatch();
 
@@ -44,24 +44,18 @@ export function Canvas(props){
     //every render
     //  - configure canvas listeners 
     //  - set up callback to send outgoing drawing data to socket
-    //
-
-    //clean this hook up
     usePointerState(canvasRef, {
         onChange: pointerState => {
             
             //don't bother emitting to other sockets if not actually drawing
             if(pointerState.isPressed || pointerState.last?.isPressed){
-                //draw here
-
 
                 const drawingData = {...pointerState, drawingSettings: drawingSettings.current}
 
+                //draw here
                 doodlerRef.current?.consumeDrawingData({...pointerState, drawingSettings: drawingSettings.current})
 
                 //emit socket event so other clients can draw the same thing
-                // socket?.emit('pointerState', JSON.stringify({...pointerState, drawingSettings: drawingSettings.current}))
-
                 sendDrawingData(drawingData);
 
             }                       
@@ -99,7 +93,7 @@ export function Canvas(props){
             const boundUnload = window.onbeforeunload?.bind(window);
             let cancelFetchRequest = () => controller.abort('page unload');
 
-            //cancel the fetch request if the user leaves/refreshes the page
+            //cancel the fetch request if the user leaves/refreshes the page before it completes
             window.onbeforeunload = (e) => {
                 boundUnload?.(e);
                 cancelFetchRequest?.();
@@ -108,9 +102,10 @@ export function Canvas(props){
 
             (async () => {
                 
+                dispatch(setStatus('requesting canvas timestamp...'));
+
                 if(timestamp){
-                    const serverTimestamp = await getServerCanvasTimestamp({signal});
-                    
+                    const serverTimestamp = await getServerCanvasTimestamp({signal});                                        
                     //no timestamp change
                     if(serverTimestamp === timestamp){ 
                         cancelFetchRequest = null;  

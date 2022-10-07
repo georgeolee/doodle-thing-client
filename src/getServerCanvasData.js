@@ -1,3 +1,4 @@
+import { isRejected } from "@reduxjs/toolkit"
 
 /**
  * 
@@ -60,8 +61,51 @@ export async function getServerCanvasData(options, retryCount = 2){
         ///////////////TEST START
 
 
-        // const reader = res.body.getReader()
+        const contentLength = Number(res.headers.get('content-length'));
         
+        let bytesRead = 0;
+
+        const buffer = new Uint8Array(contentLength)
+
+        const reader = res.body.getReader()
+
+        const data = new Promise((resolve, reject) => {
+
+            console.log('processing stream...')
+            const processStream = () => {
+                
+                return reader.read().then(({done, value}) => {                                        
+                    if(done){
+                        console.log('done')
+                        resolve(buffer);
+                    }
+                    
+                    console.log('writing new chunk to buffer')
+                    buffer.set(value, bytesRead);
+                    bytesRead += value.length;
+    
+                    return processStream();
+                }).catch(e => {
+                    reject(e);
+                })
+            }
+
+            processStream();
+        })
+        .then(result => {
+            console.log(result)
+            return new Blob([result], {type:'image/png'})
+        })
+        .then(blob => {
+            onSuccess(blob, timestamp)
+            console.log(blob)
+        })
+        .catch(e => console.log(e))
+        // .finally(() => console.log('finished reading from stream'))
+        
+        
+
+
 
         // let data = null;
         // let reachedEnd = false;
@@ -73,6 +117,7 @@ export async function getServerCanvasData(options, retryCount = 2){
         //         console.log(e)                
         //     }
         // }
+
 
         // while(!reachedEnd){ BADBADBAD
 
@@ -107,8 +152,11 @@ export async function getServerCanvasData(options, retryCount = 2){
 
         ////////////////////////TEST END
 
-        const blob = await res.blob()
-        onSuccess(blob, timestamp)
+        // const blob = await res.blob()
+
+        // console.log(blob)
+
+        // onSuccess(blob, timestamp)
 
     }catch(e){
 

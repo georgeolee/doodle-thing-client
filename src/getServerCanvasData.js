@@ -69,7 +69,7 @@ export async function getServerCanvasData(options, retryCount = 2){
 
         const reader = res.body.getReader()
 
-        const data = new Promise((resolve, reject) => {
+        new Promise((resolve, reject) => {
 
 
             console.log('processing stream...')
@@ -94,15 +94,18 @@ export async function getServerCanvasData(options, retryCount = 2){
             processStream();
         })
         .then(result => {
-            console.log(result)
+            // console.log(result)
             return new Blob([result], {type:'image/png'})
         })
         .then(blob => {
             onSuccess(blob, timestamp)
-            console.log(blob)
+            // console.log(blob)
         })
         .catch(e => console.log(e))
-        // .finally(() => console.log('finished reading from stream'))
+        .finally(() => {
+            console.log('finished reading from stream')
+            buffer = null;
+        })
         
         
 

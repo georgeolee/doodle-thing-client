@@ -63,7 +63,7 @@ export async function getServerCanvasData(options, retryCount = 2){
 
         const contentLength = Number(res.headers.get('content-length'));
         
-        let bytesRead = 0;
+        let bytesRead = 0, chunks = 0;
 
         const buffer = new Uint8Array(contentLength)
 
@@ -71,19 +71,20 @@ export async function getServerCanvasData(options, retryCount = 2){
 
         const data = new Promise((resolve, reject) => {
 
+
             console.log('processing stream...')
             const processStream = () => {
                 
                 return reader.read().then(({done, value}) => {                                        
                     if(done){
-                        console.log('done')
+                        console.log(`done writing ${chunks} chunks to buffer`)
                         resolve(buffer);
                     }
-                    
-                    console.log('writing new chunk to buffer')
+                                        
                     buffer.set(value, bytesRead);
                     bytesRead += value.length;
-    
+                    chunks++;
+
                     return processStream();
                 }).catch(e => {
                     reject(e);

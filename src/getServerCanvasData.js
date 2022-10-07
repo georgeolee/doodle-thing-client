@@ -7,7 +7,7 @@
  *      query?:{width?:number, height?:number}
  * }} options 
  */
-export async function getServerCanvasData(options){
+export async function getServerCanvasData(options, retryCount = 2){
 
     const {
         onSuccess,  //callback to handle server response
@@ -18,9 +18,7 @@ export async function getServerCanvasData(options){
 
     console.log('fetching canvas data from server...')
 
-    try{
-        // const res = await fetch(process.env.REACT_APP_SERVER_URL + process.env.REACT_APP_SERVER_CANVAS_DATA_ROUTE)
-
+    try{        
         const url = new URL(process.env.REACT_APP_SERVER_URL + 'canvas')
         const queryParams = new URLSearchParams(query)
 
@@ -29,6 +27,29 @@ export async function getServerCanvasData(options){
         console.log(`fetch GET ${url.toString()}`)
 
         const res = await fetch(url, {signal})
+
+
+        if(res.status === 503){
+
+            const error = new Error('got 503; ');
+
+            
+            if(retryCount > 0){
+                const seconds = Number(res.headers.get('retry-after'));
+                setTimeout(() => getServerCanvasData(options, retryCount - 1), seconds*1000);
+            
+                error.name = 'ServerUnavailableError';
+                error.message += `retrying in ${seconds} seconds...`;
+                error.willRetry = true;
+                                
+            }else{
+                error.name = 'RetriesExceededError';
+                error.message += `retry count exceeded; continuing with local canvas only`;                
+            }
+
+            throw error;
+            
+        }
 
         console.log(`getServerCanvasData.js: received response with status ${res.status}: ${res.statusText}`)
 
@@ -86,22 +107,23 @@ export async function getServerCanvasData(options){
 
         ////////////////////////TEST END
 
-
-
-
-
-        ////////UNCOMMENT THESE
-
-        //      |
-        //      V
-
         const blob = await res.blob()
         onSuccess(blob, timestamp)
 
     }catch(e){
-        if(e.name === 'AbortError'){
-            console.log(`getServerCanvasData: fetch request aborted; reason: ${signal?.reason}`)
-        }else onError(e)
+
+        
+        const errorHandler = {
+            'AbortError': () => console.log(`getServerCanvasData: fetch request aborted; reason: ${signal?.reason}`),
+        }
+
+        if(e.name in errorHandler){
+            
+            errorHandler[e.name](e);
+        }
+
+        else throw(e)
+
     }
 }
 

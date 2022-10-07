@@ -121,35 +121,60 @@ export function Canvas(props){
 
                 dispatch(setStatus('fetching canvas data...'));
 
-                getServerCanvasData({
-                    onSuccess: (data, ts) =>{
-                        console.log(data)
-                        console.log(ts)                
-        
-                        //check incoming timestamp for canvas data change
-                        if(ts !== timestamp){
+                try{
+                    getServerCanvasData({
+                        onSuccess: (data, ts) =>{
+                            console.log(data)
+                            console.log(ts)                
+            
+                            //check incoming timestamp for canvas data change
+                            if(ts !== timestamp){
+                                
+                                blob.current = data;
+            
+                                console.log('updating timestamp')
+                                setTimestamp(ts)
+                            }else{
+                                console.log('no timestamp change')
+                            }
                             
-                            blob.current = data;
-        
-                            console.log('updating timestamp')
-                            setTimestamp(ts)
+                            cancelFetchRequest = null;
+                            dispatch(setStatus('ready'));
+    
+                          },
+    
+                        onError: e => {
+                            console.log(e)
+                            cancelFetchRequest = null;
+                            dispatch(setStatus('ready'));
+                        },
+            
+                        query: {
+                            width: canvasRef.current.width,
+                            height: canvasRef.current.height,
+                        },
+    
+                        signal
+    
+                    }).catch(e => {
+                        console.log('IN PROMISE: ', e)
+                        if(e.willRetry === true){
+                            dispatch(setStatus('waiting for server to wake up...'))
                         }else{
-                            console.log('no timestamp change')
+                            cancelFetchRequest = null;
+                            dispatch(setStatus('ready'));
                         }
-                        
-                      },
-        
-                    query: {
-                        width: canvasRef.current.width,
-                        height: canvasRef.current.height,
-                    },
-
-                    signal
-
-                }).finally(() => {
-                    cancelFetchRequest = null;
-                    dispatch(setStatus('ready'));
-                })
+                    })
+                }catch(e){
+                    console.log('IN CATCH BLOCK: ', e)
+                    if(e.willRetry === true){
+                        dispatch(setStatus('waiting for server to wake up...'))
+                    }else{
+                        cancelFetchRequest = null;
+                        dispatch(setStatus('ready'));
+                    }
+                }
+                
 
             })()
 

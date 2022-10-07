@@ -4,7 +4,6 @@ import { isRejected } from "@reduxjs/toolkit"
  * 
  * @param {{
  *      onSuccess: function,
- *      onError?: function,
  *      query?:{width?:number, height?:number}
  * }} options 
  */
@@ -12,7 +11,6 @@ export async function getServerCanvasData(options, retryCount = 2){
 
     const {
         onSuccess,  //callback to handle server response
-        onError = err => console.log('getServerCanvasData: error fetching canvas data', err),    //error handler
         query = {},      //GET query params (optional)
         signal,
     } = options
@@ -65,7 +63,7 @@ export async function getServerCanvasData(options, retryCount = 2){
         
         let bytesRead = 0, chunks = 0;
 
-        const buffer = new Uint8Array(contentLength)
+        let buffer = new Uint8Array(contentLength)
 
         const reader = res.body.getReader()
 
@@ -94,73 +92,16 @@ export async function getServerCanvasData(options, retryCount = 2){
             processStream();
         })
         .then(result => {
-            // console.log(result)
             return new Blob([result], {type:'image/png'})
         })
         .then(blob => {
             onSuccess(blob, timestamp)
-            // console.log(blob)
         })
         .catch(e => console.log(e))
         .finally(() => {
             console.log('finished reading from stream')
             buffer = null;
         })
-        
-        
-
-
-
-        // let data = null;
-        // let reachedEnd = false;
-
-        // function readNextChunk(){
-        //     try{
-        //         return reader.read()
-        //     }catch(e){
-        //         console.log(e)                
-        //     }
-        // }
-
-
-        // while(!reachedEnd){ BADBADBAD
-
-        //     try{
-        //         const result = await readNextChunk();
-        //         console.log(result)
-        //         const {value, done} = result
-        //         console.log('read chunk')
-
-        //         if(done){
-        //             reachedEnd = true
-        //             console.log('done')
-        //         }else{
-        //             if(!data){
-        //                 data = value;
-        //             }else{
-        //                 let merged = new Uint8Array(data.length + value.length)
-        //                 merged.set(data)
-        //                 merged.set(value, data.length);
-        //                 data = null;
-        //                 data = merged;
-                        
-        //                 console.log(data);
-        //             }
-        //         }
-
-        //     }catch(e){
-        //         console.log(e)
-        //         throw e;
-        //     }            
-        // }
-
-        ////////////////////////TEST END
-
-        // const blob = await res.blob()
-
-        // console.log(blob)
-
-        // onSuccess(blob, timestamp)
 
     }catch(e){
 

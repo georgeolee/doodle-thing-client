@@ -137,12 +137,6 @@ export function Canvas(){
                             dispatch(setStatus('ready'));
     
                           },
-    
-                        onError: e => {
-                            console.log(e)
-                            cancelFetchRequest = null;
-                            dispatch(setStatus('ready'));
-                        },
             
                         query: {
                             width: canvasRef.current.width,

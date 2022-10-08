@@ -63,6 +63,11 @@ export function Canvas(){
 
     })
 
+    useEffect(()=> {
+        console.log(`canvas render; timestamp -> ${timestamp}`)
+        console.log(`current blob: ${blob.current}`)
+    })
+
     //initial render only (see note below)
     //  - initialize doodler
     //  - set up callback to process incoming drawing data from socket
@@ -102,7 +107,7 @@ export function Canvas(){
 
             (async () => {
                 
-                dispatch(setStatus('requesting canvas timestamp...'));
+                dispatch(setStatus('comparing timestamp...'));
 
                 if(timestamp){
                     const serverTimestamp = await getServerCanvasTimestamp({signal});                                        
@@ -116,53 +121,44 @@ export function Canvas(){
 
                 dispatch(setStatus('fetching canvas data...'));
 
-                try{
-                    getServerCanvasData({
-                        onSuccess: (data, ts) =>{
-                            console.log(data)
-                            console.log(ts)                
-            
-                            //check incoming timestamp for canvas data change
-                            if(ts !== timestamp){
-                                
-                                blob.current = data;
-            
-                                console.log('updating timestamp')
-                                setTimestamp(ts)
-                            }else{
-                                console.log('no timestamp change')
-                            }
-                            
-                            cancelFetchRequest = null;
-                            dispatch(setStatus('ready'));
+                
+                getServerCanvasData({            
+                    query: {
+                        width: canvasRef.current.width,
+                        height: canvasRef.current.height,
+                    },
+
+                    signal,
+
+                    updateStatus: (status) => dispatch(setStatus(status))
+
+                })
+                .then(({blob:newBlob, blobTimestamp}) =>{
+                    console.log(newBlob)
+                    console.log(blobTimestamp) 
+                    console.log(`timestamp: ${timestamp}\tblob timestamp: ${blobTimestamp}`)               
     
-                          },
-            
-                        query: {
-                            width: canvasRef.current.width,
-                            height: canvasRef.current.height,
-                        },
+                    //check incoming timestamp for canvas data change
+                    if(blobTimestamp !== timestamp){
+                        
+                        blob.current = newBlob;
     
-                        signal
-    
-                    }).catch(e => {
-                        console.log('IN PROMISE: ', e)
-                        if(e.willRetry === true){
-                            dispatch(setStatus('waiting for server to wake up...'))
-                        }else{
-                            cancelFetchRequest = null;
-                            dispatch(setStatus('ready'));
-                        }
-                    })
-                }catch(e){
-                    console.log('IN CATCH BLOCK: ', e)
-                    if(e.willRetry === true){
-                        dispatch(setStatus('waiting for server to wake up...'))
+                        console.log('updating timestamp')
+                        setTimestamp(blobTimestamp)                        
                     }else{
-                        cancelFetchRequest = null;
-                        dispatch(setStatus('ready'));
+                        console.log('no timestamp change')
                     }
-                }
+                    
+                    cancelFetchRequest = null;
+                    dispatch(setStatus('ready'));
+
+                    })
+                .catch(e => {
+                    console.log(e)
+                    cancelFetchRequest = null;
+                    dispatch(setStatus('ready'));
+                })
+            
                 
 
             })()
@@ -182,7 +178,6 @@ export function Canvas(){
 
         const cnv = canvasRef.current
         const ctx = cnv.getContext('2d')
-
 
         if(!blob.current) return
       

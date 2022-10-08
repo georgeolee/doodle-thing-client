@@ -50,7 +50,7 @@ function App() {
       {/* <SessionStorage/> */}
 
       <button onClick={()=> {
-        // socket?.emit('click', Date.now())
+        socket?.emit('click')
         }}>click me</button>
 
       <Log/>

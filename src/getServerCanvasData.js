@@ -3,16 +3,19 @@ import { isRejected } from "@reduxjs/toolkit"
 /**
  * 
  * @param {{
- *      onSuccess: function,
- *      query?:{width?:number, height?:number}
+ *      query?:{width?:number, height?:number},
+ *      signal?:AbortSignal
+ *      updateStatus?:function
  * }} options 
  */
-export async function getServerCanvasData(options, retryCount = 2){
+
+//refactor : callback arg -> return promise
+export async function getServerCanvasData(options){
 
     const {
-        onSuccess,  //callback to handle server response
         query = {},      //GET query params (optional)
-        signal,
+        signal,   
+        updateStatus     
     } = options
 
     console.log('fetching canvas data from server...')
@@ -23,51 +26,54 @@ export async function getServerCanvasData(options, retryCount = 2){
 
         url.search = queryParams
 
-        console.log(`fetch GET ${url.toString()}`)
-
-        const res = await fetch(url, {signal})
+        console.log(`fetch GET ${url.toString()}`)        
 
 
-        if(res.status === 503){
+        let res;
 
-            const error = new Error('got 503; ');
+        //backend hosted on a free heroku dyno, so it might need a few seconds to wake up & ready the canvas
+        //repeat the request after a few seconds if server sends 503
+        for(let tries = 3; tries > 0; tries --){
+            updateStatus?.('fetching canvas data...')
+            res = await fetch(url, {signal})
 
-            
-            if(retryCount > 0){
-                const seconds = Number(res.headers.get('retry-after'));
-                setTimeout(() => getServerCanvasData(options, retryCount - 1), seconds*1000);
-            
-                error.name = 'ServerUnavailableError';
-                error.message += `retrying in ${seconds} seconds...`;
-                error.willRetry = true;
-                                
+            //retry message from server
+            if(res.status === 503){
+                
+                const seconds = Number(res.headers.get('retry-after') ?? 10);
+                updateStatus?.(`server waking up...`)
+                await new Promise(resolve => setTimeout(resolve, seconds))
+                
             }else{
-                error.name = 'RetriesExceededError';
-                error.message += `retry count exceeded; continuing with local canvas only`;                
-            }
 
-            throw error;
-            
+                //some other error
+                if(!res.ok){
+                    console.log(`fetch error status: ${res.status}: ${res.statusText}`)
+                    throw new Error('error response while fetching canvas')
+                }
+
+                //successful
+                break;                
+            }
         }
+        
 
         console.log(`getServerCanvasData.js: received response with status ${res.status}: ${res.statusText}`)
 
+        updateStatus?.('reading image stream...')
+
+        //response headers
         const timestamp = (res.headers.get('x-timestamp'))
-
-
-
-        ///////////////TEST START
-
-
         const contentLength = Number(res.headers.get('content-length'));
         
-        let bytesRead = 0, chunks = 0;
 
-        let buffer = new Uint8Array(contentLength)
+        let buffer = new Uint8Array(contentLength),
+            bytesRead = 0,
+            chunks = 0;
 
         const reader = res.body.getReader()
 
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 
 
             console.log('processing stream...')
@@ -92,16 +98,14 @@ export async function getServerCanvasData(options, retryCount = 2){
             processStream();
         })
         .then(result => {
-            return new Blob([result], {type: res.headers.get('content-type')})
-        })
-        .then(blob => {
-            onSuccess(blob, timestamp)
-        })
-        .catch(e => console.log(e))
-        .finally(() => {
             console.log('finished reading from stream')
-            buffer = null;
+            return {
+                blob: new Blob([result], {type: res.headers.get('content-type')}),
+                blobTimestamp: timestamp
+            }
+                        
         })
+        
 
     }catch(e){
 

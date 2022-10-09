@@ -63,11 +63,6 @@ export function Canvas(){
 
     })
 
-    useEffect(()=> {
-        console.log(`canvas render; timestamp -> ${timestamp}`)
-        console.log(`current blob: ${blob.current}`)
-    })
-
     //initial render only (see note below)
     //  - initialize doodler
     //  - set up callback to process incoming drawing data from socket

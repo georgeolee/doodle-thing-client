@@ -64,10 +64,13 @@ export async function getServerCanvasData(options){
 
         //response headers
         const timestamp = (res.headers.get('x-timestamp'))
-        const contentLength = Number(res.headers.get('content-length'));
-        
+        // const contentLength = Number(res.headers.get('content-length'));
+        const maxLength = Number(res.headers.get('x-uncompressed-length'));
 
-        let buffer = new Uint8Array(contentLength),
+        console.log(`source length pre-compression: ${maxLength} bytes`)
+
+        let buffer = new Uint8Array(maxLength),
+        // let buffer = new Uint8Array(contentLength),
             bytesRead = 0,
             chunks = 0;
 
@@ -84,9 +87,11 @@ export async function getServerCanvasData(options){
                         console.log(`done writing ${chunks} chunks to buffer`)
                         resolve(buffer);
                     }
-                                        
+                                   
+                    
+                    console.log(value.length)
                     buffer.set(value, bytesRead);
-                    bytesRead += value.length;
+                    bytesRead += (value?.length ?? 0);
                     chunks++;
 
                     return processStream();
@@ -97,6 +102,13 @@ export async function getServerCanvasData(options){
 
             processStream();
         })
+        
+        .then(buffer =>  {
+            console.log(`read ${bytesRead} bytes`)
+            return buffer.slice(0,bytesRead)
+        })
+
+
         .then(result => {
             console.log('finished reading from stream')
             return {

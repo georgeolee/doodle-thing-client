@@ -89,7 +89,7 @@ export async function getServerCanvasData(options){
                     }
                                    
                     
-                    console.log(value.length)
+                    // console.log(value.length)
                     buffer.set(value, bytesRead);
                     bytesRead += (value?.length ?? 0);
                     chunks++;

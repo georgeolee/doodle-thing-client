@@ -203,6 +203,8 @@ export function Canvas(){
 
     return(
         <canvas
+            onPointerDown={e => e.target.setPointerCapture(e.pointerId)}
+            onPointerUp={e => e.target.releasePointerCapture(e.pointerId)}
             className="doodle-canvas"
             width={300 * devicePixelRatio}
             height={300 * devicePixelRatio}

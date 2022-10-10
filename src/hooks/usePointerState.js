@@ -51,7 +51,7 @@ export function usePointerState(
             c.yNorm = (evt.clientY - rect.top) / rect.height
             c.type = evt.type
             c.buttons = evt.buttons
-            c.isPressed = c.buttons > 0
+            c.isPressed = c.buttons > 0 && (evt.target === elementRef.current)
             c.timestamp = Date.now()
     
     

@@ -76,10 +76,6 @@ export function LoadingAnimation(props){
         ds = null;
         table = null;
 
-        
-
-        const sy = 0.2;
-
 
         
 

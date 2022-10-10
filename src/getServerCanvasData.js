@@ -1,4 +1,4 @@
-import { isRejected } from "@reduxjs/toolkit"
+
 
 /**
  * 
@@ -89,7 +89,6 @@ export async function getServerCanvasData(options){
                     }
                                    
                     
-                    // console.log(value.length)
                     buffer.set(value, bytesRead);
                     bytesRead += (value?.length ?? 0);
                     chunks++;
@@ -109,10 +108,10 @@ export async function getServerCanvasData(options){
         })
 
 
-        .then(result => {
+        .then(buffer => {
             console.log('finished reading from stream')
             return {
-                blob: new Blob([result], {type: res.headers.get('content-type')}),
+                blob: new Blob([buffer], {type: res.headers.get('content-type')}),
                 blobTimestamp: timestamp
             }
                         

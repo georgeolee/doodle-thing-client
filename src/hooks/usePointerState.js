@@ -21,13 +21,13 @@ export function usePointerState(
 
 
     const pointer = useRef({
-        x: null,
-        y: null,
+        // x: null,
+        // y: null,
+        // type: null,
+        // buttons: null,
         xNorm: null,
         yNorm: null,
-        last: null,
-        type: null,
-        buttons: null,
+        last: null,        
         isPressed: null,
         timestamp: null,
     })
@@ -43,17 +43,21 @@ export function usePointerState(
             const rect = elementRef.current.getBoundingClientRect()
     
             const c = pointer.current
-            delete c.last
-            c.last = {...c}
-            c.x = evt.clientX - rect.left
-            c.y = evt.clientY - rect.top
+                        
+            delete c.last   //delete first to avoid recursion
+            c.last = {...c} //last state
+            
+            //normalized coords in canvas space
             c.xNorm = (evt.clientX - rect.left) / rect.width
             c.yNorm = (evt.clientY - rect.top) / rect.height
-            c.type = evt.type
-            c.buttons = evt.buttons
-            c.isPressed = c.buttons > 0 && (evt.target === elementRef.current)
+                        
+            c.isPressed = evt.buttons > 0 && (evt.target === elementRef.current) //only count presses that target the canvas
             c.timestamp = Date.now()
-    
+
+            // c.x = evt.clientX - rect.left
+            // c.y = evt.clientY - rect.top
+            // c.type = evt.type
+            // c.buttons = evt.buttons
     
             onChange?.(c);
         }
@@ -61,6 +65,8 @@ export function usePointerState(
         
         // element to attach listeners to 
         const target = listenerTarget['addEventListener'] ? listenerTarget : listenerTarget.current
+
+
 
         // attach listeners
         for(const type of events){
@@ -79,7 +85,10 @@ export function usePointerState(
                 })
             }
         }
-    }, [listenerTarget, ])
+        
+
+        
+    }, [listenerTarget, onChange, elementRef])
 
     return pointer;
 }

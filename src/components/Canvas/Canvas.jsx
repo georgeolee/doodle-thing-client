@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import { Doodler } from '../../Doodler.js'
 
 import { usePointerState } from "../../hooks/usePointerState"
@@ -10,11 +10,11 @@ import { getServerCanvasData, getServerCanvasTimestamp } from "../../getServerCa
 import './canvas.css'
 import { useNoTouch } from "../../hooks/useNoTouch.js"
 
-
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import { selectColor, selectEraser, selectLineWidth } from "../../app/state/drawingSettings/drawingSettingsSlice.js";
 import { setStatus } from "../../app/state/canvas/canvasSlice.js"
+
 
 export function Canvas(){
 
@@ -45,7 +45,7 @@ export function Canvas(){
     //  - configure canvas listeners 
     //  - set up callback to send outgoing drawing data to socket
     usePointerState(canvasRef, {
-        onChange: pointerState => {
+        onChange: useCallback(pointerState => {
             
             //don't bother emitting to other sockets if not actually drawing
             if(pointerState.isPressed || pointerState.last?.isPressed){
@@ -59,7 +59,9 @@ export function Canvas(){
                 sendDrawingData(drawingData);
 
             }                       
-        },
+        },[])
+        
+            
 
     })
 
@@ -164,7 +166,7 @@ export function Canvas(){
                 cancelFetchRequest = null;
             }
 
-        }, [timestamp])
+        }, [timestamp, dispatch])
 
 
     //on timestamp change

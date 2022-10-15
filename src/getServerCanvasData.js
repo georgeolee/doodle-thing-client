@@ -33,7 +33,7 @@ export async function getServerCanvasData(options){
 
         //backend hosted on a free heroku dyno, so it might need a few seconds to wake up & ready the canvas
         //repeat the request after a few seconds if server sends 503
-        for(let tries = 3; tries > 0; tries --){
+        for(let tries = 6; tries > 0; tries --){
             updateStatus?.('fetching canvas data...')
             res = await fetch(url, {signal})
 

@@ -133,7 +133,7 @@ export function Canvas(){
                 .then(({blob:newBlob, blobTimestamp}) =>{
                     console.log(newBlob)
                     console.log(blobTimestamp) 
-                    console.log(`timestamp: ${timestamp}\tblob timestamp: ${blobTimestamp}`)               
+                    console.log(`current timestamp: ${timestamp ?? 'nothing yet'}\tblob timestamp: ${blobTimestamp}`)               
     
                     //check incoming timestamp for canvas data change
                     if(blobTimestamp !== timestamp){

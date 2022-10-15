@@ -39,7 +39,7 @@ export async function getServerCanvasData(options){
 
             //retry message from server
             if(res.status === 503){
-                
+                console.log('503503503')
                 const seconds = Number(res.headers.get('retry-after') ?? 10);
                 updateStatus?.(`server waking up...`)
                 await new Promise(resolve => setTimeout(resolve, seconds))

@@ -26,7 +26,7 @@ export const sessionStorageSlice = createSlice({
 
     reducers: {
         updateSizeSliderProgress: (state, action) => {
-            // state.sizeSliderProgress = action.payload;
+            // state.sizeSliderProgress = action.payload; <- not updating state here bc storage updates shouldn't trigger rerender
             sessionStorage.setItem(KEY_SIZE_SLIDER_PROGRESS, String(action.payload));
         },
 

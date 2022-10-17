@@ -12,6 +12,8 @@ import { SizeSlider } from './components/SizeSlider/SizeSlider';
 import { useDispatch } from 'react-redux';
 import { setLineWidth } from './app/state/drawingSettings/drawingSettingsSlice';
 import { LoadingScreen } from './components/LoadingScreen/LoadingScreen';
+import { EmitUserData } from './components/Users/EmitUserData';
+import { ReceiveUserData } from './components/Users/ReceiveUserData';
 
 // import { useSelector } from 'react-redux';
 
@@ -28,8 +30,17 @@ function App() {
   useEffect(() => {
 
     console.log('opening socket connection')
+    
+    //open socket connection to the server
     const cleanup = connectToServer()
+   
 
+    //send explicit disconnect message to server
+
+    //...before leaving the page
+    window.addEventListener('beforeunload', cleanup)
+
+    //...before rerendering the app
     return () => {
       console.log('disconnecting socket')
       cleanup()
@@ -46,8 +57,6 @@ function App() {
 
   return (
     <div className="App">
-      
-      {/* <SessionStorage/> */}
 
       <button onClick={()=> {
         socket?.emit('click')
@@ -57,6 +66,9 @@ function App() {
 
       {/* <h1>{color }</h1> */}
 
+      <EmitUserData/>
+      <ReceiveUserData/>
+      
       <div style={{position: 'relative', display:'flex'}}>
         <LoadingScreen/>
         <Canvas/>                    

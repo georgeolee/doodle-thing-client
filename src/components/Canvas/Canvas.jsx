@@ -14,6 +14,7 @@ import { useNoTouch } from "../../hooks/useNoTouch.js"
 import { useSelector, useDispatch } from "react-redux";
 import { selectColor, selectEraser, selectLineWidth } from "../../app/state/drawingSettings/drawingSettingsSlice.js";
 import { setStatus } from "../../app/state/canvas/canvasSlice.js"
+import { useStatusWithTimeout } from "../../hooks/useStatusWithTimeout.js"
 
 
 export function Canvas(){
@@ -31,6 +32,7 @@ export function Canvas(){
     //canvas timestamp sent from server
     const [timestamp, setTimestamp] = useState()
 
+    const setStatusWithTimeout = useStatusWithTimeout()
 
     const drawingSettings = useRef()
 
@@ -57,6 +59,8 @@ export function Canvas(){
 
                 //emit socket event so other clients can draw the same thing
                 sendDrawingData(drawingData);
+
+                if(pointerState.isPressed) setStatusWithTimeout('drawing', 200)
 
             }                       
         },[])

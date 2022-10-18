@@ -1,4 +1,4 @@
-// import { useEffect } from 'react';
+
 import './App.css';
 import { socket, connectToServer } from './app/socket';
 
@@ -14,8 +14,9 @@ import { setLineWidth } from './app/state/drawingSettings/drawingSettingsSlice';
 import { LoadingScreen } from './components/LoadingScreen/LoadingScreen';
 import { EmitUserData } from './components/Users/EmitUserData';
 import { ReceiveUserData } from './components/Users/ReceiveUserData';
+import { UserList } from './components/Users/UserList';
+import { UserSelf } from './components/Users/UserSelf';
 
-// import { useSelector } from 'react-redux';
 
 
 function App() {
@@ -27,11 +28,12 @@ function App() {
 
 
 
+  //open socket connection to the server
   useEffect(() => {
 
     console.log('opening socket connection')
     
-    //open socket connection to the server
+    
     const cleanup = connectToServer()
    
 
@@ -68,6 +70,8 @@ function App() {
 
       <EmitUserData/>
       <ReceiveUserData/>
+
+      <UserSelf/>
       
       <div style={{position: 'relative', display:'flex'}}>
         <LoadingScreen/>
@@ -85,7 +89,10 @@ function App() {
           dispatch(setLineWidth(brushSize))
         }}
         />
+      
       <label htmlFor="size-slider">drag to change brush size</label>
+      <UserList/>
+
     </div>
   );
 }

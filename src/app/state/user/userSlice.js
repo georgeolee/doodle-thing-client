@@ -6,18 +6,14 @@ import {
  } from "../sessionStorage/sessionStorageSlice";
 
 const initialState = {
-    name: SESSION_INITIAL_USER_NAME || 'guest',
+    name: SESSION_INITIAL_USER_NAME || 'user',
     connected: false,
     status: 'idle',
     id: SESSION_INITIAL_USER_ID || null,
 
-    //FIXME - weird stuff going on here
-    others: {}
+
+    others: {} //key other users by id
 }
-
-const IDLE_TIMEOUT_MILLIS = 100;
-
-let idleTimeout;
 
 export const userSlice = createSlice({
     name: 'user',
@@ -80,16 +76,7 @@ export const selectOwnConnected = (state) =>  state.user.connected;
 export const selectOwnStatus = (state) =>  state.user.status;
 export const selectOwnId = (state) =>  state.user.id;
 
-// export const selectOtherUsers = (state) => state.user.others.entries();
-
 export const selectOtherUsers = (state) => Object.keys(state.user.others).map(id => [id, state.user.others[id]])
 
-// export const selectOtherUsers = (state) => Object.keys({...state.user.others})
-
-
-// export const selectOtherUsers = (state) => {
-//     // return Object.getOwnPropertyNames(state.user.others)
-//     return Object.keys(state.user.others)
-// }
 
 export default userSlice.reducer;

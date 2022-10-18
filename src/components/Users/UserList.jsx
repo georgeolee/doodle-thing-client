@@ -1,17 +1,14 @@
-import { useEffect } from "react";
 import { User } from "./User"
 
-export function UserList(props){
+import { useSelector } from "react-redux";
+import { selectOtherUsers } from "../../app/state/user/userSlice";
 
-    useEffect(() => {
-        console.log('USER LIST RENDER')
+export function UserList(){
 
-        console.log(props.users)
+    const userKVPairs = useSelector(selectOtherUsers) //array of key/value pairs representing other users
+
+    const users = userKVPairs?.map(([id, {name, status, color}]) => {
+        return <User {...{id, name, status, color}} key={id}/>
     })
-
-    const users = props.users?.map(([id, {name, status, color}]) => {
-        return <User {...{id, name, status, color}} />
-    })
-
     return users;
 }

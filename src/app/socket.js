@@ -21,13 +21,7 @@ export const sendDrawingData = (data) => socket?.emit('drawingData', JSON.string
 
 //send user data to server
 export const sendUserData = (data) => {
-    // socket?.emit('user', JSON.stringify(data))
     socket?.emit('user', data)
-
-    //TODO - debugging
-    const {id, name, status, color} = data
-    console.log(`\nin ${sendUserData.name} (socket.js):`)    
-    console.log(`id: ${id}\tname: ${name}\tstatus: ${status} color: ${color}\n`)
 };
 
 

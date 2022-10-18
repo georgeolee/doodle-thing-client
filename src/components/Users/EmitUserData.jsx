@@ -3,7 +3,7 @@ import {
     selectOwnName, 
     selectOwnStatus,
 
-    setOwnName,
+    // setOwnName,
     setOwnId
 } from "../../app/state/user/userSlice";
 
@@ -23,8 +23,6 @@ import {
 
 import { useEffect } from "react";
 
-//FIXME any weirdness going on here ?
-
 export function EmitUserData(){
 
     const dispatch = useDispatch()
@@ -41,7 +39,6 @@ export function EmitUserData(){
 
     //first render - listen for id assignment from server
     useEffect(() => {
-        //TODO - test - is this working? YES, I THINK SO - SEE PHONE PIC
         setIdAssignmentListener(id => {
             dispatch(setOwnId(id));     //
             dispatch(updateUserId(id));
@@ -51,17 +48,7 @@ export function EmitUserData(){
     //emit user update when redux store updates
     useEffect(() => {
 
-        //TODO test - is this firing? when?
-
-
-
-        //FIXME --- see phone pic -> name, status, color undefined, at least on server side - what's going on?
-
-        //TODO - print out here -> what are their values client side?
         //socket emit to server
-        
-        console.log(`\nin ${EmitUserData.name}:`)
-        console.log(`id: ${id}\tname: ${name}\tstatus: ${status} color: ${color}\n`)
 
         sendUserData({
             id,

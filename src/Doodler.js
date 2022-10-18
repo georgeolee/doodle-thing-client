@@ -34,6 +34,7 @@ export class Doodler{
         const [cnv, ctx] = this.getCanvasContext()
         // ctx.imageSmoothingEnabled = false
         ctx.beginPath()
+        
 
         //right now draws newest first
         //not a prob if only one pstate, but otherwise will reverse overlap order?
@@ -41,7 +42,10 @@ export class Doodler{
         for(let i = drawingData.length - 1; i >= 0; i--){
             const p = drawingData[i]
             if(!p.isPressed) continue
-                               
+                    
+            //TODO - see fixme ; test
+            ctx.save()
+
             if(!p.drawingSettings.eraser){
                 //color over
                 ctx.globalCompositeOperation = 'source-over'
@@ -52,6 +56,9 @@ export class Doodler{
                 ctx.globalCompositeOperation = 'destination-out'
             }
             
+
+            //FIXME figure out the linewidth bug - something to do w/ ctx state?
+
             ctx.lineWidth = p.drawingSettings.lineWidth * devicePixelRatio
 
             
@@ -64,6 +71,9 @@ export class Doodler{
                 ctx.arc(...this.scaleXY(cnv, p.xNorm, p.yNorm), ctx.lineWidth * 0.5, 0, Math.PI * 2)                
                 ctx.fill()
             }
+
+            //TODO
+            ctx.restore()
         }
 
     }

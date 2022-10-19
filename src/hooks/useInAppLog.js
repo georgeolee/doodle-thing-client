@@ -69,6 +69,16 @@ export function useInAppLog(options = {}){
                 `[X] ${event} - ${source} : ${lineno}.${colno}`
 
             log(text)
+
+            log('ERROR')
+            log(error)
+
+            log('ERROR.name')
+            log(error?.name)
+
+            log('ERROR.message')
+            log(error?.message)
+
         }
         
         window.addEventListener('error', printError)

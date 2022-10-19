@@ -26,17 +26,23 @@ import style from './settings.module.css'
 import { Toggle } from '../../components/Toggle/Toggle';
 
 export async function action({request}){
-    const formData = await request.formData();
-    const {name, preferNativePixelRatio} = Object.fromEntries(formData);
 
-    if(name){
-        dispatch(setOwnName(name))   
-        dispatch(updateUserName(name))             
-    }
+    try{
+        const formData = await request.formData();
+        const {name, preferNativePixelRatio} = Object.fromEntries(formData);
 
-    dispatch(setPreferNativePixelRatio(!!preferNativePixelRatio))
+        if(name){
+            dispatch(setOwnName(name))   
+            dispatch(updateUserName(name))             
+        }
 
-    return redirect('/')
+        dispatch(setPreferNativePixelRatio(!!preferNativePixelRatio))
+
+        return redirect('/')
+    }catch(e){
+        console.error(new Error('ERROR SUBMITTING SETTINGS FORM'))
+        throw(e)
+    }    
 }
 
 //TODO - major routing cleanup

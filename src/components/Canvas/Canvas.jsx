@@ -167,7 +167,9 @@ export function Canvas(){
 
                     })
                 .catch(e => {
-                    console.log(e)
+
+                    console.log('error in canvas while fetching canvas data')
+                    console.error(e)
                     cancelFetchRequest = null;
                     dispatch(setStatus('ready'));
                 })

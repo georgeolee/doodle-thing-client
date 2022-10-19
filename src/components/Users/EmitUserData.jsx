@@ -5,20 +5,20 @@ import {
 
     // setOwnName,
     setOwnId
-} from "../../app/state/user/userSlice";
+} from "../../redux/user/userSlice";
 
 import { 
     updateUserId 
-} from "../../app/state/sessionStorage/sessionStorageSlice";
+} from "../../redux/sessionStorage/sessionStorageSlice";
 
-import { selectColor } from "../../app/state/drawingSettings/drawingSettingsSlice";
+import { selectColor } from "../../redux/drawingSettings/drawingSettingsSlice";
 
 import { useSelector, useDispatch } from "react-redux";
 
 import { 
     sendUserData,
     setIdAssignmentListener
-} from "../../app/socket";
+} from "../../socket";
 
 
 import { useEffect } from "react";
@@ -37,7 +37,7 @@ export function EmitUserData(){
 
 
 
-    //first render - listen for id assignment from server
+    //first render - listen for id assignment from server, in case no id set
     useEffect(() => {
         setIdAssignmentListener(id => {
             dispatch(setOwnId(id));     //

@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { 
     SESSION_INITIAL_SIZE_SLIDER_PROGRESS, 
     updateSizeSliderProgress 
-} from "../../app/state/sessionStorage/sessionStorageSlice";
+} from "../../redux/sessionStorage/sessionStorageSlice";
 
 export function SizeSlider(props){
 

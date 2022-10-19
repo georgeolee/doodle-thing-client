@@ -3,7 +3,7 @@ import { Doodler } from '../../Doodler.js'
 
 import { usePointerState } from "../../hooks/usePointerState"
 
-import { setDrawingDataListener, sendDrawingData } from "../../app/socket"
+import { setDrawingDataListener, sendDrawingData } from "../../socket"
 
 import { getServerCanvasData, getServerCanvasTimestamp } from "../../getServerCanvasData.js"
 
@@ -12,14 +12,16 @@ import { useNoTouch } from "../../hooks/useNoTouch.js"
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
-import { selectColor, selectEraser, selectLineWidth } from "../../app/state/drawingSettings/drawingSettingsSlice.js";
-import { setStatus } from "../../app/state/canvas/canvasSlice.js"
+import { selectColor, selectEraser, selectLineWidth } from "../../redux/drawingSettings/drawingSettingsSlice.js";
+import { setStatus, selectPreferNativePixelRatio } from "../../redux/canvas/canvasSlice.js"
 import { useStatusWithTimeout } from "../../hooks/useStatusWithTimeout.js"
 
 
 export function Canvas(){
 
     const dispatch = useDispatch();
+
+    const preferNativePixelRatio = useSelector(selectPreferNativePixelRatio);
 
     const canvasRef = useRef()
     useNoTouch(canvasRef)
@@ -63,25 +65,32 @@ export function Canvas(){
                 if(pointerState.isPressed) setStatusWithTimeout('drawing', 200)
 
             }                       
-        },[])
+        },[setStatusWithTimeout])
         
             
 
     })
+
+    // useEffect(() => {
+    //     console.log('canvas render')
+    //     return () => {
+    //         console.log('canvas unrender')
+    //     }
+    // })
 
     //initial render only (see note below)
     //  - initialize doodler
     //  - set up callback to process incoming drawing data from socket
     useEffect(()=>{
 
-        console.log('canvas render')
+        
 
         doodlerRef.current = new Doodler(canvasRef)
         
         setDrawingDataListener(drawingData => doodlerRef.current.consumeDrawingData(JSON.parse(drawingData)))
 
         return () => {
-            console.log('canvas unrender')
+            
             doodlerRef.current = null;
             setDrawingDataListener(null);
         }
@@ -123,11 +132,14 @@ export function Canvas(){
                 dispatch(setStatus('fetching canvas data...'));
 
                 
-                getServerCanvasData({            
-                    query: {
+                getServerCanvasData({      
+                    
+                    //request canvas image at native pixel ratio unless disabled in settings
+                    //no difference either way if devicePixelRatio is 1                    
+                    query: preferNativePixelRatio? {
                         width: canvasRef.current.width,
                         height: canvasRef.current.height,
-                    },
+                    } : {},
 
                     signal,
 
@@ -170,7 +182,7 @@ export function Canvas(){
                 cancelFetchRequest = null;
             }
 
-        }, [timestamp, dispatch])
+        }, [timestamp, dispatch, preferNativePixelRatio])
 
 
     //on timestamp change

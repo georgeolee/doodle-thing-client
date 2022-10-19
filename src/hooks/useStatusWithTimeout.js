@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
-import { setOwnStatus } from "../app/state/user/userSlice";
-import { useRef } from "react";
+import { setOwnStatus } from "../redux/user/userSlice";
+import { useRef, useCallback } from "react";
 
-let globalTimeout; // shared timeout across components
+let globalTimeout; // global timeout reference across components 
 
 
 /**
@@ -14,7 +14,8 @@ export function useStatusWithTimeout(){
 
     const dispatch = useDispatch();
 
-    return (status, timeout, options = {timeoutStatus: 'idle', global: false}) => {
+
+    return useCallback((status, timeout, options = {timeoutStatus: 'idle', global: false}) => {
         
         const{timeoutStatus, global} = options;
 
@@ -31,5 +32,6 @@ export function useStatusWithTimeout(){
         } else throw new TypeError(`in ${useStatusWithTimeout.name}(): timeout not of type number`)
 
         dispatch(setOwnStatus(status));
-    }
+    }, [dispatch, timeoutRef])
+    
 }

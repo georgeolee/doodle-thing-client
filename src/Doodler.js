@@ -43,7 +43,7 @@ export class Doodler{
             const p = drawingData[i]
             if(!p.isPressed) continue
                     
-            //TODO - see fixme ; test
+            //TODO - maybe fixed? ; test on deployed version
             ctx.save()
 
             if(!p.drawingSettings.eraser){

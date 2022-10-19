@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useInAppLog } from "../../hooks/useInAppLog";
+import { Toggle } from "../Toggle/Toggle";
 import './log.css'
 
 
@@ -15,10 +16,12 @@ export function Log(){
                 <div>LOG</div>
 
                 <label>show log 
-                    <input 
-                        type="checkbox" 
+
+                    <Toggle
                         defaultChecked={!isCollapsed} 
-                        onClick={()=> setCollapsed(!isCollapsed)}/>
+                        onChange={()=> setCollapsed(!isCollapsed)}
+                        />
+                        
                 </label>
                 
             </div>

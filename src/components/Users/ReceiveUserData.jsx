@@ -1,10 +1,14 @@
-import { setUserDataListener } from "../../app/socket";
+import { setUserDataListener } from "../../socket";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { setOtherUser, removeOtherUser, selectOwnId } from "../../app/state/user/userSlice";
+import { 
+    setOtherUser, 
+    removeOtherUser, 
+    selectOwnId 
+} from "../../redux/user/userSlice";
 
 
 

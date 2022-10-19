@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import {useRef} from 'react'
 
 import { useSelector } from 'react-redux'
-import { selectColor, selectEraser } from '../../app/state/drawingSettings/drawingSettingsSlice'
+import { selectColor, selectEraser } from '../../redux/drawingSettings/drawingSettingsSlice'
 
 export function Thumb(props){
 

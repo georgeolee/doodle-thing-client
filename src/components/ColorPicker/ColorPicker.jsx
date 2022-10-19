@@ -3,12 +3,12 @@ import { useState } from "react";
 
 
 import { useDispatch } from 'react-redux'
-import { setColor } from "../../app/state/drawingSettings/drawingSettingsSlice";
+import { setColor } from "../../redux/drawingSettings/drawingSettingsSlice";
 
 import { 
     SESSION_INITIAL_COLOR_INDEX,
     updateColorIndex,
- } from "../../app/state/sessionStorage/sessionStorageSlice";
+ } from "../../redux/sessionStorage/sessionStorageSlice";
 
 import './colorpicker.css'
 

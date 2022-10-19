@@ -1,21 +1,22 @@
 
 import './App.css';
-import { socket, connectToServer } from './app/socket';
+import { socket, connectToServer } from '../../socket';
 
-import { Canvas } from './components/Canvas/Canvas';
-import { ColorPicker } from './components/ColorPicker/ColorPicker';
+import { Canvas } from '../../components/Canvas/Canvas';
+import { ColorPicker } from '../../components/ColorPicker/ColorPicker';
 import { useEffect } from 'react';
-import { Log } from './components/Log/Log';
-import { SizeSlider } from './components/SizeSlider/SizeSlider';
+import { Log } from '../../components/Log/Log';
+import { SizeSlider } from '../../components/SizeSlider/SizeSlider';
 
 
 import { useDispatch } from 'react-redux';
-import { setLineWidth } from './app/state/drawingSettings/drawingSettingsSlice';
-import { LoadingScreen } from './components/LoadingScreen/LoadingScreen';
-import { EmitUserData } from './components/Users/EmitUserData';
-import { ReceiveUserData } from './components/Users/ReceiveUserData';
-import { UserList } from './components/Users/UserList';
-import { UserSelf } from './components/Users/UserSelf';
+import { setLineWidth } from '../../redux/drawingSettings/drawingSettingsSlice';
+import { LoadingScreen } from '../../components/LoadingScreen/LoadingScreen';
+import { EmitUserData } from '../../components/Users/EmitUserData';
+import { ReceiveUserData } from '../../components/Users/ReceiveUserData';
+import { UserList } from '../../components/Users/UserList';
+import { UserSelf } from '../../components/Users/UserSelf';
+import { Outlet, Link } from 'react-router-dom';
 
 
 
@@ -60,18 +61,21 @@ function App() {
   return (
     <div className="App">
 
-      <button onClick={()=> {
-        socket?.emit('click')
-        }}>click me</button>
-
       <Log/>
-
-      {/* <h1>{color }</h1> */}
 
       <EmitUserData/>
       <ReceiveUserData/>
 
-      <UserSelf/>
+      
+      
+      <div className='user-panel'>
+        <UserSelf/> 
+        <Link 
+          to='settings'
+          className='settings-link'
+          >settings</Link>  
+      </div>
+      
       
       <div style={{position: 'relative', display:'flex'}}>
         <LoadingScreen/>
@@ -93,6 +97,7 @@ function App() {
       <label htmlFor="size-slider">drag to change brush size</label>
       <UserList/>
 
+      <Outlet/>
     </div>
   );
 }

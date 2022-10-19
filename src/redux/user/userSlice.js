@@ -11,6 +11,7 @@ const initialState = {
     status: 'idle',
     id: SESSION_INITIAL_USER_ID || null,
 
+    
 
     others: {} //key other users by id
 }

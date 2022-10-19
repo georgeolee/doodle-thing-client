@@ -1,0 +1,68 @@
+:root{
+    font-size: 12px;
+    --main-text-color: #444;
+    --secondary-text-color: #666;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.App{    
+    width: fit-content;
+
+    
+    max-width: 300px;
+
+    display: grid;
+    grid-template-columns: 1fr;
+
+    row-gap: 10px;
+    color: var(--main-text-color);   
+
+    
+}
+
+.user-panel{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-link{
+    /* background-color: #ccc;     */
+    /* color: #fff; */
+
+    --pad: 5px;
+
+    background-color: #fafafa;
+    display: flex;
+    color: #888;
+    border: 1px solid #8888;
+    font-variant: small-caps;
+    border-radius: calc(1em + 10px);
+    padding: var(--pad) calc(var(--pad) + 0.5em);
+    appearance: none;
+    text-decoration: none;
+
+}
+
+/* .App > .user-name{
+    grid-column: 1;
+}
+
+.App > .settings-link{
+    grid-column: 3;
+} */
+
+label{
+    font-size: 1rem;
+    color: var(--secondary-text-color);
+}
+
+#size-slider+label{
+    text-align: center;
+}

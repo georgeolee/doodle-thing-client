@@ -1,7 +1,7 @@
 import { User } from "./User"
 
 import { useSelector } from "react-redux";
-import { selectOtherUsers } from "../../app/state/user/userSlice";
+import { selectOtherUsers } from "../../redux/user/userSlice";
 
 export function UserList(){
 

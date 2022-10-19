@@ -3,7 +3,7 @@
     flex-direction: row;
     column-gap: 10px;
     align-items: center;
-
+    width: fit-content;
 }
 
 
@@ -30,18 +30,6 @@
     font-size: 1.25em;
 }
 
-/* .name{
-
-}
-
-.self .name{
-    
-    
-}
-
-.status{
-
-} */
 
 .user[data-status="drawing"] .color{
     animation: drawing 0.4s cubic-bezier(0.445, 0.05, 0.55, 0.95) 0s infinite alternate;

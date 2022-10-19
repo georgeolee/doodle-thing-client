@@ -1,7 +1,7 @@
 import './LoadingScreen.css'
 
 import { useSelector } from 'react-redux'
-import { selectStatus, selectIsReady } from '../../app/state/canvas/canvasSlice'
+import { selectStatus, selectIsReady } from '../../redux/canvas/canvasSlice'
 
 import { LoadingAnimation } from './LoadingAnimation';
 

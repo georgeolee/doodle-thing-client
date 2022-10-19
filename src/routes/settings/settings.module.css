@@ -1,0 +1,110 @@
+.overlay, .overlay *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.overlay{
+    background-color: #8888;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.overlay form{
+    display: grid;
+    grid-template-columns: auto auto;
+
+    align-items: center;
+    justify-content: center;
+    
+    --pad: 6px;
+    --gap: var(--pad);
+    column-gap: var(--gap);
+    row-gap: var(--gap);
+    padding: var(--pad);
+    
+    background-color: #fafafa;    
+    border-radius: 4px;
+    
+    box-shadow: 0 2px 5px #0004;
+}
+
+.overlay * {
+    border-radius: 4px;
+    font-size: 1.25rem;
+    color: #222;
+    
+}
+
+span.header{
+    grid-column: span 2;
+    text-align: center;
+    display: flex;
+    row-gap: var(--gap);
+    flex-direction: column;
+    align-items: center;
+}
+
+span.header::after{
+    content: ' ';
+    width: 50%;
+    height: 1px;
+    background-color: #ddd;
+    margin-bottom: 1em;
+}
+
+.overlay button, .overlay input[type="text"]{
+    appearance: none;
+    flex: 1;
+    border: 1px solid #8888;    
+    padding: 5px;
+}
+
+.overlay label{
+    color: #666;
+}
+
+.button{    
+    color: #888;
+    
+}
+
+.save{
+    background-color: #8e4;
+    color: #444;
+}
+.cancel{
+    background-color: #888;
+    color: #fff;
+}
+
+.button-wrapper{
+    grid-column: span 2;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: var(--gap);
+}
+
+.overlay input[type="text"]{
+    
+}
+
+
+@media (pointer:fine) {
+    .cancel:hover{
+        background-color: #999;
+    }
+
+    .save:hover{
+        background-color: #9f6;
+    }
+}

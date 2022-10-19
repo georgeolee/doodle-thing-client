@@ -6,11 +6,11 @@ import { useSelector } from 'react-redux'
 import { 
     selectOwnStatus,     
     selectOwnName 
-} from '../../app/state/user/userSlice'
+} from '../../redux/user/userSlice'
 
 import {
     selectColor
-} from '../../app/state/drawingSettings/drawingSettingsSlice'
+} from '../../redux/drawingSettings/drawingSettingsSlice'
 
 export function UserSelf(){
 
@@ -18,13 +18,5 @@ export function UserSelf(){
     const color = useSelector(selectColor)
     const status = useSelector(selectOwnStatus)
 
-    // return <User {...{name,status,color}} className={style.self}/>
-    return (<>
-    <input type='text' onInput={e => {
-        const nametag = e.target.nextElementSibling.children[0];
-        nametag.textContent = e.target.value;
-    }}/>
-    <User {...{name,status,color}} className={style.self}/>
-    </>)
-    
+    return <User {...{name,status,color}} className={style.self + 'user-name'}/>    
 }

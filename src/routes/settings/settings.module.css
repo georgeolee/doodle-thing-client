@@ -49,7 +49,7 @@
     border-radius: 4px;
     font-size: 1.25rem;
     color: #222;
-    
+    font-weight: normal;
 }
 
 .overlay input[class^="toggle"]{
@@ -96,8 +96,7 @@ span.header::after{
 
 .save{
     background-color: #8e4;
-    color: #444;
-    font-weight: normal !important;
+    color: #444;    
 }
 .cancel{
     background-color: #888;

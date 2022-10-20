@@ -36,6 +36,7 @@ export class Doodler{
         ctx.beginPath()
         
 
+        //TODO fix drawing order for length > 1
         //right now draws newest first
         //not a prob if only one pstate, but otherwise will reverse overlap order?
         //change
@@ -43,7 +44,7 @@ export class Doodler{
             const p = drawingData[i]
             if(!p.isPressed) continue
                     
-            //TODO - maybe fixed? ; test on deployed version
+
             ctx.save()
 
             if(!p.drawingSettings.eraser){
@@ -55,9 +56,6 @@ export class Doodler{
                 //remove source color
                 ctx.globalCompositeOperation = 'destination-out'
             }
-            
-
-            //FIXME figure out the linewidth bug - something to do w/ ctx state?
 
             ctx.lineWidth = p.drawingSettings.lineWidth * devicePixelRatio
 
@@ -72,7 +70,6 @@ export class Doodler{
                 ctx.fill()
             }
 
-            //TODO
             ctx.restore()
         }
 

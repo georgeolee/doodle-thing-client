@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setStatus, selectPreferNativePixelRatio } from "../../redux/canvas/canvasSlice.js"
 import { useStatusWithTimeout } from "../../hooks/useStatusWithTimeout.js"
 
+import { selectOwnId } from "../../redux/user/userSlice.js"
 
 import { store } from "../../redux/store.js"
 
@@ -39,6 +40,7 @@ export function Canvas(){
 
     const setStatusWithTimeout = useStatusWithTimeout()    
     
+    const id = useSelector(selectOwnId)
 
     //every render
     //  - configure canvas listeners 
@@ -56,7 +58,10 @@ export function Canvas(){
                     ...pointerState, 
 
                     //  color / lineWidth / eraser
-                    drawingSettings: store.getState().drawingSettings
+                    drawingSettings: store.getState().drawingSettings,
+
+                    //TODO - option to overlay usernames while drawing ; use 2nd (offscreen?) canvas
+                    id
                 }
 
                 //draw client side                

@@ -51,7 +51,7 @@ export function useInAppLog(options = {}){
     //maybe change this up later -> add some coloring or something
     const error = err => {
         log(err)
-        if(err instanceof Error) reportError(err)
+        reportError(err)
     }
 
     const clear = useCallback(() => {
@@ -62,33 +62,6 @@ export function useInAppLog(options = {}){
     useEffect(()=>{
         const elt = logRef.current
         elt.textContent = textRef.current
-    })
-
-    useEffect(()=>{
-     
-        const printError = (event, source, lineno, colno) => {
-            const text = newline ?
-                `\n[X] ${event}\n\t${source} : ${lineno}.${colno}\n` :
-                `[X] ${event} - ${source} : ${lineno}.${colno}`
-
-            log(text)
-
-            log('ERROR')
-            log(event.error)
-
-            log('ERROR.name')
-            log(event.error?.name)
-
-            log('ERROR.message')
-            log(event.error?.message)
-
-        }
-        
-        window.addEventListener('error', printError)
-        
-        return () => {
-            window.removeEventListener('error', printError)
-        }
     })
         
 

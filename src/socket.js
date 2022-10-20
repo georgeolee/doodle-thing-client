@@ -3,9 +3,9 @@
  * 
  * 
  */
-
+import { store } from './redux/store';
 import {io} from 'socket.io-client';
-
+import { removeOtherUsersAll } from './redux/user/userSlice';
 // const SERVER_URL = 
 //     process.env.NODE_ENV === 'production'?
 //         'https://doodle-thing.herokuapp.com/' :
@@ -84,6 +84,12 @@ export function connectToServer(){
 
     //incoming user data from server (user status connect or status update)
     socket.on('user', userData => onReceiveUserData?.(userData))
+
+
+    socket.on('reconnect', () => {
+        console.log('reconnect')
+        store.dispatch(removeOtherUsersAll())
+    })
 
     //return disconnect function
     return () => {

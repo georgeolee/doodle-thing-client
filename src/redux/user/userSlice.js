@@ -55,6 +55,10 @@ export const userSlice = createSlice({
 
         removeOtherUser: (state, action) => {
             delete state.others[action.payload.id]
+        },
+
+        removeOtherUsersAll: (state) => {
+            state.others = {}
         }
 
 
@@ -69,6 +73,7 @@ export const {
 
     setOtherUser,
     removeOtherUser,
+    removeOtherUsersAll,
 
 } = userSlice.actions;
 

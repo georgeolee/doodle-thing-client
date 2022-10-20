@@ -27,6 +27,10 @@ import { Toggle } from '../../components/Toggle/Toggle';
 
 export async function action({request}){
 
+    //FIXME - figure out what/where that error is that happens when changing settings on mobile
+
+    // ---> seems like it only happens the first time, and doesn't appear to break anything...
+
     try{
         const formData = await request.formData();
         const {name, preferNativePixelRatio} = Object.fromEntries(formData);
@@ -42,6 +46,7 @@ export async function action({request}){
 
         return redirect('/')
     }catch(e){
+        console.log('in settings.jsx')
         console.error(new Error('ERROR SUBMITTING SETTINGS FORM'))
         throw(e)
     }    

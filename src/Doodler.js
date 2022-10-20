@@ -36,7 +36,7 @@ export class Doodler{
         ctx.beginPath()
         
 
-        //TODO fix drawing order for length > 1
+        //FIXME fix drawing order for length > 1
         //right now draws newest first
         //not a prob if only one pstate, but otherwise will reverse overlap order?
         //change

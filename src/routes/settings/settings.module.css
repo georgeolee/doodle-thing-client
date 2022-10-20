@@ -122,3 +122,10 @@ span.header::after{
         background-color: #9f6;
     }
 }
+
+
+@media screen and (max-width: 767px) {
+    input, select, textarea {
+      font-size: max(1em, 16px) !important;
+    }
+  }

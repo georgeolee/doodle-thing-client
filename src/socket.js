@@ -94,19 +94,13 @@ export function connectToServer(){
 
     socket.on('connect', () => {
         console.log('connect')
-    })
 
-    
-    socket.on('reconnect', () => {
-
-        console.log('reconnect')
         const state = store.getState()
-        
-
         const {id, status, name} = state.user;
-        const {color} = state.drawingSettings;
 
+        const {color} = state.drawingSettings;
         socket.emit('user', {name, id, status, color});
+
     })
 
     //return disconnect function

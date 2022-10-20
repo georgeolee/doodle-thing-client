@@ -12,9 +12,12 @@ import { useNoTouch } from "../../hooks/useNoTouch.js"
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
-import { selectColor, selectEraser, selectLineWidth } from "../../redux/drawingSettings/drawingSettingsSlice.js";
+
 import { setStatus, selectPreferNativePixelRatio } from "../../redux/canvas/canvasSlice.js"
 import { useStatusWithTimeout } from "../../hooks/useStatusWithTimeout.js"
+
+
+import { store } from "../../redux/store.js"
 
 
 export function Canvas(){
@@ -34,16 +37,8 @@ export function Canvas(){
     //canvas timestamp sent from server
     const [timestamp, setTimestamp] = useState()
 
-    const setStatusWithTimeout = useStatusWithTimeout()
-
-    const drawingSettings = useRef()
-
-    //get global state from redux store
-    drawingSettings.current = {
-        color: useSelector(selectColor),
-        lineWidth: useSelector(selectLineWidth),
-        eraser: useSelector(selectEraser),
-    }
+    const setStatusWithTimeout = useStatusWithTimeout()    
+    
 
     //every render
     //  - configure canvas listeners 
@@ -54,40 +49,42 @@ export function Canvas(){
             //don't bother emitting to other sockets if not actually drawing
             if(pointerState.isPressed || pointerState.last?.isPressed){
 
-                const drawingData = {...pointerState, drawingSettings: drawingSettings.current}
 
-                //draw here
-                doodlerRef.current?.consumeDrawingData({...pointerState, drawingSettings: drawingSettings.current})
+                const drawingData = {
 
-                //emit socket event so other clients can draw the same thing
+                    //  x / y / pressed / last
+                    ...pointerState, 
+
+                    //  color / lineWidth / eraser
+                    drawingSettings: store.getState().drawingSettings
+                }
+
+                //draw client side                
+                doodlerRef.current?.consumeDrawingData(drawingData)
+
+                //emit to server
                 sendDrawingData(drawingData);
 
                 if(pointerState.isPressed) setStatusWithTimeout('drawing', 200)
 
             }                       
         },[setStatusWithTimeout])
-        
-            
-
     })
 
-    // useEffect(() => {
-    //     console.log('canvas render')
-    //     return () => {
-    //         console.log('canvas unrender')
-    //     }
-    // })
+    useEffect(() => {
+        console.log('canvas render')
+        return () => {
+            console.log('canvas unrender')
+        }
+    })
 
     //initial render only (see note below)
     //  - initialize doodler
     //  - set up callback to process incoming drawing data from socket
     useEffect(()=>{
 
-        
-
-        doodlerRef.current = new Doodler(canvasRef)
-        
-        setDrawingDataListener(drawingData => doodlerRef.current.consumeDrawingData(JSON.parse(drawingData)))
+        doodlerRef.current = new Doodler(canvasRef)        
+        setDrawingDataListener(drawingData => doodlerRef.current.consumeDrawingData(drawingData))        
 
         return () => {
             
@@ -139,7 +136,10 @@ export function Canvas(){
                     query: preferNativePixelRatio? {
                         width: canvasRef.current.width,
                         height: canvasRef.current.height,
-                    } : {},
+                    // } : {},
+
+                    //HACK -- pixel ratio test ; delete from production version
+                    } : {width: 900, height: 900},
 
                     signal,
 

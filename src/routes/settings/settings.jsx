@@ -45,9 +45,6 @@ export async function action({request}){
     }    
 }
 
-//TODO - major routing cleanup
-
-//TODO - organize
 
 //TODO - sessionStorage -> localStorage ?
 
@@ -64,10 +61,7 @@ export function Settings(){
     return (
     <div className={style.overlay}>
 
-    <Form 
-        method='post'
-        // style={{backgroundColor: color === 'eraser' ? '#fff' : color}}
-        >
+    <Form method='post'>
 
         <span
             className={style.header}
@@ -79,6 +73,7 @@ export function Settings(){
             name="name" 
             defaultValue={name} 
             spellCheck='false'
+            maxLength={24}
             />
 
         <label 
@@ -98,7 +93,7 @@ export function Settings(){
             <button 
                 id='cancel'
                 type='button'
-                onClick={() => navigate('/')}
+                onClick={() => navigate(-1)}
                 className={style.button + ' ' + style.cancel}
                 >cancel</button>
         </div>

@@ -15,11 +15,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    
+}
 
+.overlay input[type="text"]{
+    font-size: max(1em, 16px);
+    
 }
 
 .overlay form{
     display: grid;
+    max-width: 100%;
     grid-template-columns: auto auto;
 
     align-items: center;
@@ -30,6 +36,8 @@
     column-gap: var(--gap);
     row-gap: var(--gap);
     padding: var(--pad);
+    
+    margin: 1em;
     
     background-color: #fafafa;    
     border-radius: 4px;
@@ -44,6 +52,10 @@
     
 }
 
+.overlay input[class^="toggle"]{
+    justify-self: flex-end;
+}
+
 span.header{
     grid-column: span 2;
     text-align: center;
@@ -51,11 +63,13 @@ span.header{
     row-gap: var(--gap);
     flex-direction: column;
     align-items: center;
+    color: #666;
+    font-variant: small-caps;
 }
 
 span.header::after{
-    content: ' ';
-    width: 50%;
+    content: ' ';    
+    width: 100%;
     height: 1px;
     background-color: #ddd;
     margin-bottom: 1em;

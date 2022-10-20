@@ -17,7 +17,7 @@ import {io} from 'socket.io-client';
 export let socket = null;
 
 //send drawing data to server
-export const sendDrawingData = (data) => socket?.emit('drawingData', JSON.stringify(data));
+export const sendDrawingData = (data) => socket?.emit('drawingData', data);
 
 //send user data to server
 export const sendUserData = (data) => {

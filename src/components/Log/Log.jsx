@@ -15,15 +15,11 @@ export function Log(){
                 
                 <div>LOG</div>
 
-                <label>show log 
-
-                    <Toggle
-                        defaultChecked={!isCollapsed} 
-                        onChange={()=> setCollapsed(!isCollapsed)}
-                        />
-                        
-                </label>
-                
+                                
+                <Toggle
+                    defaultChecked={!isCollapsed} 
+                    onChange={()=> setCollapsed(!isCollapsed)}
+                    />                                                        
             </div>
             <div className={isCollapsed ? 'body collapsed' : 'body'}>
 

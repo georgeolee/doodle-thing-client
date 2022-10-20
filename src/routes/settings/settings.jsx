@@ -31,9 +31,11 @@ export async function action({request}){
         const formData = await request.formData();
         const {name, preferNativePixelRatio} = Object.fromEntries(formData);
 
-        if(name){
-            dispatch(setOwnName(name))   
-            dispatch(updateUserName(name))             
+        const visibleName = name.trim()
+
+        if(visibleName){
+            dispatch(setOwnName(visibleName))   
+            dispatch(updateUserName(visibleName))             
         }
 
         dispatch(setPreferNativePixelRatio(!!preferNativePixelRatio))
@@ -73,6 +75,8 @@ export function Settings(){
             name="name" 
             defaultValue={name} 
             spellCheck='false'
+            autoComplete='off'
+            autoCorrect='off'
             maxLength={24}
             />
 

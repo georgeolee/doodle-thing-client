@@ -136,10 +136,10 @@ export function Canvas(){
                     query: preferNativePixelRatio? {
                         width: canvasRef.current.width,
                         height: canvasRef.current.height,
-                    // } : {},
+                    } : {},
 
                     //HACK -- pixel ratio test ; delete from production version
-                    } : {width: 900, height: 900},
+                    // } : {width: 900, height: 900},
 
                     signal,
 

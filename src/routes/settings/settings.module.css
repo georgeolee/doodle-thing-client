@@ -109,7 +109,7 @@ span.header::after{
 }
 
 .overlay input[type="text"]{
-    
+
 }
 
 
@@ -125,7 +125,7 @@ span.header::after{
 
 
 @media screen and (max-width: 767px) {
-    input, select, textarea {
+    .overlay input, .overlay select, .overlay textarea {
       font-size: max(1em, 16px) !important;
     }
   }

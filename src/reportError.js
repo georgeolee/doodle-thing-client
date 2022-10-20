@@ -13,9 +13,8 @@ export async function reportError(err){
         const res = await fetch(url, {
             method: 'post',
             body:json,
-            headers:{
-                // 'content-type': 'application/json',
-                // 'content-length': json.length
+            headers: {
+                'content-type': 'application/json'
             }
         })
 

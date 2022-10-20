@@ -20,8 +20,6 @@ import { reportError } from './reportError';
 
 window.addEventListener('error', evt => reportError(evt.error));
 
-throw new Error('test error')
-
 const router = createBrowserRouter([
   {
     path: '/',

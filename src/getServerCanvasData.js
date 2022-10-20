@@ -1,12 +1,14 @@
 
 
 /**
- * 
+ * return a promise that resolves to a blob and timestamp, or resolves to null if the fetch request is aborted
  * @param {{
  *      query?:{width?:number, height?:number},
  *      signal?:AbortSignal
  *      updateStatus?:function
  * }} options 
+ * 
+ * @returns {Promise<{blob:Blob,blobTimestamp:string}|null>}
  */
 
 //refactor : callback arg -> return promise
@@ -127,6 +129,8 @@ export async function getServerCanvasData(options){
         if(e.name in errorHandler){
             
             errorHandler[e.name](e);
+
+            return null;
         }
 
         else throw(e)

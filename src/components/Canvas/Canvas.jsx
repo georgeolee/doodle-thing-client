@@ -151,7 +151,15 @@ export function Canvas(){
                     updateStatus: (status) => dispatch(setStatus(status))
 
                 })
-                .then(({blob:newBlob, blobTimestamp}) =>{
+                .then(result =>{
+
+                    //result will be null if fetch request was aborted (eg from a page refresh or rerender)
+                    if(result == null){
+                        return;
+                    }
+
+                    const {blob:newBlob, blobTimestamp} = result;
+
                     console.log(newBlob)
                     console.log(blobTimestamp) 
                     console.log(`current timestamp: ${timestamp ?? 'nothing yet'}\tblob timestamp: ${blobTimestamp}`)               

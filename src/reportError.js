@@ -1,9 +1,15 @@
 export async function reportError(err){
 
-    const ownProps = Object.getOwnPropertyNames(err);
-    const protoProps = Object.getOwnPropertyNames(Object.getPrototypeOf(err));
+    const own = Object.getOwnPropertyNames(err);
+    const proto = Object.getOwnPropertyNames(Object.getPrototypeOf(err));
 
-    const json = JSON.stringify(err, [...protoProps, ...ownProps]);
+    const props = [...own, ...proto].reduce((p, n) => {
+        return p.includes(n) ?
+            p :
+            [...p, n]
+    },[])
+
+    const json = JSON.stringify(err, props);
 
     console.log(json)
 

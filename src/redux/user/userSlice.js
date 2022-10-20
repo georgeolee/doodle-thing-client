@@ -77,10 +77,20 @@ export const {
 
 } = userSlice.actions;
 
+
+
 export const selectOwnName = (state) =>  state.user.name;
 export const selectOwnConnected = (state) =>  state.user.connected;
 export const selectOwnStatus = (state) =>  state.user.status;
 export const selectOwnId = (state) =>  state.user.id;
+
+export const selectOwnUser = (state) => {
+    return {
+        name: selectOwnName(state),
+        status: selectOwnStatus(state),
+        id: selectOwnId(state),
+    }   
+}
 
 export const selectOtherUsers = (state) => Object.keys(state.user.others).map(id => [id, state.user.others[id]])
 

@@ -66,7 +66,11 @@ function App() {
       <EmitUserData/>
       <ReceiveUserData/>
 
-      
+      <button
+        onClick={() => {
+          console.error(new Error(`error reporting test at ${new Date().toISOString()}`))
+        }}
+        >error test</button>
       
       <div className='user-panel'>
         <UserSelf/> 

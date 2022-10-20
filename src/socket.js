@@ -92,8 +92,14 @@ export function connectToServer(){
         dispatch(removeOtherUsersAll())
     })
 
+    socket.on('connect', () => {
+        console.log('connect')
+    })
+
+    
     socket.on('reconnect', () => {
 
+        console.log('reconnect')
         const state = store.getState()
         
 

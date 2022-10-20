@@ -16,7 +16,11 @@ import {
 
 import { Settings, action as settingsAction } from './routes/settings/settings';
 
+import { reportError } from './reportError';
 
+window.addEventListener('error', evt => reportError(evt.error));
+
+throw new Error('test error')
 
 const router = createBrowserRouter([
   {

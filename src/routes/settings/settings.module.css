@@ -97,6 +97,7 @@ span.header::after{
 .save{
     background-color: #8e4;
     color: #444;
+    font-weight: normal !important;
 }
 .cancel{
     background-color: #888;

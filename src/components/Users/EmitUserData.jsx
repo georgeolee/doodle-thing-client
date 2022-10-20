@@ -37,6 +37,7 @@ export function EmitUserData(){
 
 
 
+    //TODO - move this from emitter to receiver component
     //first render - listen for id assignment from server, in case no id set
     useEffect(() => {
         setIdAssignmentListener(id => {

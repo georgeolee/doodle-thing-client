@@ -1,4 +1,10 @@
+import { store } from "./redux/store";
+
+
 export async function reportError(err){
+
+    //is error reporting enabled?
+    if(store.getState().preferences.errorReporting === false) return;
 
     const own = Object.getOwnPropertyNames(err);
     const proto = Object.getOwnPropertyNames(Object.getPrototypeOf(err));

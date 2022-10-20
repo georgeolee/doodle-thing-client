@@ -25,12 +25,18 @@ import style from './settings.module.css'
 
 import { Toggle } from '../../components/Toggle/Toggle';
 
+import { selectErrorReporting, enableErrorReporting } from '../../redux/preferences/preferencesSlice';
+
 export async function action({request}){
 
 
     try{
         const formData = await request.formData();
-        const {name, preferNativePixelRatio} = Object.fromEntries(formData);
+        const {
+            name, 
+            preferNativePixelRatio, 
+            errorReporting
+        } = Object.fromEntries(formData);
 
         const visibleName = name.trim()
 
@@ -40,6 +46,7 @@ export async function action({request}){
         }
 
         dispatch(setPreferNativePixelRatio(!!preferNativePixelRatio))
+        dispatch(enableErrorReporting(errorReporting));
 
         return redirect('/')
     }catch(e){
@@ -59,6 +66,7 @@ export function Settings(){
     const name = useSelector(selectOwnName);
 
     const preferNativePixelRatio = useSelector(selectPreferNativePixelRatio);
+    const errorReporting = useSelector(selectErrorReporting);
 
     const navigate = useNavigate();
 
@@ -87,6 +95,13 @@ export function Settings(){
         <Toggle
             name='preferNativePixelRatio'
             defaultChecked={preferNativePixelRatio}
+            />
+
+        <label 
+            htmlFor='errorReporting'>allow error reporting</label>
+        <Toggle
+            name='errorReporting'
+            defaultChecked={errorReporting}
             />
 
         <div

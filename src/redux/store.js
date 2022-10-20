@@ -3,6 +3,7 @@ import drawingSettingsReducer from "./drawingSettings/drawingSettingsSlice";
 import {default as canvasReducer} from "./canvas/canvasSlice";
 import {default as sessionStorageReducer} from "./sessionStorage/sessionStorageSlice.js"
 import {default as userReducer} from './user/userSlice.js'
+import {default as preferencesReducer} from './preferences/preferencesSlice.js'
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
         canvas: canvasReducer,
         sessionStorage: sessionStorageReducer,
         user: userReducer,
+        preferences: preferencesReducer,
     }
 });
 

@@ -130,8 +130,6 @@ export function Canvas(){
                         dispatch(setStatus('ready'));                      
                         return;
                     }
-                }else if(!connected){ // no socket connection && have timestamp -> disconnected from server; don't try to fetch
-                    return;
                 }
 
                 dispatch(setStatus('fetching canvas data...'));

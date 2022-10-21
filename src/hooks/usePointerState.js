@@ -4,14 +4,12 @@ import { useEffect, useRef } from "react";
 /**
  * 
  * @param {React.MutableRefObject} elementRef 
- * @param {{events?:string[], listenerTarget?:React.MutableRefObject | HTMLElement, , onChange?:function}} options 
+ * @param {{listenerTarget?:React.MutableRefObject | HTMLElement, , onChange?:function}} options 
  * @returns
  */
 export function usePointerState(
     elementRef, //ref object for target element
-    options = {   
-        // events,
-        // listenerTarget
+    options = {           
     }){
 
     const{
@@ -20,11 +18,7 @@ export function usePointerState(
     } = options
 
 
-    const pointer = useRef({
-        // x: null,
-        // y: null,
-        // type: null,
-        // buttons: null,
+    const pointer = useRef({        
         xNorm: null,
         yNorm: null,
         last: null,        
@@ -36,7 +30,6 @@ export function usePointerState(
     //add listeners to track pointer movement & buttons
     useEffect(()=>{
 
-        console.log('usp')
         const events = ['pointerdown', 'pointerup', 'pointermove']
         const updatePointerState = (evt) => {
         
@@ -54,11 +47,6 @@ export function usePointerState(
             c.isPressed = evt.buttons > 0 && (evt.target === elementRef.current) //only count presses that target the canvas
             c.timestamp = Date.now()
 
-            // c.x = evt.clientX - rect.left
-            // c.y = evt.clientY - rect.top
-            // c.type = evt.type
-            // c.buttons = evt.buttons
-    
             onChange?.(c);
         }
 

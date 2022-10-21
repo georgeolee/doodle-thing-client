@@ -16,7 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setStatus, selectPreferNativePixelRatio } from "../../redux/canvas/canvasSlice.js"
 import { useStatusWithTimeout } from "../../hooks/useStatusWithTimeout.js"
 
-import { selectOwnId } from "../../redux/user/userSlice.js"
+import { selectOwnId, selectOwnConnected } from "../../redux/user/userSlice.js"
 
 import { store } from "../../redux/store.js"
 
@@ -41,6 +41,7 @@ export function Canvas(){
     const setStatusWithTimeout = useStatusWithTimeout()    
     
     const id = useSelector(selectOwnId)
+    const connected = useSelector(selectOwnConnected)
 
     //every render
     //  - configure canvas listeners 
@@ -73,7 +74,7 @@ export function Canvas(){
                 if(pointerState.isPressed) setStatusWithTimeout('drawing', 200)
 
             }                       
-        },[setStatusWithTimeout])
+        },[setStatusWithTimeout, id])
     })
 
     useEffect(() => {
@@ -129,6 +130,8 @@ export function Canvas(){
                         dispatch(setStatus('ready'));                      
                         return;
                     }
+                }else if(!connected){ // no socket connection && have timestamp -> disconnected from server; don't try to fetch
+                    return;
                 }
 
                 dispatch(setStatus('fetching canvas data...'));
@@ -197,7 +200,7 @@ export function Canvas(){
                 cancelFetchRequest = null;
             }
 
-        }, [timestamp, dispatch, preferNativePixelRatio])
+        }, [timestamp, dispatch, preferNativePixelRatio, connected])
 
 
     //on timestamp change

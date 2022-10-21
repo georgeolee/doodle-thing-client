@@ -91,9 +91,6 @@ span.header::after{
     
 }
 
-
-/* FIXME - weird text thickness on ios save button */
-
 .save{
     background-color: #8e4;
     color: #444;    

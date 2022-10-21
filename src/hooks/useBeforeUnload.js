@@ -1,6 +1,7 @@
 import { 
     useEffect, 
     useRef,
+    useCallback,
 } from "react";
 
 /**
@@ -9,14 +10,12 @@ import {
  * @returns {function} a setter function to update the listener
  */
 export function useBeforeUnload(fn = null){
-    const callbackRef = useRef(null);
-
-    const setListener = fn => callbackRef.current = fn;
+    const callbackRef = useRef(fn);    
     
 
     useEffect(() => {
 
-        const onBeforeUnload = evt => callbackRef?.current(evt);
+        const onBeforeUnload = evt => callbackRef.current?.(evt);
 
         window.addEventListener('beforeunload', onBeforeUnload);
 
@@ -25,5 +24,7 @@ export function useBeforeUnload(fn = null){
         }
     }, [])
 
-    return setListener;
+    return useCallback(fn => {
+        callbackRef.current = fn;
+    }, [])
 }

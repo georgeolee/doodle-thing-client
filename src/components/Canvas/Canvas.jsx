@@ -20,6 +20,7 @@ import { selectOwnId, selectOwnConnected } from "../../redux/user/userSlice.js"
 
 import { store } from "../../redux/store.js"
 
+import {useBeforeUnload} from '../../hooks/useBeforeUnload.js'
 
 export function Canvas(){
 
@@ -42,6 +43,10 @@ export function Canvas(){
     
     const id = useSelector(selectOwnId)
     const connected = useSelector(selectOwnConnected)
+
+    //set a listener to cancel any active fetch request if user leaves or refreshes the page
+    const setUnloadListener = useBeforeUnload();
+
 
     //every render
     //  - configure canvas listeners 
@@ -77,12 +82,6 @@ export function Canvas(){
         },[setStatusWithTimeout, id])
     })
 
-    useEffect(() => {
-        console.log('canvas render')
-        return () => {
-            console.log('canvas unrender')
-        }
-    })
 
     //initial render only (see note below)
     //  - initialize doodler
@@ -100,29 +99,21 @@ export function Canvas(){
     },[])
 
 
-    const refresh = !timestamp || (timestamp && connected)
+    //no canvas
+    //or
+    //yes canvas and connected
+    
+    //add to deps array to refire hook on reconnect
+    const doRefresh = !timestamp || (timestamp && connected)
 
     useEffect(() => {
 
-            //if not connected but timestamp is set, we're disconnected from the server ; don't try to fetch
-            //if no timestamp yet, it might be that the connection is still being established
-            // if(timestamp && !connected) return;
-
-            if(!refresh) return
+            if(!doRefresh) return // don't fetch if disconnected
 
             const controller = new AbortController();
-            const signal = controller.signal;
+            const {signal} = controller;
 
-            //
-            const boundUnload = window.onbeforeunload?.bind(window);
-            let cancelFetchRequest = () => controller.abort('page unload');
-
-            //cancel the fetch request if the user leaves/refreshes the page before it completes
-            window.onbeforeunload = (e) => {
-                boundUnload?.(e);
-                cancelFetchRequest?.();
-            }
-
+            setUnloadListener(() => controller.abort('page unload'));
 
 
             (async () => {
@@ -140,9 +131,8 @@ export function Canvas(){
                     //TODO - buffer input and fetch in background if already have a canvas blob
                     // (avoid getting locked in if other users scribbling during fetch)
 
-                    //check for timestamp change
+                    //timestamp diff within threshold?
                     if(Number(serverTimestamp) - Number(timestamp) <= THRESHOLD){ 
-                        cancelFetchRequest = null;  
                         dispatch(setStatus('ready'));                      
                         return;
                     }
@@ -150,61 +140,40 @@ export function Canvas(){
 
                 dispatch(setStatus('fetching canvas data...'));
 
-                
-                getServerCanvasData({      
+
+                try{
+                    const result = await getServerCanvasData({      
                     
-                    //request canvas image at native pixel ratio unless disabled in settings
-                    //no difference either way if devicePixelRatio is 1                    
-                    query: preferNativePixelRatio? {
-                        width: canvasRef.current.width,
-                        height: canvasRef.current.height,
-                    } : {},
-
-                    //HACK -- pixel ratio test ; delete from production version
-                    // } : {width: 900, height: 900},
-
-                    signal,
-
-                    updateStatus: (status) => dispatch(setStatus(status))
-
-                })
-                .then(result =>{
-
+                        //request native resolution if device pixel ratio > 1
+                        query: preferNativePixelRatio? {   
+                            width: canvasRef.current.width,
+                            height: canvasRef.current.height,
+                        } : {/*use server default (lowest resolution)*/},
+    
+                        signal,
+    
+                        updateStatus: (status) => dispatch(setStatus(status))
+    
+                    });
+    
                     //result will be null if fetch request was aborted (eg from a page refresh or rerender)
                     if(result == null){
                         return;
                     }
-
+    
                     const {blob:newBlob, blobTimestamp} = result;
-
-                    console.log(newBlob)
-                    console.log(blobTimestamp) 
-                    console.log(`current timestamp: ${timestamp ?? 'nothing yet'}\tblob timestamp: ${blobTimestamp}`)               
     
                     //check incoming timestamp for canvas data change
-                    if(blobTimestamp !== timestamp){
-                        
+                    if(blobTimestamp !== timestamp){                        
                         blob.current = newBlob;
-    
-                        console.log('updating timestamp')
                         setTimestamp(blobTimestamp)                        
-                    }else{
-                        console.log('no timestamp change')
                     }
-                    
-                    cancelFetchRequest = null;
 
-                    })
-                .catch(e => {
-
+                }catch(e){
                     console.log('error in canvas while fetching canvas data')
                     console.error(e)
-                    cancelFetchRequest = null;
-
-                    // if(e instanceof AbortError)
-
                     dispatch(setStatus('ready'));
-                })
+                }
             
                 
 
@@ -213,10 +182,15 @@ export function Canvas(){
 
             return () => {
                 controller.abort('component rerender')
-                cancelFetchRequest = null;
             }
 
-        }, [timestamp, dispatch, preferNativePixelRatio, refresh])
+        }, [
+            timestamp, 
+            preferNativePixelRatio, 
+            doRefresh, 
+            dispatch, 
+            setUnloadListener
+        ]);
 
 
     //on timestamp change

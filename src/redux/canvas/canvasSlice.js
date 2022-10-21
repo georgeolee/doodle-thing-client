@@ -5,7 +5,7 @@ const KEY_PREFER_LOW_RES = 'preferNativePixelRatio';
 const initialState = {
     status: 'loading',
 
-    preferNativePixelRatio: sessionStorage.getItem(KEY_PREFER_LOW_RES) !== 'false',
+    preferNativePixelRatio: localStorage.getItem(KEY_PREFER_LOW_RES) !== 'false',
 
     bufferedInput: []
 }
@@ -21,11 +21,11 @@ export const canvasSlice = createSlice({
 
         setPreferNativePixelRatio: (state, action) => {
             state.preferNativePixelRatio = action.payload;
-            sessionStorage.setItem(KEY_PREFER_LOW_RES, String(!!action.payload))
+            localStorage.setItem(KEY_PREFER_LOW_RES, String(!!action.payload))
         },
 
         bufferInput: (state, action) => {
-            const arr = Array.isArray(action.payload) ? arr : [arr];
+            const arr = Array.isArray(action.payload) ? action.payload : [action.payload];
             state.bufferedInput.push(...arr)
         },
 

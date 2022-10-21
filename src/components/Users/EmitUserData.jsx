@@ -3,21 +3,14 @@ import {
     selectOwnName, 
     selectOwnStatus,
 
-    // setOwnName,
-    setOwnId
 } from "../../redux/user/userSlice";
-
-import { 
-    updateUserId 
-} from "../../redux/sessionStorage/sessionStorageSlice";
 
 import { selectColor } from "../../redux/drawingSettings/drawingSettingsSlice";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { 
     sendUserData,
-    setIdAssignmentListener
 } from "../../socket";
 
 
@@ -25,7 +18,7 @@ import { useEffect } from "react";
 
 export function EmitUserData(){
 
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
     //get drawing color
     const color = useSelector(selectColor);
@@ -39,12 +32,7 @@ export function EmitUserData(){
 
     //TODO - move this from emitter to receiver component
     //first render - listen for id assignment from server, in case no id set
-    useEffect(() => {
-        setIdAssignmentListener(id => {
-            dispatch(setOwnId(id));     //
-            dispatch(updateUserId(id));
-        })
-    }, [dispatch])
+    
 
     //emit user update when redux store updates
     useEffect(() => {

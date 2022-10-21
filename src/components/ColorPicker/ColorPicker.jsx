@@ -6,9 +6,9 @@ import { useDispatch } from 'react-redux'
 import { setColor } from "../../redux/drawingSettings/drawingSettingsSlice";
 
 import { 
-    SESSION_INITIAL_COLOR_INDEX,
+    LOCAL_INITIAL_COLOR_INDEX,
     updateColorIndex,
- } from "../../redux/sessionStorage/sessionStorageSlice";
+ } from "../../redux/localStorage/localStorageSlice";
 
 import './colorpicker.css'
 
@@ -23,7 +23,7 @@ export function ColorPicker(props){
     } = props
 
     //currently selected swatch
-    const [selected, setSelected] = useState(SESSION_INITIAL_COLOR_INDEX  ?? initialColor)
+    const [selected, setSelected] = useState(LOCAL_INITIAL_COLOR_INDEX  ?? initialColor)
     
     const swatches = colors.map((color, i) => {
         return <Swatch 
@@ -35,7 +35,7 @@ export function ColorPicker(props){
                         //set color
                         dispatch(setColor(col));
 
-                        //dispatch to session slice
+                        //dispatch to LOCAL slice
                         dispatch(updateColorIndex(i))
 
                         setSelected(i)

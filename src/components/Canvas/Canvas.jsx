@@ -121,7 +121,15 @@ export function Canvas(){
 
             (async () => {
             
-                //FIXME this fetch loop : timestamp - canvas -> [rerender] -> timestamp ; do rerender timestamp check in background if connected (don't block w/ loading status)
+                //FIXME double fetch loop : timestamp - canvas - ready -> [rerender] -> timestamp - ready - do second fetch in background or cut it out
+                
+                //possible cause - socket connection in dep array 
+                //canvas initial render - socket connection not established yet
+                //so establishing connection fires effect again
+                    // -> desired behavior if re-connecting
+                    // BUT not if this is the initial connection
+
+                
                 //TODO - possibly bump up timestamp diff threshold ? to avoid getting locked into fetch loop
 
                 // dispatch(setStatus('comparing timestamp...'));

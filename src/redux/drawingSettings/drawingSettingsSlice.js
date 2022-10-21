@@ -40,7 +40,7 @@ export const {
     setColor, 
     setLineWidth, 
 
-    setSessionSizeSliderProgress,
+    setLOCALSizeSliderProgress,
 } = drawingSettingsSlice.actions;
 
 export const selectColor = (state) => state.drawingSettings.color;

@@ -7,9 +7,9 @@ import { Track } from "./Track";
 import { useDispatch } from "react-redux";
 
 import { 
-    SESSION_INITIAL_SIZE_SLIDER_PROGRESS, 
+    LOCAL_INITIAL_SIZE_SLIDER_PROGRESS, 
     updateSizeSliderProgress 
-} from "../../redux/sessionStorage/sessionStorageSlice";
+} from "../../redux/localStorage/localStorageSlice";
 
 export function SizeSlider(props){
 
@@ -28,9 +28,9 @@ export function SizeSlider(props){
 
     
 
-    const [progress, setProgress] = useState(typeof SESSION_INITIAL_SIZE_SLIDER_PROGRESS === 'number' ? SESSION_INITIAL_SIZE_SLIDER_PROGRESS : 0.5) //0 – 1
+    const [progress, setProgress] = useState(typeof LOCAL_INITIAL_SIZE_SLIDER_PROGRESS === 'number' ? LOCAL_INITIAL_SIZE_SLIDER_PROGRESS : 0.5) //0 – 1
 
-    //dispatch progress to session slice
+    //dispatch progress to LOCAL slice
     useEffect(() => {
         dispatch(updateSizeSliderProgress(progress))
     }, [progress, dispatch])

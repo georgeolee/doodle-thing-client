@@ -17,7 +17,7 @@ import {
 
 import { selectPreferNativePixelRatio, setPreferNativePixelRatio } from '../../redux/canvas/canvasSlice';
 
-import { updateUserName } from '../../redux/sessionStorage/sessionStorageSlice';
+import { updateUserName } from '../../redux/localStorage/localStorageSlice';
 
 import { dispatch } from '../../redux/store';
 
@@ -57,7 +57,7 @@ export async function action({request}){
 }
 
 
-//TODO - sessionStorage -> localStorage ?
+//TODO - localStorage -> localStorage ?
 
 //TODO - continue work on settings route
 

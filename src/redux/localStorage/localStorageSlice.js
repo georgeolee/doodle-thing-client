@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 /**
- * read and update session data
+ * read and update LOCAL data
  * 
  * for initializing inputs on page reload, etc
  */
@@ -13,41 +13,41 @@ const KEY_USER_NAME = 'userName';
 const KEY_USER_ID = 'userId';
 
 const initialState = {
-    sizeSliderProgress: sessionStorage.getItem(KEY_SIZE_SLIDER_PROGRESS),
-    colorIndex: sessionStorage.getItem(KEY_COLOR_INDEX),
+    sizeSliderProgress: localStorage.getItem(KEY_SIZE_SLIDER_PROGRESS),
+    colorIndex: localStorage.getItem(KEY_COLOR_INDEX),
     
-    userName: sessionStorage.getItem(KEY_USER_NAME),
-    userId: sessionStorage.getItem(KEY_USER_ID),
+    userName: localStorage.getItem(KEY_USER_NAME),
+    userId: localStorage.getItem(KEY_USER_ID),
 }
 
 //export starting values as numerical constants --> instead of selectors, for initializing inputs that shouldn't rerender on store update
-export const SESSION_INITIAL_SIZE_SLIDER_PROGRESS = Number(initialState.sizeSliderProgress);
-export const SESSION_INITIAL_COLOR_INDEX = Number(initialState.colorIndex);
+export const LOCAL_INITIAL_SIZE_SLIDER_PROGRESS = Number(initialState.sizeSliderProgress);
+export const LOCAL_INITIAL_COLOR_INDEX = Number(initialState.colorIndex);
 
-export const SESSION_INITIAL_USER_NAME = initialState.userName;
-export const SESSION_INITIAL_USER_ID = initialState.userId;
+export const LOCAL_INITIAL_USER_NAME = initialState.userName;
+export const LOCAL_INITIAL_USER_ID = initialState.userId;
 
-export const sessionStorageSlice = createSlice({
-    name: 'sessionStorage',
+export const localStorageSlice = createSlice({
+    name: 'localStorage',
     initialState,
 
     reducers: {
         updateSizeSliderProgress: (state, action) => {
             // state.sizeSliderProgress = action.payload; <- not updating state here bc storage updates shouldn't trigger rerender
-            sessionStorage.setItem(KEY_SIZE_SLIDER_PROGRESS, String(action.payload));
+            localStorage.setItem(KEY_SIZE_SLIDER_PROGRESS, String(action.payload));
         },
 
         updateColorIndex: (state, action) => {
             // state.colorIndex = action.payload;
-            sessionStorage.setItem(KEY_COLOR_INDEX, String(action.payload));
+            localStorage.setItem(KEY_COLOR_INDEX, String(action.payload));
         },
 
         updateUserName: (state, action) => {
-            sessionStorage.setItem(KEY_USER_NAME, action.payload);
+            localStorage.setItem(KEY_USER_NAME, action.payload);
         },
 
         updateUserId: (state, action) => {
-            sessionStorage.setItem(KEY_USER_ID, action.payload);
+            localStorage.setItem(KEY_USER_ID, action.payload);
         }
     }
 })
@@ -57,7 +57,7 @@ export const {
     updateColorIndex,
     updateUserId,
     updateUserName
-} = sessionStorageSlice.actions;
+} = localStorageSlice.actions;
 
-export default sessionStorageSlice.reducer;
+export default localStorageSlice.reducer;
 

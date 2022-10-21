@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { 
-    SESSION_INITIAL_USER_ID,
-    SESSION_INITIAL_USER_NAME,
- } from "../sessionStorage/sessionStorageSlice";
+    LOCAL_INITIAL_USER_ID,
+    LOCAL_INITIAL_USER_NAME,
+ } from "../localStorage/localStorageSlice";
 
 const initialState = {
-    name: SESSION_INITIAL_USER_NAME || 'user',
+    name: LOCAL_INITIAL_USER_NAME || 'user',
     connected: false,
     status: 'idle',
-    id: SESSION_INITIAL_USER_ID || null,
+    id: LOCAL_INITIAL_USER_ID || null,
 
     
 

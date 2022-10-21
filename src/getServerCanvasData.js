@@ -126,7 +126,9 @@ export async function getServerCanvasData(options){
             'AbortError': () => console.log(`getServerCanvasData: fetch request aborted; reason: ${signal?.reason}`),
         }
 
-        if(e.name in errorHandler){
+        console.log('\ne.name')
+        console.log(e.name)
+        if(errorHandler[e.name]){
             
             errorHandler[e.name](e);
 

@@ -104,6 +104,8 @@ export function Canvas(){
 
     useEffect(() => {
 
+            //if not connected but timestamp is set, we're disconnected from the server ; don't try to fetch
+            //if no timestamp yet, it might be that the connection is still being established
             if(timestamp && !connected) return;
 
             const controller = new AbortController();
@@ -122,15 +124,6 @@ export function Canvas(){
 
 
             (async () => {
-            
-                //FIXME double fetch loop : timestamp - canvas - ready -> [rerender] -> timestamp - ready - do second fetch in background or cut it out
-                
-                //possible cause - socket connection in dep array 
-                //canvas initial render - socket connection not established yet
-                //so establishing connection fires effect again
-                    // -> desired behavior if re-connecting
-                    // BUT not if this is the initial connection
-
                 
                 //TODO - possibly bump up timestamp diff threshold ? to avoid getting locked into fetch loop
 
@@ -138,8 +131,15 @@ export function Canvas(){
 
                 if(timestamp){
                     const serverTimestamp = await getServerCanvasTimestamp({signal});                                        
-                    //no timestamp change
-                    if(serverTimestamp === timestamp){ 
+                    
+                    //don't trigger a refetch if timestamp difference less than this
+                    const THRESHOLD = 1000;
+                    
+                    //TODO - buffer input and fetch in background if already have a canvas blob
+                    // (avoid getting locked in if other users scribbling during fetch)
+
+                    //check for timestamp change
+                    if(Number(serverTimestamp) - Number(timestamp) <= THRESHOLD){ 
                         cancelFetchRequest = null;  
                         dispatch(setStatus('ready'));                      
                         return;
@@ -191,7 +191,6 @@ export function Canvas(){
                     }
                     
                     cancelFetchRequest = null;
-                    // dispatch(setStatus('ready'));
 
                     })
                 .catch(e => {
@@ -199,6 +198,9 @@ export function Canvas(){
                     console.log('error in canvas while fetching canvas data')
                     console.error(e)
                     cancelFetchRequest = null;
+
+                    // if(e instanceof AbortError)
+
                     dispatch(setStatus('ready'));
                 })
             

@@ -31,11 +31,9 @@ export const sendUserData = (data) => {
 
 const subscribers = new Map();
 
-function getListeners(event){
-    return subscribers.get(event) ?? null;
-}
+const getListeners = event => subscribers.get(event) ?? null;
 
-function addListener(event, listener, oneOff = false){
+const addListener = (event, listener, oneOff = false) => {
     const eventListeners = getListeners(event) ?? new Map();
     const key = Symbol(`key for ${oneOff ? 'one-off ' : ''}${event} listener: ${listener.name || 'anonymous function'}`);
     eventListeners.set(key, {listener, oneOff});
@@ -55,9 +53,8 @@ export function subscribe(event, listener, oneOff=false){
     return () => unsubscribe(event, key);
 }
 
-function unsubscribe(event, key){
-    return !!subscribers.get(event)?.delete(key);
-}
+const unsubscribe = (event, key) => !!subscribers.get(event)?.delete(key);
+
 
 //establish socket connection & set up socket events
 export function connectToServer(){

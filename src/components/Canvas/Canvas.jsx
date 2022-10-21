@@ -118,9 +118,13 @@ export function Canvas(){
             }
 
 
+
             (async () => {
-                
-                dispatch(setStatus('comparing timestamp...'));
+            
+                //FIXME this fetch loop : timestamp - canvas -> [rerender] -> timestamp ; do rerender timestamp check in background if connected (don't block w/ loading status)
+                //TODO - possibly bump up timestamp diff threshold ? to avoid getting locked into fetch loop
+
+                // dispatch(setStatus('comparing timestamp...'));
 
                 if(timestamp){
                     const serverTimestamp = await getServerCanvasTimestamp({signal});                                        

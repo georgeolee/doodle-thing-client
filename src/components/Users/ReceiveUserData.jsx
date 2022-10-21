@@ -1,4 +1,5 @@
-import { setUserDataListener, setIdAssignmentListener } from "../../socket";
+
+import { subscribe } from "../../socket";
 
 import { useEffect } from "react";
 
@@ -13,9 +14,7 @@ import {
 } from "../../redux/user/userSlice";
 
 
-import { 
-    updateUserId 
-} from "../../redux/localStorage/localStorageSlice";
+import { updateUserId } from "../../redux/localStorage/localStorageSlice";
 
 
 export function ReceiveUserData(){
@@ -25,23 +24,36 @@ export function ReceiveUserData(){
     
     const ownId = useSelector(selectOwnId)    
 
+    //listen for id assignment from server
     useEffect(() => {
-        setIdAssignmentListener(id => {
-            dispatch(setOwnId(id));     //
-            dispatch(updateUserId(id));
+        const unsubscribe = subscribe('assign id', id => {
+            dispatch(setOwnId(id))
+            dispatch(updateUserId(id))
         })
-    }, [dispatch])
 
+        return unsubscribe;
+
+    },[dispatch])
+
+    //listen for updates about other users
     useEffect(() => {
-        setUserDataListener(userDataArray => {
+        const unsubscribe = subscribe('user', userDataArray => {
             for(const user of userDataArray){
+                
+                //other user disconnect
                 if(user.disconnect){
-                    dispatch(removeOtherUser(user)) // user disconnect
-                }else if(user.id && user.id !== ownId){
-                    dispatch(setOtherUser(user))    //user status change
+                    dispatch(removeOtherUser(user));
+                }
+
+                //other user status change
+                else if(user.id && user.id !== ownId){
+                    dispatch(setOtherUser(user));
                 }
             }
-        })        
+        })
+        
+        return unsubscribe;
+
     }, [dispatch, ownId])
 
     return

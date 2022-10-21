@@ -8,7 +8,6 @@ import {io} from 'socket.io-client';
 import { 
     removeOtherUsersAll,
     setOwnConnected,
-    // selectOwnConnected
  } from './redux/user/userSlice';
 
 // const SERVER_URL = 
@@ -19,7 +18,7 @@ import {
 
 
 //socket instance
-export let socket = null;
+let socket = null
 
 //send drawing data to server
 export const sendDrawingData = (data) => socket?.emit('drawingData', data);
@@ -30,41 +29,34 @@ export const sendUserData = (data) => {
 };
 
 
-/**handler function to call on receiving drawing data from server*/
-let onReceiveDrawingData = null;
+const subscribers = new Map();
 
-/**handler function to call on receiving an id assignment from server */
-let onReceiveIdAssignment = null;
-
-let onReceiveUserData = null;
-
-// const listeners = {
-//     onReceiveDrawingData,
-//     onReceiveIdAssignment,
-//     onReceiveUserData
-// }
-
-// const setListener = (listener, fn = null) => {
-//     if(typeof fn !== 'function' && fn !== null) throw new TypeError(`expected null or function argument; got ${typeof fn} instead`);
-//     listener = fn;
-// }
-
-//set handler from elsewhere in the app
-export const setDrawingDataListener = (fn = null) => {
-    if(typeof fn !== 'function' && fn !== null) throw new TypeError(`setDrawingDataListener: expected null or function argument; got ${typeof fn} instead`);
-    onReceiveDrawingData = fn;
+function getListeners(event){
+    return subscribers.get(event) ?? null;
 }
 
-/**set id handler */
-export const setIdAssignmentListener = (fn = null) => {
-    if(typeof fn !== 'function' && fn !== null) throw new TypeError(`setIdAssingmentListener: expected null or function argument; got ${typeof fn} instead`);
-    onReceiveIdAssignment = fn;
+function addListener(event, listener, oneOff = false){
+    const eventListeners = getListeners(event) ?? new Map();
+    const key = Symbol(`key for ${oneOff ? 'one-off ' : ''}${event} listener: ${listener.name || 'anonymous function'}`);
+    eventListeners.set(key, {listener, oneOff});
+    subscribers.set(event, eventListeners);
+    return key;
 }
 
-/**set user data handler */
-export const setUserDataListener = (fn = null) => {
-    if(typeof fn !== 'function' && fn !== null) throw new TypeError(`setUserDataListener: expected null or function argument; got ${typeof fn} instead`);
-    onReceiveUserData = fn;
+/**
+ * subscribe to a socket event
+ * @param {string} event 
+ * @param {function} listener 
+ * @param {boolean} oneOff if true, remove the listener automatically after invoking it; defaults to false
+ * @returns {()=>void} a function to manually unsubscribe from the event
+ */
+export function subscribe(event, listener, oneOff=false){
+    const key = addListener(event, listener, oneOff);
+    return () => unsubscribe(event, key);
+}
+
+function unsubscribe(event, key){
+    return !!subscribers.get(event)?.delete(key);
 }
 
 //establish socket connection & set up socket events
@@ -74,22 +66,29 @@ export function connectToServer(){
     
     socket = io(process.env.REACT_APP_SERVER_URL, {transports: ['websocket', 'polling']})            
 
+
+    //catch all subscription listener for incoming events
+    socket.onAny((event, ...args) => {
+
+        //subscribers for this event
+        const eventSubscribers = subscribers.get(event);
+
+        eventSubscribers?.forEach(({listener, oneOff}, key) => {
+            
+            //invoke the listener
+            listener(...args);
+
+            //unsubscribe if it's a one-off
+            if(oneOff){
+                eventSubscribers.delete(key);
+            }
+        })
+    })
+    
     socket.on('confirmation', () => {
         console.log(`connected to server at ${process.env.REACT_APP_SERVER_URL}`)
         console.log(`socket id: ${socket.id}`)
-
-        socket.emit()
     })
-
-    //incoming drawing data from server (other clients drawing)
-    socket.on('drawingData', drawingData => onReceiveDrawingData?.(drawingData))
-
-    //receive id assignment from server
-    socket.on('assign id', id => onReceiveIdAssignment?.(id))
-
-    //incoming user data from server (user status connect or status update)
-    socket.on('user', userData => onReceiveUserData?.(userData))
-
 
     socket.on('disconnect', () => {
         dispatch(setOwnConnected(false));

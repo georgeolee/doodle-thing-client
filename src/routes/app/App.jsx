@@ -1,6 +1,6 @@
 
 import './App.css';
-import { socket, connectToServer } from '../../socket';
+import { connectToServer } from '../../socket';
 
 import { Canvas } from '../../components/Canvas/Canvas';
 import { ColorPicker } from '../../components/ColorPicker/ColorPicker';
@@ -52,8 +52,8 @@ function App() {
 
 
   useEffect(()=>{
-    console.log(`app render : ${Date.now()}`)
-    console.log(`socket id: ${socket?.id}`)
+    // console.log(`app render : ${Date.now()}`)
+    // console.log(`socket id: ${socket?.id}`)
 
   })
 

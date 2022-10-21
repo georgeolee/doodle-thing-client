@@ -11,8 +11,6 @@ const initialState = {
     status: 'idle',
     id: LOCAL_INITIAL_USER_ID || null,
 
-    
-
     others: {} //key other users by id
 }
 

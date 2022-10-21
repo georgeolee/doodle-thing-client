@@ -3,7 +3,7 @@ import { Doodler } from '../../Doodler.js'
 
 import { usePointerState } from "../../hooks/usePointerState"
 
-import { setDrawingDataListener, sendDrawingData } from "../../socket"
+import { sendDrawingData, subscribe } from "../../socket"
 
 import { getServerCanvasData, getServerCanvasTimestamp } from "../../getServerCanvasData.js"
 
@@ -21,6 +21,7 @@ import { selectOwnId, selectOwnConnected } from "../../redux/user/userSlice.js"
 import { store } from "../../redux/store.js"
 
 import {useBeforeUnload} from '../../hooks/useBeforeUnload.js'
+
 
 export function Canvas(){
 
@@ -83,17 +84,15 @@ export function Canvas(){
 
     //initial render only (see note below)
     //  - initialize doodler
-    //  - set up callback to process incoming drawing data from socket
-    useEffect(()=>{
+    //  - process incoming drawing data from the server
+    useEffect(() => {        
+        doodlerRef.current = new Doodler(canvasRef)
 
-        doodlerRef.current = new Doodler(canvasRef)        
-        setDrawingDataListener(drawingData => doodlerRef.current.consumeDrawingData(drawingData))        
-
-        return () => {            
-            doodlerRef.current = null;
-            setDrawingDataListener(null);
-        }
-    },[])
+        const unsubscribe = subscribe('drawingData', drawingData => {
+            doodlerRef.current.consumeDrawingData(drawingData);
+        })
+        return unsubscribe;
+    }, [])
 
     //true if
     //no timestamp

@@ -100,13 +100,15 @@ export function Canvas(){
     },[])
 
 
-
+    const refresh = !timestamp || (timestamp && connected)
 
     useEffect(() => {
 
             //if not connected but timestamp is set, we're disconnected from the server ; don't try to fetch
             //if no timestamp yet, it might be that the connection is still being established
-            if(timestamp && !connected) return;
+            // if(timestamp && !connected) return;
+
+            if(!refresh) return
 
             const controller = new AbortController();
             const signal = controller.signal;
@@ -214,7 +216,7 @@ export function Canvas(){
                 cancelFetchRequest = null;
             }
 
-        }, [timestamp, dispatch, preferNativePixelRatio, connected])
+        }, [timestamp, dispatch, preferNativePixelRatio, refresh])
 
 
     //on timestamp change

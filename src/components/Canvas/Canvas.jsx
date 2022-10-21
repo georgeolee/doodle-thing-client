@@ -134,7 +134,7 @@ export function Canvas(){
                 
                 //TODO - possibly bump up timestamp diff threshold ? to avoid getting locked into fetch loop
 
-                // dispatch(setStatus('comparing timestamp...'));
+                dispatch(setStatus('comparing timestamp...'));
 
                 if(timestamp){
                     const serverTimestamp = await getServerCanvasTimestamp({signal});                                        

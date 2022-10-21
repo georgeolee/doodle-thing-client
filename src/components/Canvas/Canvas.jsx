@@ -13,7 +13,7 @@ import { useNoTouch } from "../../hooks/useNoTouch.js"
 //redux
 import { useSelector, useDispatch } from "react-redux";
 
-import { setStatus, selectPreferNativePixelRatio } from "../../redux/canvas/canvasSlice.js"
+import { setStatus as setCanvasStatus, selectPreferNativePixelRatio } from "../../redux/canvas/canvasSlice.js"
 import { useStatusWithTimeout } from "../../hooks/useStatusWithTimeout.js"
 
 import { selectOwnId, selectOwnConnected } from "../../redux/user/userSlice.js"
@@ -27,26 +27,24 @@ export function Canvas(){
     const dispatch = useDispatch();
 
     const preferNativePixelRatio = useSelector(selectPreferNativePixelRatio);
+    const id = useSelector(selectOwnId)
+    const connected = useSelector(selectOwnConnected)
 
+    const doodlerRef = useRef()
     const canvasRef = useRef()
     useNoTouch(canvasRef)
-    
-    const doodlerRef = useRef()
 
     //image blob from server
     const blob = useRef(null)
 
     //canvas timestamp sent from server
-    const [timestamp, setTimestamp] = useState()
-
-    const setStatusWithTimeout = useStatusWithTimeout()    
-    
-    const id = useSelector(selectOwnId)
-    const connected = useSelector(selectOwnConnected)
+    const [timestamp, setTimestamp] = useState()    
 
     //set a listener to cancel any active fetch request if user leaves or refreshes the page
     const setUnloadListener = useBeforeUnload();
 
+    //change user status when drawing
+    const setStatusWithTimeout = useStatusWithTimeout()
 
     //every render
     //  - configure canvas listeners 
@@ -91,17 +89,16 @@ export function Canvas(){
         doodlerRef.current = new Doodler(canvasRef)        
         setDrawingDataListener(drawingData => doodlerRef.current.consumeDrawingData(drawingData))        
 
-        return () => {
-            
+        return () => {            
             doodlerRef.current = null;
             setDrawingDataListener(null);
         }
     },[])
 
-
-    //no canvas
+    //true if
+    //no timestamp
     //or
-    //yes canvas and connected
+    //yes timestamp and connected
     
     //add to deps array to refire hook on reconnect
     const doRefresh = !timestamp || (timestamp && connected)
@@ -116,30 +113,39 @@ export function Canvas(){
             setUnloadListener(() => controller.abort('page unload'));
 
 
-            (async () => {
-                
-                //TODO - possibly bump up timestamp diff threshold ? to avoid getting locked into fetch loop
+            (async () => {                
 
-                dispatch(setStatus('comparing timestamp...'));
+                dispatch(setCanvasStatus('comparing timestamp...'));
 
-                if(timestamp){
-                    const serverTimestamp = await getServerCanvasTimestamp({signal});                                        
+                if(timestamp){ //check if current timestamp is up to date
+
+                    try{
+                        const serverTimestamp = await getServerCanvasTimestamp({signal});                                        
                     
-                    //don't trigger a refetch if timestamp difference less than this
-                    const THRESHOLD = 1000;
-                    
-                    //TODO - buffer input and fetch in background if already have a canvas blob
-                    // (avoid getting locked in if other users scribbling during fetch)
+                        //will be null if the request was aborted
+                        if(serverTimestamp === null) return;
 
-                    //timestamp diff within threshold?
-                    if(Number(serverTimestamp) - Number(timestamp) <= THRESHOLD){ 
-                        dispatch(setStatus('ready'));                      
+                        //don't trigger a refetch if timestamp difference less than this
+                        const THRESHOLD = 1000;
+                        
+                        //TODO - buffer input and fetch in background if already have a canvas blob
+                        // (avoid getting locked in if other users scribbling during fetch)
+
+                        if(Number(serverTimestamp) - Number(timestamp) <= THRESHOLD){ 
+                            dispatch(setCanvasStatus('ready'));                      
+                            return;
+                        }
+
+                    }catch(e){
+                        console.log('error while fetching canvas timestamp');
+                        console.error(e);
+                        dispatch(setCanvasStatus('ready'));                      
                         return;
                     }
+                    
                 }
 
-                dispatch(setStatus('fetching canvas data...'));
-
+                dispatch(setCanvasStatus('fetching canvas data...'));
 
                 try{
                     const result = await getServerCanvasData({      
@@ -152,7 +158,7 @@ export function Canvas(){
     
                         signal,
     
-                        updateStatus: (status) => dispatch(setStatus(status))
+                        updateStatus: (status) => dispatch(setCanvasStatus(status))
     
                     });
     
@@ -172,11 +178,8 @@ export function Canvas(){
                 }catch(e){
                     console.log('error in canvas while fetching canvas data')
                     console.error(e)
-                    dispatch(setStatus('ready'));
-                }
-            
-                
-
+                    dispatch(setCanvasStatus('ready'));
+                }                            
             })()
 
 
@@ -214,7 +217,7 @@ export function Canvas(){
                 const url = URL.createObjectURL(blob.current)
                 img.src = url
 
-                //wait until it's safe to draw image
+                //wait until img src finishes loading and it's ready to draw
                 await img.decode()
 
                 ctx.drawImage(img, 0, 0, cnv.width, cnv.height)

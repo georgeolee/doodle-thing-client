@@ -148,6 +148,7 @@ export async function getServerCanvasTimestamp({signal}){
     }catch(e){
         if(e.name === 'AbortError'){
             console.log(`getServerCanvasTimestamp: fetch request aborted; reason: ${signal?.reason}`)
-        }else console.log(e)
+            return null;
+        }else throw e;
     }
 }

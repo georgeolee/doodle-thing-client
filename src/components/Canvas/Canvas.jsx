@@ -191,7 +191,7 @@ export function Canvas(){
                     }
                     
                     cancelFetchRequest = null;
-                    dispatch(setStatus('ready'));
+                    // dispatch(setStatus('ready'));
 
                     })
                 .catch(e => {

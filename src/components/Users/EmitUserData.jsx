@@ -27,11 +27,6 @@ export function EmitUserData(){
     const name = useSelector(selectOwnName);
     const id = useSelector(selectOwnId);
     const status = useSelector(selectOwnStatus);
-
-
-
-    //TODO - move this from emitter to receiver component
-    //first render - listen for id assignment from server, in case no id set
     
 
     //emit user update when redux store updates

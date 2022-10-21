@@ -104,6 +104,8 @@ export function Canvas(){
 
     useEffect(() => {
 
+            if(timestamp && !connected) return;
+
             const controller = new AbortController();
             const signal = controller.signal;
 

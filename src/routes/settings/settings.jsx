@@ -50,14 +50,12 @@ export async function action({request}){
 
         return redirect('/')
     }catch(e){
-        console.log('in settings.jsx')
         console.error(new Error('ERROR SUBMITTING SETTINGS FORM'))
         throw(e)
     }    
 }
 
 
-//TODO - localStorage -> localStorage ?
 
 //TODO - continue work on settings route
 
@@ -98,7 +96,7 @@ export function Settings(){
             />
 
         <label 
-            htmlFor='errorReporting'>allow error reporting</label>
+            htmlFor='errorReporting'>enable error reporting</label>
         <Toggle
             name='errorReporting'
             defaultChecked={errorReporting}

@@ -22,6 +22,7 @@ import { store } from "../../redux/store.js"
 
 import {useBeforeUnload} from '../../hooks/useBeforeUnload.js'
 
+import { UsersOverlay } from "./UsersOverlay.jsx"
 
 export function Canvas(){
 
@@ -230,6 +231,8 @@ export function Canvas(){
     }, [timestamp])
 
     return(
+        <>
+        <UsersOverlay parent={canvasRef}/>
         <canvas
             onPointerDown={e => e.target.setPointerCapture(e.pointerId)}
             onPointerUp={e => e.target.releasePointerCapture(e.pointerId)}
@@ -242,5 +245,6 @@ export function Canvas(){
             }}
             ref={canvasRef}            
             ></canvas>
+        </>
     )
 }

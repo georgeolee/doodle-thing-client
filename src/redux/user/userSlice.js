@@ -92,5 +92,11 @@ export const selectOwnUser = (state) => {
 
 export const selectOtherUsers = (state) => Object.keys(state.user.others).map(id => [id, state.user.others[id]])
 
+export const selectOtherUsersObj = state => Object.keys(state.user.others).reduce((map, key) => {
+    map[key] = {...state.user.others[key]}
+    return map;
+}, {})
+
+// export const selectOtherUsersObj = state => Object.keys(state.user.others)
 
 export default userSlice.reducer;

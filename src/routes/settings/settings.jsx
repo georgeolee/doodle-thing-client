@@ -25,7 +25,13 @@ import style from './settings.module.css'
 
 import { Toggle } from '../../components/Toggle/Toggle';
 
-import { selectErrorReporting, enableErrorReporting } from '../../redux/preferences/preferencesSlice';
+import { 
+    selectErrorReporting, 
+    enableErrorReporting,
+    
+    showUserNameTags,
+    selectUserNameTags
+ } from '../../redux/preferences/preferencesSlice';
 
 export async function action({request}){
 
@@ -35,7 +41,8 @@ export async function action({request}){
         const {
             name, 
             preferNativePixelRatio, 
-            errorReporting
+            errorReporting,
+            userNameTags
         } = Object.fromEntries(formData);
 
         const visibleName = name.trim()
@@ -47,6 +54,7 @@ export async function action({request}){
 
         dispatch(setPreferNativePixelRatio(!!preferNativePixelRatio))
         dispatch(enableErrorReporting(errorReporting));
+        dispatch(showUserNameTags(userNameTags))
 
         return redirect('/')
     }catch(e){
@@ -65,6 +73,7 @@ export function Settings(){
 
     const preferNativePixelRatio = useSelector(selectPreferNativePixelRatio);
     const errorReporting = useSelector(selectErrorReporting);
+    const userNameTags = useSelector(selectUserNameTags);
 
     const navigate = useNavigate();
 
@@ -100,6 +109,13 @@ export function Settings(){
         <Toggle
             name='errorReporting'
             defaultChecked={errorReporting}
+            />
+
+        <label 
+            htmlFor='userNameTags'>show name tags when other users are drawing</label>
+        <Toggle
+            name='userNameTags'
+            defaultChecked={userNameTags}
             />
 
         <div

@@ -29,6 +29,7 @@ export class NameTag{
      * @param {number} x target coord; if the tag doesn't exist yet, also sets the starting coord
      * @param {number} y target coord; if the tag doesn't exist yet, also sets the starting coord
      * @param {string} name name to use when setting a new tag
+     * @returns {NameTag}
      */
     static set(id, _x, _y, name = 'user'){
 
@@ -37,14 +38,16 @@ export class NameTag{
         const x = !clamp ? _x : Math.min(Math.max(0,_x),1);
         const y = !clamp ? _y : Math.min(Math.max(0,_y),1);
 
-        const t = this.all.get(id)
+        let t = this.all.get(id)
 
         if(t){
             t.target = {x,y}
-            t.remaining = NameTag.lifetime
+            t.remaining = NameTag.lifetime            
         }else{
-            this.all.set(id, new NameTag(x, y, name, NameTag.lifetime))
-        }        
+            t = new NameTag(x, y, name, NameTag.lifetime)
+            this.all.set(id, t)
+        }
+        return t;
     }
 
     /**

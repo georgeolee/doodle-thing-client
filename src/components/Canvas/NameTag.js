@@ -16,7 +16,7 @@ export class NameTag{
     static lifetime = 2000;
     
     /**motion damping */
-    static lerpFactor = 4;
+    static lerpFactor = 6;
 
     /**stop moving the nametag if sq dist from target is less than this*/
     static sqDistThreshold = 1e-5;

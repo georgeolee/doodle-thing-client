@@ -26,7 +26,9 @@ export function UsersOverlay(props){
 
     const overlayRef = useRef()
 
-    const [font, setFont] = useState('16px monospace')
+    const fontSize = 16*devicePixelRatio;
+
+    const [font, setFont] = useState(`${fontSize}px monospace`)
     
 
     const {parent} = props;
@@ -48,6 +50,10 @@ export function UsersOverlay(props){
     //TODO - tag appearance
 
     useEffect(() => {
+        console.log(font)
+    }, [font])
+
+    useEffect(() => {
 
         //load font
         ( async () => {
@@ -56,7 +62,7 @@ export function UsersOverlay(props){
 
             try{
                 await loadGoogleFont(googleFontsUrl)
-                setFont(`16px ${family}`)
+                setFont(`${fontSize}px ${family}`)
             }catch(e){
                 console.log(e)
             }
@@ -67,16 +73,25 @@ export function UsersOverlay(props){
 
     useEffect(() => {
 
-        if(!enableOverlay) return;
+        if(!enableOverlay || !elt) return;
 
 
         //FIXME - tag positioning
         function drawTag(xNorm, yNorm, name){
 
-            if(!elt) return;
+            if(!elt) return;            
 
-            const x = width * xNorm;
-            const y = height * yNorm;
+            /*
+             *  xNorm and yNorm are normalized to the drawing canvas boundaries,
+             *  not the overlay canvas
+             * 
+             *  get ratio between drawing & overlay canvas in order to scale
+             *  them to overlay canvas space  
+             */
+            const canvasRatio = width/(width + 2*padding)
+
+            const x = padding + width * xNorm * canvasRatio;
+            const y = padding + height * yNorm * canvasRatio;
 
             const ctx = overlayRef.current.getContext('2d');
 
@@ -84,7 +99,7 @@ export function UsersOverlay(props){
 
             const scale = 1;
 
-            ctx.setTransform(scale, 0, 0, scale, x + padding, y + padding);
+            ctx.setTransform(scale, 0, 0, scale, x, y);
 
             ctx.fillStyle = '#fffd'
             ctx.fillRect(0,-14, 16*name.length*0.7, 20)

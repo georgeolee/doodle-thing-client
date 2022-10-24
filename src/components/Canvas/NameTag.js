@@ -31,12 +31,12 @@ export class NameTag{
      * @param {string} name name to use when setting a new tag
      * @returns {NameTag}
      */
-    static set(id, _x, _y, name = 'user'){
+    static set(id, x, y, name = 'user'){
 
-        const clamp = true;
+        // const clamp = true;
 
-        const x = !clamp ? _x : Math.min(Math.max(0,_x),1);
-        const y = !clamp ? _y : Math.min(Math.max(0,_y),1);
+        // const x = !clamp ? _x : Math.min(Math.max(0,_x),1);
+        // const y = !clamp ? _y : Math.min(Math.max(0,_y),1);
 
         let t = this.all.get(id)
 
@@ -57,10 +57,7 @@ export class NameTag{
     static moveAll(dt){        
         
         const secs = dt * 0.001;
-        
         const lerpFactor = Math.min(NameTag.lerpFactor * secs, 1);
-
-
         
 
         this.all.forEach((tag, id)=> {
@@ -72,9 +69,10 @@ export class NameTag{
 
                 if(sqDist >= this.sqDistThreshold){                    
                     tag.pos = lerp2D(tag.pos, tag.target, lerpFactor)
-                }else{
-                    // tag.pos = {...tag.target};
                 }
+                // else{
+                    // tag.pos = {...tag.target};
+                // }
                 
                 tag.remaining -= dt;
             }            

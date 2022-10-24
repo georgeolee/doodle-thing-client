@@ -1,21 +1,18 @@
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+
 import { 
     selectOtherUsersObj,
     selectOwnId,
     selectOwnName,    
  } from "../../redux/user/userSlice";
 
-import { useEffect, useRef, useState } from "react";
+ import { selectUserNameTags } from "../../redux/preferences/preferencesSlice";
 
 import { subscribe } from "../../socket";
-
 import { NameTag } from "./NameTag";
-
-import { selectUserNameTags } from "../../redux/preferences/preferencesSlice";
-
-
 import { loadGoogleFont } from "../../loadGoogleFont";
-
+import { getHexColorValue } from "../../getHexColorValue";
 
 export function UsersOverlay(props){
 
@@ -47,13 +44,9 @@ export function UsersOverlay(props){
     const height = elt?.height ?? 0;
 
 
-    //TODO - cleanup
-    //TODO - tag appearance
-    //TODO - tag color?
 
-    useEffect(() => {
-
-        //load font
+    //load google font for nametags
+    useEffect(() => {        
         ( async () => {                    
 
             try{
@@ -67,47 +60,24 @@ export function UsersOverlay(props){
         })()
     }, [fontSize, fontFamily])
 
+
+    //set up animation loop
     useEffect(() => {
 
         if(!enableOverlay || !elt) return;
         
-
-        //TODO - clean up
-        function drawTag(tag){
+        function drawTag(tag, ctx){
 
             if(!elt) return;          
 
-            const {name} = tag;
-            const {x:xNorm, y:yNorm} = tag.pos;
-
-            /*
-             *  xNorm and yNorm are normalized to the drawing canvas boundaries,
-             *  not the overlay canvas
-             * 
-             *  get ratio between drawing & overlay canvas in order to scale
-             *  them to overlay canvas space  
-             */
-
-            const x = width * xNorm;
-            const y = height * yNorm;
-
-            const ctx = overlayRef.current.getContext('2d');
-
-            ctx.save()
-
+            const x = width * tag.pos.x;
+            const y = height * tag.pos.y;
             const scale = 1;
+            const textPadding = 5*devicePixelRatio;
 
             ctx.setTransform(scale, 0, 0, scale, x, y);
 
-
-            //TODO nametag styling
-
             ctx.fillStyle = tag.color ?? '#fffd'
-            
-
-            const textPadding = 5;
-            // ctx.beginPath();            
-
             ctx.fillRect(
                 -textPadding - tag.actualBoundingBoxLeft, 
                 -textPadding - tag.actualBoundingBoxAscent, 
@@ -115,15 +85,7 @@ export function UsersOverlay(props){
                 tag.actualBoundingBoxAscent + tag.actualBoundingBoxDescent + 2*textPadding);
 
             ctx.fillStyle = tag.textColor;
-            ctx.font = font;
-            ctx.textBaseline = 'top'
-
-            ctx.fillText(name, 0,0)
-
-            ctx.fill()
-            //draw nametag at position
-
-            ctx.restore()
+            ctx.fillText(tag.name, 0,0)
 
         }
 
@@ -133,18 +95,28 @@ export function UsersOverlay(props){
 
         function animateFrame(stamp){
 
-            const ctx = overlayRef.current.getContext('2d')
-            ctx.clearRect(0,0, width, height)
+            //delta time
             const dt = stamp - lastStamp;
-            ctx.imageSmoothingEnabled=false;
-            //iterate through tags
 
+            const ctx = overlayRef.current.getContext('2d')
+
+            //reset transform
+            ctx.setTransform(1,0,0,1,0,0);
+
+            //clear previous frame
+            ctx.clearRect(0,0, width, height)
+
+            ctx.font = font;
+            ctx.textBaseline = 'top'
+            ctx.imageSmoothingEnabled=false;
+
+                        
             NameTag.moveAll(dt)
 
-            NameTag.all.forEach((tag, id) => {                
-                drawTag(tag)                
+            //iterate through tags
+            NameTag.all.forEach((tag) => {                
+                drawTag(tag, ctx)                
             })
-
 
             frameRequest = window.requestAnimationFrame(animateFrame)
             lastStamp = stamp;
@@ -162,42 +134,9 @@ export function UsersOverlay(props){
         font,
     ])
 
+    //subscribe to drawingData event -> set name tag
     useEffect(() => {
-
-        
         if(!enableOverlay) return;
-
-
-        function getHexColorValue(hexColor){
-
-            //hex string
-            let str = hexColor.match(/^#?((?:[a-f0-9]{3}){1,2}|(?:[a-f0-9]{4}){1,2})$/i)?.[1]
-            
-            if(!str) throw new Error('getHexColorValue(): invalid string argument')
-
-            //double up if single char per channel
-            if(str.length < 6){
-                str = str.split('').reduce((p, n) => p + n + n,'')
-            }
-            
-            //split by channel
-            str = str.split('').reduce((p,n,i) =>{
-                if(i%2 === 0){
-                    p.push(n)
-                }else{
-                    p[p.length-1] += n
-                }
-                return p
-            }, [])
-            
-            //average r/g/b channel value
-            return str.reduce((p,n,i) => {  
-                return (i > 2 ? //skip alpha
-                    p :
-                    p + parseInt(n, 16)
-                )            
-            },0) / 3;                
-        }
 
 
         const unsubscribe = subscribe('drawingData', drawingData => {
@@ -205,11 +144,11 @@ export function UsersOverlay(props){
             const {id, xNorm, yNorm, drawingSettings} = drawingData;
             const {color, eraser} = drawingSettings;
 
-            
+            //get name from id
             const name = 
-                otherUsers[id]?.name ??     //other user id
-                (id === ownId ? ownName :   //own user id  (if drawing in multiple browser windows, etc)
-                'USER')                     //no id match
+                otherUsers[id]?.name ??     
+                (id === ownId ? ownName :   
+                'USER')
             
 
             //before setting, check if the tag exists
@@ -239,7 +178,6 @@ export function UsersOverlay(props){
                     tag[p] = metrics[p]
                 }
             }
-                        
         })
 
         return unsubscribe;
@@ -257,9 +195,13 @@ export function UsersOverlay(props){
         touchAction: 'none',
     }
     const style = !elt ?
-                    always : //no parent canvas yet
+                    { 
+                        ...always,
+                        display:'none',
+                    } : //no parent canvas yet
                     {
                         ...always,
+                        display: enableOverlay ? 'block' : 'none',
                         position: 'absolute',
                         width: elt.style.width,
                         height: elt.style.height,

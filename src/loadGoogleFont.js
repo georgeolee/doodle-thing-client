@@ -1,15 +1,17 @@
-export async function loadGoogleFont(url){
+export async function loadGoogleFont(fontFamily){
 
+    const url = `https://fonts.googleapis.com/css2?family=${fontFamily}`
     console.log(`loading google font from ${url}...`)
     //single escape in regex literal
     //double escape in regexp constructor
 
 
     // google font defs look like this:
-    //  /* (character set) */
+    //  /* (character set) */ <- latin, latin-ext, vietnamese, etc.
     //  @font-face {
     //  ...
     //  }
+
     // match a specific character set
     const matchCharSet = (charSet) => new RegExp(`/\\*[^a-z]*?(${charSet})[^a-z]*?\\*/.*?(@font-face.*?{.*?})`, 'isg')
     
@@ -20,16 +22,12 @@ export async function loadGoogleFont(url){
     }
     
     const pattern = {
-        charSet: str => matchCharSet(str),
-        fontFamily: /font-family:.*?[\'\"](.+?)[\'\"];/is,
-        
-        unicodeRange: /unicode-range:.*?(U.*?);/is,
-
+        charSet: (str='latin') => matchCharSet(str),
+        fontFamily: /font-family:.*?[\'\"](.+?)[\'\"];/is,        
         fontWeight: /font-weight:.*?(\d+)/is,
         fontStyle: /font-style:[^a-z]*(.*?);/is,
-
         src: /src:.*?(url\(.*?\))/is,
-
+        unicodeRange: /unicode-range:.*?(U.*?);/is,
         //etc
     }
     

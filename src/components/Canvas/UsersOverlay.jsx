@@ -29,7 +29,7 @@ export function UsersOverlay(props){
 
     const fontFamily = 'Permanent Marker'
     // const fontFamily = 'Lobster'
-    // const fontFamily = 'Nabla'
+    // const fontFamily = 'Monofett'
 
     const fontSize = 16*devicePixelRatio;
 
@@ -61,12 +61,10 @@ export function UsersOverlay(props){
     useEffect(() => {
 
         //load font
-        ( async () => {
-            
-            const googleFontsUrl = `https://fonts.googleapis.com/css2?family=${fontFamily}`
+        ( async () => {                    
 
             try{
-                await loadGoogleFont(googleFontsUrl)
+                await loadGoogleFont(fontFamily)
                 setFont(`${fontSize}px ${fontFamily}`)
             }catch(e){
                 console.log(e)
@@ -96,7 +94,7 @@ export function UsersOverlay(props){
              *  get ratio between drawing & overlay canvas in order to scale
              *  them to overlay canvas space  
              */
-            const canvasRatio = width/(width + 2*padding)
+            const canvasRatio = (width*devicePixelRatio)/((width*devicePixelRatio) + 2*padding)
 
             const x = (padding + width * xNorm) * canvasRatio;
             const y = (padding + height * yNorm) * canvasRatio;
@@ -116,9 +114,7 @@ export function UsersOverlay(props){
             
 
             const textPadding = 5;
-            // ctx.beginPath();
-            
-            
+            // ctx.beginPath();            
 
             ctx.fillRect(
                 -textPadding - tag.actualBoundingBoxLeft, 

@@ -94,7 +94,7 @@ export function UsersOverlay(props){
              *  get ratio between drawing & overlay canvas in order to scale
              *  them to overlay canvas space  
              */
-            const canvasRatio = (width*devicePixelRatio)/((width*devicePixelRatio) + 2*padding)
+            const canvasRatio = width/(width + 2*padding)
 
             const x = (padding + width * xNorm) * canvasRatio;
             const y = (padding + height * yNorm) * canvasRatio;

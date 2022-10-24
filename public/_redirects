@@ -1,2 +1,4 @@
 #netlify redirects
+
+#fix 404 on refresh issue for react router routes
 /* /index.html 200

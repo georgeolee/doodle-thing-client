@@ -37,8 +37,6 @@ export function UsersOverlay(props){
 
     const {parent} = props;
 
-    const padding = 0 * devicePixelRatio; //extra width around the edge of the parent canvas
-
     const elt = !parent ?
                     null :                        
                         parent.getContext ? 
@@ -89,10 +87,9 @@ export function UsersOverlay(props){
              *  get ratio between drawing & overlay canvas in order to scale
              *  them to overlay canvas space  
              */
-            const canvasRatio = width/(width + 2*padding)
 
-            const x = (padding + width * xNorm) * canvasRatio;
-            const y = (padding + height * yNorm) * canvasRatio;
+            const x = width * xNorm;
+            const y = height * yNorm;
 
             const ctx = overlayRef.current.getContext('2d');
 
@@ -137,7 +134,7 @@ export function UsersOverlay(props){
         function animateFrame(stamp){
 
             const ctx = overlayRef.current.getContext('2d')
-            ctx.clearRect(0,0, padding*2 + width, padding*2 + height)
+            ctx.clearRect(0,0, width, height)
             const dt = stamp - lastStamp;
             ctx.imageSmoothingEnabled=false;
             //iterate through tags
@@ -145,8 +142,7 @@ export function UsersOverlay(props){
             NameTag.moveAll(dt)
 
             NameTag.all.forEach((tag, id) => {                
-                drawTag(tag)
-                // console.log(tag)
+                drawTag(tag)                
             })
 
 
@@ -163,7 +159,6 @@ export function UsersOverlay(props){
         elt, 
         width, 
         height, 
-        padding,
         font,
     ])
 
@@ -266,11 +261,10 @@ export function UsersOverlay(props){
                     {
                         ...always,
                         position: 'absolute',
-                        width: `calc(${elt.style.width} + ${2*padding}px)`,
-                        height: `calc(${elt.style.height} + ${2*padding}px)`,
-                        left:`${ -padding}px`,
-                        top: `${-padding}px`,
-                        border: '1px solid red',
+                        width: elt.style.width,
+                        height: elt.style.height,
+                        left: 0,
+                        top: 0,
                         zIndex:100,
                     }
     

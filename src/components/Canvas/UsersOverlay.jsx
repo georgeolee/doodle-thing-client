@@ -27,7 +27,7 @@ export function UsersOverlay(props){
     const fontFamily = 'Permanent Marker'
 
 
-    const fontSize = 16*devicePixelRatio;
+    const fontSize = 18*devicePixelRatio;
 
     const [font, setFont] = useState(`${fontSize}px monospace`)
 
@@ -73,16 +73,39 @@ export function UsersOverlay(props){
             const x = width * tag.pos.x;
             const y = height * tag.pos.y;
             const scale = 1;
-            const textPadding = 5*devicePixelRatio;
+
+            const radius = 5 * devicePixelRatio;
+            const textPadding = 5 * devicePixelRatio - radius*0.5;
+            
 
             ctx.setTransform(scale, 0, 0, scale, x, y);
 
             ctx.fillStyle = tag.color ?? '#fffd'
+
+            const rectLeft = -textPadding - tag.actualBoundingBoxLeft;
+            const rectTop = -textPadding - tag.actualBoundingBoxAscent;
+            const rectWidth = tag.actualBoundingBoxLeft + tag.actualBoundingBoxRight + 2*textPadding;            
+            const rectHeight = tag.actualBoundingBoxAscent + tag.actualBoundingBoxDescent + 2*textPadding;
+            
+
+            //use strokeRect to draw rounded corners
+            ctx.strokeStyle = ctx.fillStyle;
+            ctx.lineWidth = radius;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            ctx.strokeRect(
+                rectLeft, 
+                rectTop, 
+                rectWidth, 
+                rectHeight);
+
+            //fill in the rectangle
             ctx.fillRect(
-                -textPadding - tag.actualBoundingBoxLeft, 
-                -textPadding - tag.actualBoundingBoxAscent, 
-                tag.actualBoundingBoxLeft + tag.actualBoundingBoxRight + 2*textPadding, 
-                tag.actualBoundingBoxAscent + tag.actualBoundingBoxDescent + 2*textPadding);
+                rectLeft, 
+                rectTop, 
+                rectWidth,
+                rectHeight);
 
             ctx.fillStyle = tag.textColor;
             ctx.fillText(tag.name, 0,0)

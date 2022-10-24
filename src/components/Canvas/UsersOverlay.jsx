@@ -28,8 +28,7 @@ export function UsersOverlay(props){
     const overlayRef = useRef()
 
     const fontFamily = 'Permanent Marker'
-    // const fontFamily = 'Lobster'
-    // const fontFamily = 'Monofett'
+
 
     const fontSize = 16*devicePixelRatio;
 
@@ -38,7 +37,7 @@ export function UsersOverlay(props){
 
     const {parent} = props;
 
-    const padding = 50 * devicePixelRatio; //extra width around the edge of the parent canvas
+    const padding = 0 * devicePixelRatio; //extra width around the edge of the parent canvas
 
     const elt = !parent ?
                     null :                        
@@ -53,10 +52,6 @@ export function UsersOverlay(props){
     //TODO - cleanup
     //TODO - tag appearance
     //TODO - tag color?
-
-    useEffect(() => {
-        console.log(font)
-    }, [font])
 
     useEffect(() => {
 

@@ -16,6 +16,7 @@ import { selectUserNameTags } from "../../redux/preferences/preferencesSlice";
 
 import { loadGoogleFont } from "../../loadGoogleFont";
 
+
 export function UsersOverlay(props){
 
     const ownId = useSelector(selectOwnId)
@@ -26,10 +27,14 @@ export function UsersOverlay(props){
 
     const overlayRef = useRef()
 
+    const fontFamily = 'Permanent Marker'
+    // const fontFamily = 'Lobster'
+    // const fontFamily = 'Nabla'
+
     const fontSize = 16*devicePixelRatio;
 
     const [font, setFont] = useState(`${fontSize}px monospace`)
-    
+
 
     const {parent} = props;
 
@@ -46,8 +51,8 @@ export function UsersOverlay(props){
 
 
     //TODO - cleanup
-    //FIXME - deps
     //TODO - tag appearance
+    //TODO - tag color?
 
     useEffect(() => {
         console.log(font)
@@ -57,34 +62,31 @@ export function UsersOverlay(props){
 
         //load font
         ( async () => {
-
-            // const family = 'Lobster';
-            const family = 'Permanent Marker';
-            const googleFontsUrl = `https://fonts.googleapis.com/css2?family=${family}`
+            
+            const googleFontsUrl = `https://fonts.googleapis.com/css2?family=${fontFamily}`
 
             try{
                 await loadGoogleFont(googleFontsUrl)
-                setFont(`${fontSize}px ${family}`)
+                setFont(`${fontSize}px ${fontFamily}`)
             }catch(e){
                 console.log(e)
             }
                 
             
         })()
-    }, [])
+    }, [fontSize, fontFamily])
 
     useEffect(() => {
 
         if(!enableOverlay || !elt) return;
-
         
 
         //TODO - clean up
         function drawTag(tag){
 
-            if(!elt) return;            
+            if(!elt) return;          
 
-            const {name, textWidth, textHeight} = tag;
+            const {name} = tag;
             const {x:xNorm, y:yNorm} = tag.pos;
 
             /*
@@ -110,15 +112,24 @@ export function UsersOverlay(props){
 
             //TODO nametag styling
 
-            ctx.fillStyle = '#fffd'
+            ctx.fillStyle = tag.color ?? '#fffd'
+            
 
             const textPadding = 5;
             // ctx.beginPath();
+            
+            
 
-            ctx.fillRect(-textPadding, -textPadding, textWidth + 2*textPadding, textHeight + 2*textPadding)
-            ctx.fillStyle = '#000';
+            ctx.fillRect(
+                -textPadding - tag.actualBoundingBoxLeft, 
+                -textPadding - tag.actualBoundingBoxAscent, 
+                tag.actualBoundingBoxLeft + tag.actualBoundingBoxRight + 2*textPadding, 
+                tag.actualBoundingBoxAscent + tag.actualBoundingBoxDescent + 2*textPadding);
+
+            ctx.fillStyle = tag.textColor;
             ctx.font = font;
             ctx.textBaseline = 'top'
+
             ctx.fillText(name, 0,0)
 
             ctx.fill()
@@ -162,7 +173,7 @@ export function UsersOverlay(props){
         width, 
         height, 
         padding,
-        font
+        font,
     ])
 
     useEffect(() => {
@@ -171,54 +182,76 @@ export function UsersOverlay(props){
         if(!enableOverlay) return;
 
 
-        //TODO - clean up ; refactor for performance
-        function measureText(text, family, size){
-            const span = document.createElement('span')
-            const padding = 0;
-            span.style.fontFamily = family;
-            span.style.fontSize = size + 'px';
-            span.textContent = text;
-            span.style.margin = 0;
-            span.style.padding = padding + 'px';
-            span.style.display = 'flex';
-            span.style.lineHeight = 1;
-            span.style.width = 'fit-content';
-            span.style.height = 'fit-content';
-            span.style.visibility = 'hidden';
-            span.style.pointerEvents = 'none';
-            span.style.touchAction = 'none';
-            span.style.position = 'fixed';
-            span.style.zIndex = -1;
+        function getHexColorValue(hexColor){
 
-            document.body.appendChild(span);
+            //hex string
+            let str = hexColor.match(/^#?((?:[a-f0-9]{3}){1,2}|(?:[a-f0-9]{4}){1,2})$/i)?.[1]
+            
+            if(!str) throw new Error('getHexColorValue(): invalid string argument')
 
-            const {
-                width:textWidth, 
-                height:textHeight
-            } = span.getBoundingClientRect()
-
-            return {textWidth,textHeight}
+            //double up if single char per channel
+            if(str.length < 6){
+                str = str.split('').reduce((p, n) => p + n + n,'')
+            }
+            
+            //split by channel
+            str = str.split('').reduce((p,n,i) =>{
+                if(i%2 === 0){
+                    p.push(n)
+                }else{
+                    p[p.length-1] += n
+                }
+                return p
+            }, [])
+            
+            //average r/g/b channel value
+            return str.reduce((p,n,i) => {  
+                return (i > 2 ? //skip alpha
+                    p :
+                    p + parseInt(n, 16)
+                )            
+            },0) / 3;                
         }
 
+
         const unsubscribe = subscribe('drawingData', drawingData => {
-            const {id, xNorm, yNorm} = drawingData;
 
+            const {id, xNorm, yNorm, drawingSettings} = drawingData;
+            const {color, eraser} = drawingSettings;
+
+            
             const name = 
-                otherUsers[id]?.name ??     //get other user name
-                (id === ownId ? ownName :   //get own name - ie if drawing in multiple browser windows
-                'USER')                     //default if no id match
+                otherUsers[id]?.name ??     //other user id
+                (id === ownId ? ownName :   //own user id  (if drawing in multiple browser windows, etc)
+                'USER')                     //no id match
+            
 
+            //before setting, check if the tag exists
             const isNewTag = !NameTag.all.get(id)
-    
+
+            //create a new tag or update the existing one
             const tag = NameTag.set(id, xNorm, yNorm, name)
 
-            //TODO - this check is slow - only do it once per name per text style
+            //set colors
+            tag.color = (eraser ? '#fff' : color) + 'd';
+            tag.textColor = (eraser || getHexColorValue(tag.color) > 128) ? '#000' : '#fff'            
+
+            //if it's a new tag - measure text bounding box
             if(isNewTag){
 
-                const {textWidth, textHeight} = measureText(name, 'Permanent Marker', 16)
+                const ctx = overlayRef.current.getContext('2d')
+                ctx.font = font;
+                ctx.textBaseline = 'top'
+                const metrics = ctx.measureText(name)                
 
-                tag.textWidth = textWidth;
-                tag.textHeight = textHeight;
+                for(const p of [
+                    'actualBoundingBoxAscent', 
+                    'actualBoundingBoxDescent',
+                    'actualBoundingBoxLeft',
+                    'actualBoundingBoxRight',
+                ]){
+                    tag[p] = metrics[p]
+                }
             }
                         
         })
@@ -228,7 +261,8 @@ export function UsersOverlay(props){
         enableOverlay, 
         otherUsers,
         ownId,
-        ownName
+        ownName,
+        font
     ]) 
 
     //always style

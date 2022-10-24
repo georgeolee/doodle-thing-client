@@ -93,7 +93,6 @@ export function connectToServer(){
     })
 
 
-    //FIXME - request canvas timestamp/data on reconnect - see fixme in canvas.jsx
     socket.on('connect', () => {
         console.log('connect')
 

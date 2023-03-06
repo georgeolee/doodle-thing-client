@@ -104,14 +104,14 @@ export function Settings(){
             />
 
         <label 
-            htmlFor='errorReporting'>enable error reporting</label>
+            htmlFor='errorReporting'>report errors</label>
         <Toggle
             name='errorReporting'
             defaultChecked={errorReporting}
             />
 
         <label 
-            htmlFor='userNameTags'>show name tags when other users are drawing</label>
+            htmlFor='userNameTags'>show name tags</label>
         <Toggle
             name='userNameTags'
             defaultChecked={userNameTags}

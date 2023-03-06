@@ -65,8 +65,6 @@ export function Canvas(){
 
                     //  color / lineWidth / eraser
                     drawingSettings: store.getState().drawingSettings,
-
-                    //TODO - option to overlay usernames while drawing ; use 2nd (offscreen?) canvas
                     id
                 }
 

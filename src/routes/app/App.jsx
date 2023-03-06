@@ -23,7 +23,12 @@ import { Outlet, Link } from 'react-router-dom';
 function App() {
 
   const dispatch = useDispatch()
-  const colors = ['erase','#222', '#f44', '#2df', '#fd4', '#555', '#ac4', '#113', '#cfd'];
+  const colors = [
+    // 'erase','#222', '#f44', '#2df', '#fd4', '#555', '#ac4', '#113', '#cfd'
+   'erase','#111523ff','#3a4c5cff','#628395ff','#97c1b9ff','#ccffddff','#e6a291ff','#ff4444ff','#ed7957ff','#dbad6aff','#d4d6a4ff',
+
+  '#ece5f0ff','#d3cbbdff','#fbaf00ff','#867a24ff','#4b6036ff','#2e533fff','#104547ff','#112324ff','#111212ff','#110000ff'
+  ];
 
   
 
@@ -92,7 +97,7 @@ function App() {
         }}
         />
       
-      <label htmlFor="size-slider">drag to change brush size</label>
+      <label htmlFor="size-slider">pen size</label>
       <UserList/>
 
       <Outlet/>
